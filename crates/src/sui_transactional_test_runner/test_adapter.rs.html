@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-transactional-test-runner/src/test_adapter.rs`."><title>test_adapter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_transactional_test_runner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_transactional_test_runner/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-transactional-test-runner/src/test_adapter.rs`."><title>test_adapter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_transactional_test_runner" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_transactional_test_runner/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1383,6 +1383,147 @@
 <a href="#1383" id="1383">1383</a>
 <a href="#1384" id="1384">1384</a>
 <a href="#1385" id="1385">1385</a>
+<a href="#1386" id="1386">1386</a>
+<a href="#1387" id="1387">1387</a>
+<a href="#1388" id="1388">1388</a>
+<a href="#1389" id="1389">1389</a>
+<a href="#1390" id="1390">1390</a>
+<a href="#1391" id="1391">1391</a>
+<a href="#1392" id="1392">1392</a>
+<a href="#1393" id="1393">1393</a>
+<a href="#1394" id="1394">1394</a>
+<a href="#1395" id="1395">1395</a>
+<a href="#1396" id="1396">1396</a>
+<a href="#1397" id="1397">1397</a>
+<a href="#1398" id="1398">1398</a>
+<a href="#1399" id="1399">1399</a>
+<a href="#1400" id="1400">1400</a>
+<a href="#1401" id="1401">1401</a>
+<a href="#1402" id="1402">1402</a>
+<a href="#1403" id="1403">1403</a>
+<a href="#1404" id="1404">1404</a>
+<a href="#1405" id="1405">1405</a>
+<a href="#1406" id="1406">1406</a>
+<a href="#1407" id="1407">1407</a>
+<a href="#1408" id="1408">1408</a>
+<a href="#1409" id="1409">1409</a>
+<a href="#1410" id="1410">1410</a>
+<a href="#1411" id="1411">1411</a>
+<a href="#1412" id="1412">1412</a>
+<a href="#1413" id="1413">1413</a>
+<a href="#1414" id="1414">1414</a>
+<a href="#1415" id="1415">1415</a>
+<a href="#1416" id="1416">1416</a>
+<a href="#1417" id="1417">1417</a>
+<a href="#1418" id="1418">1418</a>
+<a href="#1419" id="1419">1419</a>
+<a href="#1420" id="1420">1420</a>
+<a href="#1421" id="1421">1421</a>
+<a href="#1422" id="1422">1422</a>
+<a href="#1423" id="1423">1423</a>
+<a href="#1424" id="1424">1424</a>
+<a href="#1425" id="1425">1425</a>
+<a href="#1426" id="1426">1426</a>
+<a href="#1427" id="1427">1427</a>
+<a href="#1428" id="1428">1428</a>
+<a href="#1429" id="1429">1429</a>
+<a href="#1430" id="1430">1430</a>
+<a href="#1431" id="1431">1431</a>
+<a href="#1432" id="1432">1432</a>
+<a href="#1433" id="1433">1433</a>
+<a href="#1434" id="1434">1434</a>
+<a href="#1435" id="1435">1435</a>
+<a href="#1436" id="1436">1436</a>
+<a href="#1437" id="1437">1437</a>
+<a href="#1438" id="1438">1438</a>
+<a href="#1439" id="1439">1439</a>
+<a href="#1440" id="1440">1440</a>
+<a href="#1441" id="1441">1441</a>
+<a href="#1442" id="1442">1442</a>
+<a href="#1443" id="1443">1443</a>
+<a href="#1444" id="1444">1444</a>
+<a href="#1445" id="1445">1445</a>
+<a href="#1446" id="1446">1446</a>
+<a href="#1447" id="1447">1447</a>
+<a href="#1448" id="1448">1448</a>
+<a href="#1449" id="1449">1449</a>
+<a href="#1450" id="1450">1450</a>
+<a href="#1451" id="1451">1451</a>
+<a href="#1452" id="1452">1452</a>
+<a href="#1453" id="1453">1453</a>
+<a href="#1454" id="1454">1454</a>
+<a href="#1455" id="1455">1455</a>
+<a href="#1456" id="1456">1456</a>
+<a href="#1457" id="1457">1457</a>
+<a href="#1458" id="1458">1458</a>
+<a href="#1459" id="1459">1459</a>
+<a href="#1460" id="1460">1460</a>
+<a href="#1461" id="1461">1461</a>
+<a href="#1462" id="1462">1462</a>
+<a href="#1463" id="1463">1463</a>
+<a href="#1464" id="1464">1464</a>
+<a href="#1465" id="1465">1465</a>
+<a href="#1466" id="1466">1466</a>
+<a href="#1467" id="1467">1467</a>
+<a href="#1468" id="1468">1468</a>
+<a href="#1469" id="1469">1469</a>
+<a href="#1470" id="1470">1470</a>
+<a href="#1471" id="1471">1471</a>
+<a href="#1472" id="1472">1472</a>
+<a href="#1473" id="1473">1473</a>
+<a href="#1474" id="1474">1474</a>
+<a href="#1475" id="1475">1475</a>
+<a href="#1476" id="1476">1476</a>
+<a href="#1477" id="1477">1477</a>
+<a href="#1478" id="1478">1478</a>
+<a href="#1479" id="1479">1479</a>
+<a href="#1480" id="1480">1480</a>
+<a href="#1481" id="1481">1481</a>
+<a href="#1482" id="1482">1482</a>
+<a href="#1483" id="1483">1483</a>
+<a href="#1484" id="1484">1484</a>
+<a href="#1485" id="1485">1485</a>
+<a href="#1486" id="1486">1486</a>
+<a href="#1487" id="1487">1487</a>
+<a href="#1488" id="1488">1488</a>
+<a href="#1489" id="1489">1489</a>
+<a href="#1490" id="1490">1490</a>
+<a href="#1491" id="1491">1491</a>
+<a href="#1492" id="1492">1492</a>
+<a href="#1493" id="1493">1493</a>
+<a href="#1494" id="1494">1494</a>
+<a href="#1495" id="1495">1495</a>
+<a href="#1496" id="1496">1496</a>
+<a href="#1497" id="1497">1497</a>
+<a href="#1498" id="1498">1498</a>
+<a href="#1499" id="1499">1499</a>
+<a href="#1500" id="1500">1500</a>
+<a href="#1501" id="1501">1501</a>
+<a href="#1502" id="1502">1502</a>
+<a href="#1503" id="1503">1503</a>
+<a href="#1504" id="1504">1504</a>
+<a href="#1505" id="1505">1505</a>
+<a href="#1506" id="1506">1506</a>
+<a href="#1507" id="1507">1507</a>
+<a href="#1508" id="1508">1508</a>
+<a href="#1509" id="1509">1509</a>
+<a href="#1510" id="1510">1510</a>
+<a href="#1511" id="1511">1511</a>
+<a href="#1512" id="1512">1512</a>
+<a href="#1513" id="1513">1513</a>
+<a href="#1514" id="1514">1514</a>
+<a href="#1515" id="1515">1515</a>
+<a href="#1516" id="1516">1516</a>
+<a href="#1517" id="1517">1517</a>
+<a href="#1518" id="1518">1518</a>
+<a href="#1519" id="1519">1519</a>
+<a href="#1520" id="1520">1520</a>
+<a href="#1521" id="1521">1521</a>
+<a href="#1522" id="1522">1522</a>
+<a href="#1523" id="1523">1523</a>
+<a href="#1524" id="1524">1524</a>
+<a href="#1525" id="1525">1525</a>
+<a href="#1526" id="1526">1526</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -1398,7 +1539,6 @@
     address::ParsedAddress, files::verify_and_create_named_address_mapping,
 };
 <span class="kw">use </span>move_compiler::{
-    compiled_unit::AnnotatedCompiledUnit,
     shared::{NumberFormat, NumericalAddress, PackagePaths},
     Flags, FullyCompiledProgram,
 };
@@ -1411,12 +1551,13 @@
 };
 <span class="kw">use </span>move_symbol_pool::Symbol;
 <span class="kw">use </span>move_transactional_test_runner::{
-    framework::{compile_ir_module, compile_source_units, CompiledState, MoveTestAdapter},
+    framework::{compile_any, store_modules, CompiledState, MoveTestAdapter},
     tasks::{InitCommand, SyntaxChoice, TaskInput},
 };
 <span class="kw">use </span>move_vm_runtime::{move_vm::MoveVM, session::SerializedReturnValues};
 <span class="kw">use </span>once_cell::sync::Lazy;
 <span class="kw">use </span>rand::{rngs::StdRng, Rng, SeedableRng};
+<span class="kw">use </span>std::collections::HashSet;
 <span class="kw">use </span>std::fmt::{<span class="self">self</span>, Write};
 <span class="kw">use </span>std::{
     collections::{BTreeMap, BTreeSet},
@@ -1433,15 +1574,14 @@
 <span class="kw">use </span>sui_framework::DEFAULT_FRAMEWORK_PATH;
 <span class="kw">use </span>sui_protocol_config::ProtocolConfig;
 <span class="kw">use </span>sui_types::accumulator::Accumulator;
+<span class="kw">use </span>sui_types::effects::TransactionEffectsAPI;
+<span class="kw">use </span>sui_types::execution_status::ExecutionStatus;
 <span class="kw">use </span>sui_types::MOVE_STDLIB_OBJECT_ID;
 <span class="kw">use </span>sui_types::{
     base_types::{ObjectID, ObjectRef, SuiAddress, TransactionDigest, SUI_ADDRESS_LENGTH},
     crypto::{get_key_pair_from_rng, AccountKeyPair},
     event::Event,
-    messages::{
-        ExecutionStatus, TransactionData, TransactionDataAPI, TransactionEffectsAPI,
-        VerifiedTransaction,
-    },
+    messages::{TransactionData, TransactionDataAPI, VerifiedTransaction},
     object::{<span class="self">self</span>, Object, ObjectFormatOptions},
     object::{MoveObject, Owner},
     MOVE_STDLIB_ADDRESS, SUI_CLOCK_OBJECT_ID, SUI_CLOCK_OBJECT_SHARED_VERSION,
@@ -1465,6 +1605,7 @@
     programmable_transaction_builder::ProgrammableTransactionBuilder, SUI_FRAMEWORK_OBJECT_ID,
 };
 <span class="kw">use </span>sui_types::{utils::to_sender_signed_transaction, SUI_SYSTEM_OBJECT_ID};
+<span class="kw">use </span>tempfile::NamedTempFile;
 
 <span class="attr">#[derive(Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Debug)]
 </span><span class="kw">pub enum </span>FakeID {
@@ -1502,6 +1643,14 @@
     gas_price: u64,
     protocol_config: ProtocolConfig,
     metrics: Arc&lt;LimitsMetrics&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) staged_modules: BTreeMap&lt;Symbol, StagedPackage&gt;,
+}
+
+<span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">struct </span>StagedPackage {
+    file: NamedTempFile,
+    syntax: SyntaxChoice,
+    modules: Vec&lt;(<span class="prelude-ty">Option</span>&lt;Symbol&gt;, CompiledModule)&gt;,
+    <span class="kw">pub</span>(<span class="kw">crate</span>) digest: Vec&lt;u8&gt;,
 }
 
 <span class="kw">struct </span>TestAccount {
@@ -1719,6 +1868,7 @@
             </span>gas_price: <span class="number">1000</span>,
             protocol_config,
             metrics,
+            staged_modules: BTreeMap::new(),
         };
         <span class="kw">for </span>well_known <span class="kw">in </span>WELL_KNOWN_OBJECTS.iter().copied() {
             test_adapter
@@ -1844,7 +1994,7 @@
             .map(|(<span class="kw">_</span>, published_module_bytes)| {
                 (
                     named_addr_opt,
-                    CompiledModule::deserialize(published_module_bytes).unwrap(),
+                    CompiledModule::deserialize_with_defaults(published_module_bytes).unwrap(),
                 )
             })
             .collect();
@@ -1937,11 +2087,11 @@
         <span class="self">self</span>.next_task();
         <span class="kw">let </span>TaskInput {
             command,
-            name: <span class="kw">_</span>,
+            name,
             number,
             start_line,
             command_lines_stop,
-            stop_line: <span class="kw">_</span>,
+            stop_line,
             data,
         } = task;
         <span class="macro">macro_rules! </span>get_obj {
@@ -2047,10 +2197,28 @@
                 })<span class="question-mark">?</span>;
                 <span class="kw">let </span>contents = std::fs::read_to_string(file.path())<span class="question-mark">?</span>;
                 <span class="kw">let </span>commands = ParsedCommand::parse_vec(<span class="kw-2">&amp;</span>contents)<span class="question-mark">?</span>;
+                <span class="kw">let </span>staged = <span class="kw-2">&amp;</span><span class="self">self</span>.staged_modules;
                 <span class="kw">let </span>state = <span class="kw-2">&amp;</span><span class="self">self</span>.compiled_state;
                 <span class="kw">let </span>commands = commands
                     .into_iter()
-                    .map(|c| c.into_command(<span class="kw-2">&amp;</span>|s| <span class="prelude-val">Some</span>(state.resolve_named_address(s))))
+                    .map(|c| {
+                        c.into_command(
+                            <span class="kw-2">&amp;</span>|p| {
+                                <span class="kw">let </span>modules = staged
+                                    .get(<span class="kw-2">&amp;</span>Symbol::from(p))<span class="question-mark">?
+                                    </span>.modules
+                                    .iter()
+                                    .map(|(_n, m)| {
+                                        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[];
+                                        m.serialize(<span class="kw-2">&amp;mut </span>buf).unwrap();
+                                        buf
+                                    })
+                                    .collect();
+                                <span class="prelude-val">Some</span>(modules)
+                            },
+                            <span class="kw-2">&amp;</span>|s| <span class="prelude-val">Some</span>(state.resolve_named_address(s)),
+                        )
+                    })
                     .collect::&lt;anyhow::Result&lt;Vec&lt;Command&gt;&gt;&gt;()<span class="question-mark">?</span>;
                 <span class="kw">let </span>gas_budget = gas_budget.unwrap_or(DEFAULT_GAS_BUDGET);
                 <span class="kw">let </span>gas_price = gas_price.unwrap_or(<span class="self">self</span>.gas_price);
@@ -2077,64 +2245,169 @@
                 policy,
             }) =&gt; {
                 <span class="kw">let </span>syntax = syntax.unwrap_or_else(|| <span class="self">self</span>.default_syntax());
-                <span class="kw">let </span>data = data.ok_or_else(|| {
-                    <span class="macro">anyhow::anyhow!</span>(
-                        <span class="string">&quot;Expected a module text block following &#39;upgrade&#39; starting on lines {}-{}&quot;</span>,
-                        start_line,
-                        command_lines_stop
-                    )
-                })<span class="question-mark">?</span>;
-
-                <span class="kw">let </span>state = <span class="self">self</span>.compiled_state();
-                <span class="kw">let </span>(<span class="kw-2">mut </span>modules, warnings_opt) = <span class="kw">match </span>syntax {
-                    SyntaxChoice::Source =&gt; {
-                        <span class="kw">let </span>(units, warnings_opt) =
-                            compile_source_units(state, data.path(), <span class="prelude-val">Some</span>(package.clone()))<span class="question-mark">?</span>;
-                        <span class="kw">let </span>modules = units
-                            .into_iter()
-                            .map(|unit| <span class="kw">match </span>unit {
-                                AnnotatedCompiledUnit::Module(annot_module) =&gt; {
-                                    <span class="kw">let </span>(named_addr_opt, _id) = annot_module.module_id();
-                                    <span class="kw">let </span>named_addr_opt = named_addr_opt.map(|n| n.value);
-                                    <span class="kw">let </span>module = annot_module.named_module.module;
-                                    (named_addr_opt, module)
-                                }
-                                AnnotatedCompiledUnit::Script(<span class="kw">_</span>) =&gt; <span class="macro">panic!</span>(
-                                    <span class="string">&quot;Expected a module text block, not a script, \
-                                    following &#39;upgrade&#39; starting on lines {}-{}&quot;</span>,
-                                    start_line, command_lines_stop
-                                ),
-                            })
-                            .collect();
-                        (modules, warnings_opt)
-                    }
-                    SyntaxChoice::IR =&gt; {
-                        <span class="kw">let </span>module = compile_ir_module(state, data.path())<span class="question-mark">?</span>;
-                        (<span class="macro">vec!</span>[(<span class="prelude-val">None</span>, module)], <span class="prelude-val">None</span>)
-                    }
+                <span class="comment">// zero out the package name
+                </span><span class="kw">let </span>zero =
+                    NumericalAddress::new(AccountAddress::ZERO.into_bytes(), NumberFormat::Hex);
+                <span class="kw">let </span><span class="prelude-val">Some</span>(before_upgrade) = <span class="self">self
+                    </span>.compiled_state
+                    .named_address_mapping
+                    .insert(package.clone(), zero)
+                <span class="kw">else </span>{
+                    <span class="macro">panic!</span>(<span class="string">&quot;Unbound package &#39;{package}&#39; for upgrade&quot;</span>);
                 };
-                <span class="kw">let </span>output = <span class="self">self</span>.upgrade_package(
-                    package,
-                    <span class="kw-2">&amp;</span>modules,
-                    upgrade_capability,
-                    dependencies,
-                    sender,
-                    gas_budget,
-                    policy,
-                )<span class="question-mark">?</span>;
-                <span class="kw">match </span>syntax {
-                    SyntaxChoice::Source =&gt; {
-                        <span class="kw">let </span>path = data.path().to_str().unwrap().to_owned();
-                        <span class="self">self</span>.compiled_state()
-                            .add_with_source_file(modules, (path, data))
-                    }
-                    SyntaxChoice::IR =&gt; {
-                        <span class="kw">let </span>module = modules.pop().unwrap().<span class="number">1</span>;
-                        <span class="self">self</span>.compiled_state()
-                            .add_and_generate_interface_file(module);
-                    }
-                };
+                <span class="kw">let </span>result = compile_any(
+                    <span class="self">self</span>,
+                    <span class="string">&quot;upgrade&quot;</span>,
+                    syntax,
+                    name,
+                    number,
+                    start_line,
+                    command_lines_stop,
+                    stop_line,
+                    data,
+                    |adapter, modules| {
+                        <span class="kw">let </span>output = adapter.upgrade_package(
+                            before_upgrade,
+                            <span class="kw-2">&amp;</span>modules,
+                            upgrade_capability,
+                            dependencies,
+                            sender,
+                            gas_budget,
+                            policy,
+                        )<span class="question-mark">?</span>;
+                        <span class="prelude-val">Ok</span>((output, modules))
+                    },
+                );
+                <span class="comment">// if the package name was not updated, reset it to the value before the upgrade
+                </span><span class="kw">let </span>package_addr = <span class="self">self
+                    </span>.compiled_state
+                    .named_address_mapping
+                    .get(<span class="kw-2">&amp;</span>package)
+                    .unwrap();
+                <span class="kw">if </span>package_addr == <span class="kw-2">&amp;</span>zero {
+                    <span class="self">self</span>.compiled_state
+                        .named_address_mapping
+                        .insert(package, before_upgrade);
+                }
+                <span class="kw">let </span>(warnings_opt, output, data, modules) = result<span class="question-mark">?</span>;
+                store_modules(<span class="self">self</span>, syntax, data, modules);
                 <span class="prelude-val">Ok</span>(merge_output(warnings_opt, output))
+            }
+            SuiSubcommand::StagePackage(StagePackageCommand {
+                syntax,
+                dependencies,
+            }) =&gt; {
+                <span class="kw">let </span>syntax = syntax.unwrap_or_else(|| <span class="self">self</span>.default_syntax());
+                <span class="kw">let </span>(warnings_opt, output, data, modules) = compile_any(
+                    <span class="self">self</span>,
+                    <span class="string">&quot;upgrade&quot;</span>,
+                    syntax,
+                    name,
+                    number,
+                    start_line,
+                    command_lines_stop,
+                    stop_line,
+                    data,
+                    |_adapter, modules| <span class="prelude-val">Ok</span>((<span class="prelude-val">None</span>, modules)),
+                )<span class="question-mark">?</span>;
+                <span class="macro">assert!</span>(!modules.is_empty());
+                <span class="kw">let </span><span class="prelude-val">Some</span>(package_name) = modules.first().unwrap().<span class="number">0 </span><span class="kw">else </span>{
+                    <span class="macro">bail!</span>(<span class="string">&quot;Staged modules must have a named address&quot;</span>)
+                };
+                <span class="kw">for </span>(named_addr, <span class="kw">_</span>) <span class="kw">in </span><span class="kw-2">&amp;</span>modules {
+                    <span class="kw">let </span><span class="prelude-val">Some</span>(named_addr) = named_addr <span class="kw">else </span>{
+                        <span class="macro">bail!</span>(<span class="string">&quot;Staged modules must have a named address&quot;</span>)
+                    };
+                    <span class="kw">if </span>named_addr != <span class="kw-2">&amp;</span>package_name {
+                        <span class="macro">bail!</span>(
+                            <span class="string">&quot;Staged modules must have the same named address, \
+                            {package_name} != {named_addr}&quot;
+                        </span>);
+                    }
+                }
+                <span class="kw">let </span>dependencies =
+                    <span class="self">self</span>.get_dependency_ids(dependencies, <span class="comment">/* include_std */ </span><span class="bool-val">true</span>)<span class="question-mark">?</span>;
+                <span class="kw">let </span>module_bytes = modules
+                    .iter()
+                    .map(|(<span class="kw">_</span>, m)| {
+                        <span class="kw">let </span><span class="kw-2">mut </span>buf = <span class="macro">vec!</span>[];
+                        m.serialize(<span class="kw-2">&amp;mut </span>buf).unwrap();
+                        buf
+                    })
+                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
+                <span class="kw">let </span>digest = MovePackage::compute_digest_for_modules_and_deps(
+                    module_bytes.iter(),
+                    <span class="kw-2">&amp;</span>dependencies,
+                    <span class="comment">/* hash_modules */ </span><span class="bool-val">true</span>,
+                )
+                .to_vec();
+                <span class="kw">let </span>staged = StagedPackage {
+                    file: data,
+                    syntax,
+                    modules,
+                    digest,
+                };
+                <span class="kw">let </span>prev = <span class="self">self</span>.staged_modules.insert(package_name, staged);
+                <span class="kw">if </span>prev.is_some() {
+                    <span class="macro">panic!</span>(<span class="string">&quot;Package &#39;{package_name}&#39; already staged&quot;</span>)
+                }
+                <span class="prelude-val">Ok</span>(merge_output(warnings_opt, output))
+            }
+            SuiSubcommand::SetAddress(SetAddressCommand { address, input }) =&gt; {
+                <span class="kw">let </span>address_sym = <span class="kw-2">&amp;</span>Symbol::from(address.as_str());
+                <span class="kw">let </span>state = <span class="self">self</span>.compiled_state();
+                <span class="kw">let </span>input = input.into_concrete_value(<span class="kw-2">&amp;</span>|s| <span class="prelude-val">Some</span>(state.resolve_named_address(s)))<span class="question-mark">?</span>;
+                <span class="kw">let </span>(value, package) = <span class="kw">match </span>input {
+                    SuiValue::Object(fake_id) =&gt; {
+                        <span class="kw">let </span>id = <span class="kw">match </span><span class="self">self</span>.fake_to_real_object_id(fake_id) {
+                            <span class="prelude-val">Some</span>(id) =&gt; id,
+                            <span class="prelude-val">None </span>=&gt; <span class="macro">bail!</span>(<span class="string">&quot;INVALID TEST. Unknown object, object({})&quot;</span>, fake_id),
+                        };
+                        <span class="kw">let </span>obj = <span class="kw">match </span><span class="self">self</span>.storage.get_object(<span class="kw-2">&amp;</span>id) {
+                            <span class="prelude-val">Some</span>(obj) =&gt; obj,
+                            <span class="prelude-val">None </span>=&gt; <span class="macro">bail!</span>(<span class="string">&quot;INVALID TEST. Could not load object argument {}&quot;</span>, id),
+                        };
+                        <span class="kw">let </span>package = obj.data.try_as_package().map(|package| {
+                            package
+                                .serialized_module_map()
+                                .iter()
+                                .map(|(<span class="kw">_</span>, published_module_bytes)| {
+                                    <span class="kw">let </span>module = CompiledModule::deserialize_with_defaults(
+                                        published_module_bytes,
+                                    )
+                                    .unwrap();
+                                    (<span class="prelude-val">Some</span>(<span class="kw-2">*</span>address_sym), module)
+                                })
+                                .collect()
+                        });
+                        <span class="kw">let </span>value: AccountAddress = id.into();
+                        (value, package)
+                    }
+                    SuiValue::MoveValue(v) =&gt; {
+                        <span class="kw">let </span>bytes = v.simple_serialize().unwrap();
+                        <span class="kw">let </span>value: AccountAddress = bcs::from_bytes(<span class="kw-2">&amp;</span>bytes)<span class="question-mark">?</span>;
+                        (value, <span class="prelude-val">None</span>)
+                    }
+                    SuiValue::Digest(<span class="kw">_</span>) =&gt; <span class="macro">bail!</span>(<span class="string">&quot;digest is not supported as an input&quot;</span>),
+                    SuiValue::ObjVec(<span class="kw">_</span>) =&gt; <span class="macro">bail!</span>(<span class="string">&quot;obj vec is not supported as an input&quot;</span>),
+                };
+                <span class="kw">let </span>value = NumericalAddress::new(value.into_bytes(), NumberFormat::Hex);
+                <span class="self">self</span>.compiled_state
+                    .named_address_mapping
+                    .insert(address, value);
+
+                <span class="kw">let </span>res = package.and_then(|p| <span class="prelude-val">Some</span>((p, <span class="self">self</span>.staged_modules.remove(address_sym)<span class="question-mark">?</span>)));
+                <span class="kw">if let </span><span class="prelude-val">Some</span>((package, staged)) = res {
+                    <span class="kw">let </span>StagedPackage {
+                        file,
+                        syntax,
+                        modules: <span class="kw">_</span>,
+                        digest: <span class="kw">_</span>,
+                    } = staged;
+                    store_modules(<span class="self">self</span>, syntax, file, package)
+                }
+
+                <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
             }
         }
     }
@@ -2169,7 +2442,7 @@
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; SuiTestAdapter&lt;<span class="lifetime">&#39;a</span>&gt; {
     <span class="kw">fn </span>upgrade_package(
         <span class="kw-2">&amp;mut </span><span class="self">self</span>,
-        package: String,
+        before_upgrade: NumericalAddress,
         modules: <span class="kw-2">&amp;</span>[(<span class="prelude-ty">Option</span>&lt;Symbol&gt;, CompiledModule)],
         upgrade_capability: FakeID,
         dependencies: Vec&lt;String&gt;,
@@ -2187,19 +2460,7 @@
             .collect::&lt;anyhow::Result&lt;Vec&lt;Vec&lt;u8&gt;&gt;&gt;&gt;()<span class="question-mark">?</span>;
         <span class="kw">let </span>gas_budget = gas_budget.unwrap_or(DEFAULT_GAS_BUDGET);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>dependencies: Vec&lt;<span class="kw">_</span>&gt; = dependencies
-            .into_iter()
-            .map(|d| {
-                <span class="kw">let </span><span class="prelude-val">Some</span>(addr) = <span class="self">self</span>.compiled_state.named_address_mapping.get(<span class="kw-2">&amp;</span>d) <span class="kw">else </span>{
-                    <span class="macro">bail!</span>(<span class="string">&quot;There is no published module address corresponding to name address {d}&quot;</span>);
-                };
-                <span class="kw">let </span>id: ObjectID = addr.into_inner().into();
-                <span class="prelude-val">Ok</span>(id)
-            })
-            .collect::&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>;
-        <span class="comment">// we are assuming that all packages depend on Move Stdlib and Sui Framework, so these
-        // don&#39;t have to be provided explicitly as parameters
-        </span>dependencies.extend([MOVE_STDLIB_OBJECT_ID, SUI_FRAMEWORK_OBJECT_ID]);
+        <span class="kw">let </span>dependencies = <span class="self">self</span>.get_dependency_ids(dependencies, <span class="comment">/* include_std */ </span><span class="bool-val">true</span>)<span class="question-mark">?</span>;
 
         <span class="kw">let </span><span class="kw-2">mut </span>builder = ProgrammableTransactionBuilder::new();
 
@@ -2221,10 +2482,7 @@
             <span class="macro">vec!</span>[Argument::Input(<span class="number">0</span>), upgrade_arg, digest_arg],
         );
 
-        <span class="kw">let </span>package_id = <span class="self">self
-            </span>.compiled_state
-            .resolve_named_address(package.as_str())
-            .into();
+        <span class="kw">let </span>package_id = before_upgrade.into_inner().into();
         <span class="kw">let </span>upgrade_receipt =
             builder.upgrade(package_id, upgrade_ticket, dependencies, modules_bytes);
 
@@ -2390,7 +2648,8 @@
             <span class="kw-2">&amp;</span><span class="self">self</span>.protocol_config,
             <span class="self">self</span>.metrics.clone(),
             <span class="bool-val">false</span>, <span class="comment">// enable_expensive_checks
-        </span>);
+            </span><span class="kw-2">&amp;</span>HashSet::new(),
+        );
         <span class="kw">let </span><span class="kw-2">mut </span>created_ids: Vec&lt;<span class="kw">_</span>&gt; = effects
             .created()
             .iter()
@@ -2669,6 +2928,29 @@
 
     <span class="kw">fn </span>next_task(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
         <span class="self">self</span>.next_fake = (<span class="self">self</span>.next_fake.<span class="number">0 </span>+ <span class="number">1</span>, <span class="number">0</span>)
+    }
+
+    <span class="kw">fn </span>get_dependency_ids(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        dependencies: Vec&lt;String&gt;,
+        include_std: bool,
+    ) -&gt; anyhow::Result&lt;Vec&lt;ObjectID&gt;&gt; {
+        <span class="kw">let </span><span class="kw-2">mut </span>dependencies: Vec&lt;<span class="kw">_</span>&gt; = dependencies
+            .into_iter()
+            .map(|d| {
+                <span class="kw">let </span><span class="prelude-val">Some</span>(addr) = <span class="self">self</span>.compiled_state.named_address_mapping.get(<span class="kw-2">&amp;</span>d) <span class="kw">else </span>{
+                <span class="macro">bail!</span>(<span class="string">&quot;There is no published module address corresponding to name address {d}&quot;</span>);
+            };
+                <span class="kw">let </span>id: ObjectID = addr.into_inner().into();
+                <span class="prelude-val">Ok</span>(id)
+            })
+            .collect::&lt;<span class="prelude-ty">Result</span>&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>;
+        <span class="comment">// we are assuming that all packages depend on Move Stdlib and Sui Framework, so these
+        // don&#39;t have to be provided explicitly as parameters
+        </span><span class="kw">if </span>include_std {
+            dependencies.extend([MOVE_STDLIB_OBJECT_ID, SUI_FRAMEWORK_OBJECT_ID]);
+        }
+        <span class="prelude-val">Ok</span>(dependencies)
     }
 }
 

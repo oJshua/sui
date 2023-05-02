@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test-utils/src/transaction.rs`."><title>transaction.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_utils" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../test_utils/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/test-utils/src/transaction.rs`."><title>transaction.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="test_utils" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../test_utils/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -763,6 +763,13 @@
 <a href="#763" id="763">763</a>
 <a href="#764" id="764">764</a>
 <a href="#765" id="765">765</a>
+<a href="#766" id="766">766</a>
+<a href="#767" id="767">767</a>
+<a href="#768" id="768">768</a>
+<a href="#769" id="769">769</a>
+<a href="#770" id="770">770</a>
+<a href="#771" id="771">771</a>
+<a href="#772" id="772">772</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -771,7 +778,6 @@
 <span class="kw">use </span>shared_crypto::intent::Intent;
 <span class="kw">use </span>std::collections::{HashMap, HashSet};
 <span class="kw">use </span>std::path::PathBuf;
-<span class="kw">use </span>sui::client_commands::WalletContext;
 <span class="kw">use </span>sui::client_commands::{SuiClientCommandResult, SuiClientCommands};
 <span class="kw">use </span>sui_core::authority_client::AuthorityAPI;
 <span class="kw">pub use </span>sui_core::test_utils::{
@@ -785,6 +791,7 @@
 };
 <span class="kw">use </span>sui_keys::keystore::AccountKeystore;
 <span class="kw">use </span>sui_sdk::json::SuiJsonValue;
+<span class="kw">use </span>sui_sdk::wallet_context::WalletContext;
 <span class="kw">use </span>sui_types::base_types::ObjectRef;
 <span class="kw">use </span>sui_types::base_types::{ObjectID, SuiAddress, TransactionDigest};
 <span class="kw">use </span>sui_types::committee::Committee;
@@ -796,11 +803,12 @@
 <span class="kw">use </span>sui_types::messages::TEST_ONLY_GAS_UNIT_FOR_SPLIT_COIN;
 <span class="kw">use </span>sui_types::messages::TEST_ONLY_GAS_UNIT_FOR_TRANSFER;
 
+<span class="kw">use </span>sui_types::effects::{TransactionEffects, TransactionEffectsAPI, TransactionEvents};
 <span class="kw">use </span>sui_types::messages::{
     CallArg, ObjectArg, ObjectInfoRequest, ObjectInfoResponse, Transaction, TransactionData,
-    TransactionEffects, TransactionEffectsAPI, TransactionEvents, VerifiedTransaction,
+    VerifiedTransaction,
 };
-<span class="kw">use </span>sui_types::messages::{ExecuteTransactionRequestType, HandleCertificateResponse};
+<span class="kw">use </span>sui_types::messages::{ExecuteTransactionRequestType, HandleCertificateResponseV2};
 <span class="kw">use </span>sui_types::move_package::UpgradePolicy;
 <span class="kw">use </span>sui_types::multiaddr::Multiaddr;
 <span class="kw">use </span>sui_types::object::{Object, Owner};
@@ -810,8 +818,7 @@
 
 <span class="kw">use </span><span class="kw">crate</span>::authority::get_client;
 <span class="kw">use </span><span class="kw">crate</span>::messages::{
-    create_publish_move_package_transaction, get_account_and_gas_coins,
-    get_gas_object_with_wallet_context, make_tx_certs_and_signed_effects,
+    create_publish_move_package_transaction, make_tx_certs_and_signed_effects,
     make_tx_certs_and_signed_effects_with_committee,
 };
 
@@ -837,7 +844,7 @@
     net_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
     gas_price: u64,
 ) -&gt; ObjectRef {
-    <span class="kw">let </span>(effects, <span class="kw">_</span>) =
+    <span class="kw">let </span>(effects, <span class="kw">_</span>, <span class="kw">_</span>) =
         publish_package_for_effects(gas_object, path, net_addresses, gas_price).<span class="kw">await</span>;
     parse_package_ref(effects.created()).unwrap()
 }
@@ -847,7 +854,7 @@
     path: PathBuf,
     net_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
     gas_price: u64,
-) -&gt; (TransactionEffects, TransactionEvents) {
+) -&gt; (TransactionEffects, TransactionEvents, Vec&lt;Object&gt;) {
     submit_single_owner_transaction(
         make_publish_package(gas_object.compute_object_reference(), path, gas_price),
         net_addresses,
@@ -1154,8 +1161,7 @@
     context: <span class="kw-2">&amp;mut </span>WalletContext,
     nfts_package: ObjectID,
 ) -&gt; <span class="prelude-ty">Result</span>&lt;(SuiAddress, ObjectID, TransactionDigest), anyhow::Error&gt; {
-    <span class="kw">let </span>(sender, gas_objects) = get_account_and_gas_coins(context).<span class="kw">await</span><span class="question-mark">?</span>.swap_remove(<span class="number">0</span>);
-    <span class="kw">let </span>gas_object = gas_objects.get(<span class="number">0</span>).unwrap().id();
+    <span class="kw">let </span>(sender, gas_object) = context.get_one_gas_object().<span class="kw">await</span><span class="question-mark">?</span>.unwrap();
     <span class="kw">let </span>gas_price = context.get_reference_gas_price().<span class="kw">await</span><span class="question-mark">?</span>;
 
     <span class="kw">let </span>args_json = <span class="macro">json!</span>([
@@ -1174,7 +1180,7 @@
         function: <span class="string">&quot;mint&quot;</span>.into(),
         type_args: <span class="macro">vec!</span>[],
         args,
-        gas: <span class="prelude-val">Some</span>(<span class="kw-2">*</span>gas_object),
+        gas: <span class="prelude-val">Some</span>(gas_object.<span class="number">0</span>),
         gas_budget: TEST_ONLY_GAS_UNIT_FOR_GENERIC * gas_price,
         serialize_output: <span class="bool-val">false</span>,
     }
@@ -1215,9 +1221,11 @@
         <span class="prelude-val">None </span>=&gt; context.config.keystore.addresses().get(<span class="number">1</span>).cloned().unwrap(),
         <span class="prelude-val">Some</span>(addr) =&gt; addr,
     };
-    <span class="kw">let </span>gas_ref = get_gas_object_with_wallet_context(context, <span class="kw-2">&amp;</span>sender)
+    <span class="kw">let </span>gas_ref = context
+        .get_one_gas_object_owned_by_address(sender)
         .<span class="kw">await
-        </span>.unwrap();
+        </span>.unwrap()
+        .unwrap();
 
     <span class="kw">let </span>res = SuiClientCommands::TransferSui {
         to: receiver,
@@ -1351,9 +1359,11 @@
     nfts_package: ObjectID,
     nft_to_delete: ObjectRef,
 ) -&gt; SuiTransactionBlockResponse {
-    <span class="kw">let </span>gas = get_gas_object_with_wallet_context(context, sender)
+    <span class="kw">let </span>gas = context
+        .get_one_gas_object_owned_by_address(<span class="kw-2">*</span>sender)
         .<span class="kw">await
-        </span>.unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;Expect {sender} to have at least one gas object&quot;</span>));
+        </span>.unwrap()
+        .unwrap_or_else(|| <span class="macro">panic!</span>(<span class="string">&quot;Expect {sender} to have at least one gas object&quot;</span>));
     <span class="kw">let </span>rgp = context.get_reference_gas_price().<span class="kw">await</span>.unwrap();
     <span class="kw">let </span>data = TransactionData::new_move_call(
         <span class="kw-2">*</span>sender,
@@ -1396,7 +1406,7 @@
 </span><span class="kw">pub async fn </span>submit_single_owner_transaction(
     transaction: VerifiedTransaction,
     net_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
-) -&gt; (TransactionEffects, TransactionEvents) {
+) -&gt; (TransactionEffects, TransactionEvents, Vec&lt;Object&gt;) {
     <span class="kw">let </span>certificate = make_tx_certs_and_signed_effects(<span class="macro">vec!</span>[transaction])
         .<span class="number">0
         </span>.pop()
@@ -1405,7 +1415,7 @@
     <span class="kw">for </span>addr <span class="kw">in </span>net_addresses {
         <span class="kw">let </span>client = get_client(addr);
         <span class="kw">let </span>reply = client
-            .handle_certificate(certificate.clone().into())
+            .handle_certificate_v2(certificate.clone().into())
             .<span class="kw">await
             </span>.unwrap();
         responses.push(reply);
@@ -1419,7 +1429,7 @@
 </span><span class="kw">pub async fn </span>submit_shared_object_transaction(
     transaction: VerifiedTransaction,
     net_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
-) -&gt; SuiResult&lt;(TransactionEffects, TransactionEvents)&gt; {
+) -&gt; SuiResult&lt;(TransactionEffects, TransactionEvents, Vec&lt;Object&gt;)&gt; {
     <span class="kw">let </span>(committee, key_pairs) = Committee::new_simple_test_committee();
     submit_shared_object_transaction_with_committee(
         transaction,
@@ -1438,7 +1448,7 @@
     net_addresses: <span class="kw-2">&amp;</span>[Multiaddr],
     committee: <span class="kw-2">&amp;</span>Committee,
     key_pairs: <span class="kw-2">&amp;</span>[AuthorityKeyPair],
-) -&gt; SuiResult&lt;(TransactionEffects, TransactionEvents)&gt; {
+) -&gt; SuiResult&lt;(TransactionEffects, TransactionEvents, Vec&lt;Object&gt;)&gt; {
     <span class="kw">let </span>certificate =
         make_tx_certs_and_signed_effects_with_committee(<span class="macro">vec!</span>[transaction], committee, key_pairs)
             .<span class="number">0
@@ -1451,7 +1461,7 @@
             .map(|addr| {
                 <span class="kw">let </span>client = get_client(addr);
                 <span class="kw">let </span>cert = certificate.clone();
-                <span class="kw">async move </span>{ client.handle_certificate(cert.into()).<span class="kw">await </span>}
+                <span class="kw">async move </span>{ client.handle_certificate_v2(cert.into()).<span class="kw">await </span>}
             })
             .collect();
 
@@ -1477,20 +1487,24 @@
 }
 
 <span class="kw">pub fn </span>get_unique_effects(
-    replies: Vec&lt;HandleCertificateResponse&gt;,
-) -&gt; (TransactionEffects, TransactionEvents) {
+    replies: Vec&lt;HandleCertificateResponseV2&gt;,
+) -&gt; (TransactionEffects, TransactionEvents, Vec&lt;Object&gt;) {
     <span class="kw">let </span><span class="kw-2">mut </span>all_effects = HashMap::new();
     <span class="kw">let </span><span class="kw-2">mut </span>all_events = HashMap::new();
+    <span class="kw">let </span><span class="kw-2">mut </span>all_objects = HashSet::new();
     <span class="kw">for </span>reply <span class="kw">in </span>replies {
         <span class="kw">let </span>effects = reply.signed_effects.into_data();
         all_effects.insert(effects.digest(), effects);
         all_events.insert(reply.events.digest(), reply.events);
+        all_objects.insert(reply.fastpath_input_objects);
     }
     <span class="macro">assert_eq!</span>(all_effects.len(), <span class="number">1</span>);
     <span class="macro">assert_eq!</span>(all_events.len(), <span class="number">1</span>);
+    <span class="macro">assert_eq!</span>(all_objects.len(), <span class="number">1</span>);
     (
         all_effects.into_values().next().unwrap(),
         all_events.into_values().next().unwrap(),
+        all_objects.into_iter().next().unwrap(),
     )
 }
 

@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-node/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_node" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_node/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-node/src/lib.rs`."><title>lib.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_node" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_node/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1198,6 +1198,27 @@
 <a href="#1198" id="1198">1198</a>
 <a href="#1199" id="1199">1199</a>
 <a href="#1200" id="1200">1200</a>
+<a href="#1201" id="1201">1201</a>
+<a href="#1202" id="1202">1202</a>
+<a href="#1203" id="1203">1203</a>
+<a href="#1204" id="1204">1204</a>
+<a href="#1205" id="1205">1205</a>
+<a href="#1206" id="1206">1206</a>
+<a href="#1207" id="1207">1207</a>
+<a href="#1208" id="1208">1208</a>
+<a href="#1209" id="1209">1209</a>
+<a href="#1210" id="1210">1210</a>
+<a href="#1211" id="1211">1211</a>
+<a href="#1212" id="1212">1212</a>
+<a href="#1213" id="1213">1213</a>
+<a href="#1214" id="1214">1214</a>
+<a href="#1215" id="1215">1215</a>
+<a href="#1216" id="1216">1216</a>
+<a href="#1217" id="1217">1217</a>
+<a href="#1218" id="1218">1218</a>
+<a href="#1219" id="1219">1219</a>
+<a href="#1220" id="1220">1220</a>
+<a href="#1221" id="1221">1221</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -1240,6 +1261,7 @@
 <span class="kw">use </span>narwhal_network::metrics::MetricsMakeCallbackHandler;
 <span class="kw">use </span>narwhal_network::metrics::{NetworkConnectionMetrics, NetworkMetrics};
 <span class="kw">use </span>sui_config::node::DBCheckpointConfig;
+<span class="kw">use </span>sui_config::node_config_metrics::NodeConfigMetrics;
 <span class="kw">use </span>sui_config::{ConsensusConfig, NodeConfig};
 <span class="kw">use </span>sui_core::authority::authority_per_epoch_store::AuthorityPerEpochStore;
 <span class="kw">use </span>sui_core::authority::epoch_start_configuration::EpochStartConfigTrait;
@@ -1377,6 +1399,8 @@
         node_once_cell: Arc&lt;AsyncOnceCell&lt;Arc&lt;SuiNode&gt;&gt;&gt;,
         custom_rpc_runtime: <span class="prelude-ty">Option</span>&lt;Handle&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;()&gt; {
+        NodeConfigMetrics::new(<span class="kw-2">&amp;</span>registry_service.default_registry()).record_metrics(config);
+
         <span class="kw">let </span><span class="kw-2">mut </span>config = config.clone();
         <span class="kw">if </span>config.supported_protocol_versions.is_none() {
             <span class="macro">info!</span>(
@@ -1473,6 +1497,9 @@
             <span class="prelude-val">Some</span>(Arc::new(IndexStore::new(
                 config.db_path().join(<span class="string">&quot;indexes&quot;</span>),
                 <span class="kw-2">&amp;</span>prometheus_registry,
+                epoch_store
+                    .protocol_config()
+                    .max_move_identifier_len_as_option(),
             )))
         } <span class="kw">else </span>{
             <span class="prelude-val">None
@@ -1511,8 +1538,16 @@
             .as_ref()
             .zip(db_checkpoint_config.object_store_config.as_ref())
         {
-            <span class="prelude-val">Some</span>((path, config)) =&gt; {
-                <span class="kw">let </span>handler = DBCheckpointHandler::new(path, config, <span class="number">60</span>)<span class="question-mark">?</span>;
+            <span class="prelude-val">Some</span>((path, object_store_config)) =&gt; {
+                <span class="kw">let </span>handler = DBCheckpointHandler::new(
+                    path,
+                    object_store_config,
+                    <span class="number">60</span>,
+                    db_checkpoint_config
+                        .prune_and_compact_before_upload
+                        .unwrap_or(<span class="bool-val">true</span>),
+                    config.indirect_objects_threshold,
+                )<span class="question-mark">?</span>;
                 <span class="prelude-val">Some</span>(handler.start())
             }
             <span class="prelude-val">None </span>=&gt; <span class="prelude-val">None</span>,
@@ -1533,6 +1568,8 @@
             <span class="kw-2">&amp;</span>db_checkpoint_config,
             config.expensive_safety_check_config.clone(),
             config.transaction_deny_config.clone(),
+            config.certificate_deny_config.clone(),
+            config.indirect_objects_threshold,
         )
         .<span class="kw">await</span>;
         <span class="comment">// ensure genesis txn was executed
@@ -2023,6 +2060,8 @@
             Box::new(connection_monitor_status),
             consensus_config.max_pending_transactions(),
             consensus_config.max_pending_transactions() * <span class="number">2 </span>/ committee.num_members(),
+            consensus_config.max_submit_position,
+            consensus_config.submit_delay_step_override(),
             ca_metrics,
         )
     }
@@ -2121,9 +2160,9 @@
                 <span class="comment">// TODO: without this sleep, the consensus message is not delivered reliably.
                 </span>tokio::time::sleep(Duration::from_millis(<span class="number">1</span>)).<span class="kw">await</span>;
 
-                <span class="kw">let </span>max_binary_format_version = cur_epoch_store
-                    .protocol_config()
-                    .move_binary_format_version();
+                <span class="kw">let </span>config = cur_epoch_store.protocol_config();
+                <span class="kw">let </span>max_binary_format_version = config.move_binary_format_version();
+                <span class="kw">let </span>no_extraneous_module_bytes = config.no_extraneous_module_bytes();
                 <span class="kw">let </span>transaction =
                     ConsensusTransaction::new_capability_notification(AuthorityCapabilities::new(
                         <span class="self">self</span>.state.name,
@@ -2131,7 +2170,10 @@
                             .supported_protocol_versions
                             .expect(<span class="string">&quot;Supported versions should be populated&quot;</span>),
                         <span class="self">self</span>.state
-                            .get_available_system_packages(max_binary_format_version)
+                            .get_available_system_packages(
+                                max_binary_format_version,
+                                no_extraneous_module_bytes,
+                            )
                             .<span class="kw">await</span>,
                     ));
                 <span class="macro">info!</span>(<span class="question-mark">?</span>transaction, <span class="string">&quot;submitting capabilities to consensus&quot;</span>);

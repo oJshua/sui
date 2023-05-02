@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/authority_aggregator.rs`."><title>authority_aggregator.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_core/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/authority_aggregator.rs`."><title>authority_aggregator.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_core/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1746,6 +1746,127 @@
 <a href="#1746" id="1746">1746</a>
 <a href="#1747" id="1747">1747</a>
 <a href="#1748" id="1748">1748</a>
+<a href="#1749" id="1749">1749</a>
+<a href="#1750" id="1750">1750</a>
+<a href="#1751" id="1751">1751</a>
+<a href="#1752" id="1752">1752</a>
+<a href="#1753" id="1753">1753</a>
+<a href="#1754" id="1754">1754</a>
+<a href="#1755" id="1755">1755</a>
+<a href="#1756" id="1756">1756</a>
+<a href="#1757" id="1757">1757</a>
+<a href="#1758" id="1758">1758</a>
+<a href="#1759" id="1759">1759</a>
+<a href="#1760" id="1760">1760</a>
+<a href="#1761" id="1761">1761</a>
+<a href="#1762" id="1762">1762</a>
+<a href="#1763" id="1763">1763</a>
+<a href="#1764" id="1764">1764</a>
+<a href="#1765" id="1765">1765</a>
+<a href="#1766" id="1766">1766</a>
+<a href="#1767" id="1767">1767</a>
+<a href="#1768" id="1768">1768</a>
+<a href="#1769" id="1769">1769</a>
+<a href="#1770" id="1770">1770</a>
+<a href="#1771" id="1771">1771</a>
+<a href="#1772" id="1772">1772</a>
+<a href="#1773" id="1773">1773</a>
+<a href="#1774" id="1774">1774</a>
+<a href="#1775" id="1775">1775</a>
+<a href="#1776" id="1776">1776</a>
+<a href="#1777" id="1777">1777</a>
+<a href="#1778" id="1778">1778</a>
+<a href="#1779" id="1779">1779</a>
+<a href="#1780" id="1780">1780</a>
+<a href="#1781" id="1781">1781</a>
+<a href="#1782" id="1782">1782</a>
+<a href="#1783" id="1783">1783</a>
+<a href="#1784" id="1784">1784</a>
+<a href="#1785" id="1785">1785</a>
+<a href="#1786" id="1786">1786</a>
+<a href="#1787" id="1787">1787</a>
+<a href="#1788" id="1788">1788</a>
+<a href="#1789" id="1789">1789</a>
+<a href="#1790" id="1790">1790</a>
+<a href="#1791" id="1791">1791</a>
+<a href="#1792" id="1792">1792</a>
+<a href="#1793" id="1793">1793</a>
+<a href="#1794" id="1794">1794</a>
+<a href="#1795" id="1795">1795</a>
+<a href="#1796" id="1796">1796</a>
+<a href="#1797" id="1797">1797</a>
+<a href="#1798" id="1798">1798</a>
+<a href="#1799" id="1799">1799</a>
+<a href="#1800" id="1800">1800</a>
+<a href="#1801" id="1801">1801</a>
+<a href="#1802" id="1802">1802</a>
+<a href="#1803" id="1803">1803</a>
+<a href="#1804" id="1804">1804</a>
+<a href="#1805" id="1805">1805</a>
+<a href="#1806" id="1806">1806</a>
+<a href="#1807" id="1807">1807</a>
+<a href="#1808" id="1808">1808</a>
+<a href="#1809" id="1809">1809</a>
+<a href="#1810" id="1810">1810</a>
+<a href="#1811" id="1811">1811</a>
+<a href="#1812" id="1812">1812</a>
+<a href="#1813" id="1813">1813</a>
+<a href="#1814" id="1814">1814</a>
+<a href="#1815" id="1815">1815</a>
+<a href="#1816" id="1816">1816</a>
+<a href="#1817" id="1817">1817</a>
+<a href="#1818" id="1818">1818</a>
+<a href="#1819" id="1819">1819</a>
+<a href="#1820" id="1820">1820</a>
+<a href="#1821" id="1821">1821</a>
+<a href="#1822" id="1822">1822</a>
+<a href="#1823" id="1823">1823</a>
+<a href="#1824" id="1824">1824</a>
+<a href="#1825" id="1825">1825</a>
+<a href="#1826" id="1826">1826</a>
+<a href="#1827" id="1827">1827</a>
+<a href="#1828" id="1828">1828</a>
+<a href="#1829" id="1829">1829</a>
+<a href="#1830" id="1830">1830</a>
+<a href="#1831" id="1831">1831</a>
+<a href="#1832" id="1832">1832</a>
+<a href="#1833" id="1833">1833</a>
+<a href="#1834" id="1834">1834</a>
+<a href="#1835" id="1835">1835</a>
+<a href="#1836" id="1836">1836</a>
+<a href="#1837" id="1837">1837</a>
+<a href="#1838" id="1838">1838</a>
+<a href="#1839" id="1839">1839</a>
+<a href="#1840" id="1840">1840</a>
+<a href="#1841" id="1841">1841</a>
+<a href="#1842" id="1842">1842</a>
+<a href="#1843" id="1843">1843</a>
+<a href="#1844" id="1844">1844</a>
+<a href="#1845" id="1845">1845</a>
+<a href="#1846" id="1846">1846</a>
+<a href="#1847" id="1847">1847</a>
+<a href="#1848" id="1848">1848</a>
+<a href="#1849" id="1849">1849</a>
+<a href="#1850" id="1850">1850</a>
+<a href="#1851" id="1851">1851</a>
+<a href="#1852" id="1852">1852</a>
+<a href="#1853" id="1853">1853</a>
+<a href="#1854" id="1854">1854</a>
+<a href="#1855" id="1855">1855</a>
+<a href="#1856" id="1856">1856</a>
+<a href="#1857" id="1857">1857</a>
+<a href="#1858" id="1858">1858</a>
+<a href="#1859" id="1859">1859</a>
+<a href="#1860" id="1860">1860</a>
+<a href="#1861" id="1861">1861</a>
+<a href="#1862" id="1862">1862</a>
+<a href="#1863" id="1863">1863</a>
+<a href="#1864" id="1864">1864</a>
+<a href="#1865" id="1865">1865</a>
+<a href="#1866" id="1866">1866</a>
+<a href="#1867" id="1867">1867</a>
+<a href="#1868" id="1868">1868</a>
+<a href="#1869" id="1869">1869</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
@@ -1756,8 +1877,10 @@
 };
 <span class="kw">use </span><span class="kw">crate</span>::safe_client::{SafeClient, SafeClientMetrics, SafeClientMetricsBase};
 <span class="kw">use </span>fastcrypto::encoding::Encoding;
+<span class="kw">use </span>futures::Future;
 <span class="kw">use </span>futures::{future::BoxFuture, stream::FuturesUnordered, StreamExt};
-<span class="kw">use </span>mysten_metrics::{monitored_future, GaugeGuard};
+<span class="kw">use </span>mysten_metrics::histogram::Histogram;
+<span class="kw">use </span>mysten_metrics::{monitored_future, spawn_monitored_task, GaugeGuard};
 <span class="kw">use </span>mysten_network::config::Config;
 <span class="kw">use </span>std::convert::AsRef;
 <span class="kw">use </span>sui_config::genesis::Genesis;
@@ -1787,11 +1910,15 @@
     register_int_counter_vec_with_registry, register_int_counter_with_registry,
     register_int_gauge_with_registry, IntCounter, IntCounterVec, IntGauge, Registry,
 };
-<span class="kw">use </span>std::collections::{BTreeMap, BTreeSet, HashMap};
+<span class="kw">use </span>std::collections::{BTreeMap, BTreeSet, HashMap, HashSet};
 <span class="kw">use </span>std::string::ToString;
 <span class="kw">use </span>std::sync::Arc;
 <span class="kw">use </span>std::time::Duration;
 <span class="kw">use </span>sui_types::committee::{CommitteeWithNetworkMetadata, StakeUnit};
+<span class="kw">use </span>sui_types::effects::{
+    CertifiedTransactionEffects, SignedTransactionEffects, TransactionEffects, TransactionEvents,
+    VerifiedCertifiedTransactionEffects,
+};
 <span class="kw">use </span>tap::TapFallible;
 <span class="kw">use </span>tokio::time::{sleep, timeout};
 
@@ -1809,34 +1936,20 @@
 
 <span class="attr">#[derive(Clone)]
 </span><span class="kw">pub struct </span>TimeoutConfig {
-    <span class="comment">// Timeout used when making many concurrent requests - ok if it is large because a slow
-    // authority won&#39;t block other authorities from being contacted.
-    </span><span class="kw">pub </span>authority_request_timeout: Duration,
     <span class="kw">pub </span>pre_quorum_timeout: Duration,
     <span class="kw">pub </span>post_quorum_timeout: Duration,
 
-    <span class="comment">// Timeout used when making serial requests. Should be smaller, since we wait to hear from each
-    // authority before continuing.
-    </span><span class="kw">pub </span>serial_authority_request_timeout: Duration,
-
     <span class="comment">// Timeout used to determine when to start a second &quot;serial&quot; request for
-    // quorum_once_with_timeout. This is a latency optimization that prevents us from having
-    // to wait an entire serial_authority_request_timeout interval before starting a second
-    // request.
-    //
-    // If this is set to zero, then quorum_once_with_timeout becomes completely parallelized - if
-    // it is set to a value greater than serial_authority_request_timeout then it becomes
-    // completely serial.
+    // quorum_once_with_timeout. If this is set to zero, then
+    // quorum_once_with_timeout becomes completely parallelized.
     </span><span class="kw">pub </span>serial_authority_request_interval: Duration,
 }
 
 <span class="kw">impl </span>Default <span class="kw">for </span>TimeoutConfig {
     <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            authority_request_timeout: Duration::from_secs(<span class="number">60</span>),
             pre_quorum_timeout: Duration::from_secs(<span class="number">60</span>),
-            post_quorum_timeout: Duration::from_secs(<span class="number">30</span>),
-            serial_authority_request_timeout: Duration::from_secs(<span class="number">5</span>),
+            post_quorum_timeout: Duration::from_secs(<span class="number">7</span>),
             serial_authority_request_interval: Duration::from_millis(<span class="number">1000</span>),
         }
     }
@@ -1855,6 +1968,10 @@
     <span class="kw">pub </span>inflight_certificates: IntGauge,
     <span class="kw">pub </span>inflight_transaction_requests: IntGauge,
     <span class="kw">pub </span>inflight_certificate_requests: IntGauge,
+
+    <span class="kw">pub </span>cert_broadcasting_post_quorum_timeout: IntCounter,
+    <span class="kw">pub </span>remaining_tasks_when_reaching_cert_quorum: Histogram,
+    <span class="kw">pub </span>remaining_tasks_when_cert_broadcasting_post_quorum_timeout: Histogram,
 }
 
 <span class="kw">impl </span>AuthAggMetrics {
@@ -1924,6 +2041,22 @@
                 registry,
             )
             .unwrap(),
+            cert_broadcasting_post_quorum_timeout: <span class="macro">register_int_counter_with_registry!</span>(
+                <span class="string">&quot;auth_agg_cert_broadcasting_post_quorum_timeout&quot;</span>,
+                <span class="string">&quot;Total number of timeout in cert processing post quorum&quot;</span>,
+                registry,
+            )
+            .unwrap(),
+            remaining_tasks_when_reaching_cert_quorum: mysten_metrics::histogram::Histogram::new_in_registry(
+                <span class="string">&quot;auth_agg_remaining_tasks_when_reaching_cert_quorum&quot;</span>,
+                <span class="string">&quot;Number of remaining tasks when reaching certificate quorum&quot;</span>,
+                registry,
+            ),
+            remaining_tasks_when_cert_broadcasting_post_quorum_timeout: mysten_metrics::histogram::Histogram::new_in_registry(
+                <span class="string">&quot;auth_agg_remaining_tasks_when_cert_broadcasting_post_quorum_timeout&quot;</span>,
+                <span class="string">&quot;Number of remaining tasks when post quorum certificate broadcasting times out&quot;</span>,
+                registry,
+            )
         }
     }
 
@@ -2070,6 +2203,7 @@
     non_retryable_stake: StakeUnit,
     non_retryable_errors: Vec&lt;(SuiError, Vec&lt;AuthorityName&gt;, StakeUnit)&gt;,
     retryable_errors: Vec&lt;(SuiError, Vec&lt;AuthorityName&gt;, StakeUnit)&gt;,
+    object_map: HashMap&lt;TransactionEffectsDigest, HashSet&lt;Object&gt;&gt;,
     <span class="comment">// As long as none of the exit criteria are met we consider the state retryable
     // 1) &gt;= 2f+1 signatures
     // 2) &gt;= f+1 non-retryable errors
@@ -2092,13 +2226,13 @@
 }
 
 <span class="attr">#[derive(Clone)]
-</span><span class="kw">pub struct </span>AuthorityAggregator&lt;A&gt; {
+</span><span class="kw">pub struct </span>AuthorityAggregator&lt;A: Clone&gt; {
     <span class="doccomment">/// Our Sui committee.
-    </span><span class="kw">pub </span>committee: Committee,
+    </span><span class="kw">pub </span>committee: Arc&lt;Committee&gt;,
     <span class="doccomment">/// How to talk to this committee.
-    </span><span class="kw">pub </span>authority_clients: BTreeMap&lt;AuthorityName, SafeClient&lt;A&gt;&gt;,
+    </span><span class="kw">pub </span>authority_clients: Arc&lt;BTreeMap&lt;AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;&gt;&gt;,
     <span class="doccomment">/// Metrics
-    </span><span class="kw">pub </span>metrics: AuthAggMetrics,
+    </span><span class="kw">pub </span>metrics: Arc&lt;AuthAggMetrics&gt;,
     <span class="doccomment">/// Metric base for the purpose of creating new safe clients during reconfiguration.
     </span><span class="kw">pub </span>safe_client_metrics_base: SafeClientMetricsBase,
     <span class="kw">pub </span>timeouts: TimeoutConfig,
@@ -2106,7 +2240,7 @@
     </span><span class="kw">pub </span>committee_store: Arc&lt;CommitteeStore&gt;,
 }
 
-<span class="kw">impl</span>&lt;A&gt; AuthorityAggregator&lt;A&gt; {
+<span class="kw">impl</span>&lt;A: Clone&gt; AuthorityAggregator&lt;A&gt; {
     <span class="kw">pub fn </span>new(
         committee: Committee,
         committee_store: Arc&lt;CommitteeStore&gt;,
@@ -2131,22 +2265,24 @@
     ) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>safe_client_metrics_base = SafeClientMetricsBase::new(registry);
         <span class="self">Self </span>{
-            committee,
-            authority_clients: authority_clients
-                .into_iter()
-                .map(|(name, api)| {
-                    (
-                        name,
-                        SafeClient::new(
-                            api,
-                            committee_store.clone(),
+            committee: Arc::new(committee),
+            authority_clients: Arc::new(
+                authority_clients
+                    .into_iter()
+                    .map(|(name, api)| {
+                        (
                             name,
-                            SafeClientMetrics::new(<span class="kw-2">&amp;</span>safe_client_metrics_base, name),
-                        ),
-                    )
-                })
-                .collect(),
-            metrics: AuthAggMetrics::new(registry),
+                            Arc::new(SafeClient::new(
+                                api,
+                                committee_store.clone(),
+                                name,
+                                SafeClientMetrics::new(<span class="kw-2">&amp;</span>safe_client_metrics_base, name),
+                            )),
+                        )
+                    })
+                    .collect(),
+            ),
+            metrics: Arc::new(AuthAggMetrics::new(registry)),
             safe_client_metrics_base,
             timeouts,
             committee_store,
@@ -2158,24 +2294,26 @@
         committee_store: Arc&lt;CommitteeStore&gt;,
         authority_clients: BTreeMap&lt;AuthorityName, A&gt;,
         safe_client_metrics_base: SafeClientMetricsBase,
-        auth_agg_metrics: AuthAggMetrics,
+        auth_agg_metrics: Arc&lt;AuthAggMetrics&gt;,
     ) -&gt; <span class="self">Self </span>{
         <span class="self">Self </span>{
-            committee,
-            authority_clients: authority_clients
-                .into_iter()
-                .map(|(name, api)| {
-                    (
-                        name,
-                        SafeClient::new(
-                            api,
-                            committee_store.clone(),
+            committee: Arc::new(committee),
+            authority_clients: Arc::new(
+                authority_clients
+                    .into_iter()
+                    .map(|(name, api)| {
+                        (
                             name,
-                            SafeClientMetrics::new(<span class="kw-2">&amp;</span>safe_client_metrics_base, name),
-                        ),
-                    )
-                })
-                .collect(),
+                            Arc::new(SafeClient::new(
+                                api,
+                                committee_store.clone(),
+                                name,
+                                SafeClientMetrics::new(<span class="kw-2">&amp;</span>safe_client_metrics_base, name),
+                            )),
+                        )
+                    })
+                    .collect(),
+            ),
             metrics: auth_agg_metrics,
             safe_client_metrics_base,
             timeouts: Default::default(),
@@ -2209,12 +2347,12 @@
             .map(|(name, api)| {
                 (
                     name,
-                    SafeClient::new(
+                    Arc::new(SafeClient::new(
                         api,
                         <span class="self">self</span>.committee_store.clone(),
                         name,
                         SafeClientMetrics::new(<span class="kw-2">&amp;</span><span class="self">self</span>.safe_client_metrics_base, name),
-                    ),
+                    )),
                 )
             })
             .collect::&lt;BTreeMap&lt;<span class="kw">_</span>, <span class="kw">_</span>&gt;&gt;();
@@ -2240,8 +2378,8 @@
         // store and all of them need to reconfigure.
         </span><span class="kw">let _ </span>= <span class="self">self</span>.committee_store.insert_new_committee(<span class="kw-2">&amp;</span>new_committee);
         <span class="prelude-val">Ok</span>(AuthorityAggregator {
-            committee: new_committee,
-            authority_clients: safe_clients,
+            committee: Arc::new(new_committee),
+            authority_clients: Arc::new(safe_clients),
             metrics: <span class="self">self</span>.metrics.clone(),
             timeouts: <span class="self">self</span>.timeouts.clone(),
             safe_client_metrics_base: <span class="self">self</span>.safe_client_metrics_base.clone(),
@@ -2249,30 +2387,31 @@
         })
     }
 
-    <span class="kw">pub fn </span>get_client(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>AuthorityName) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>SafeClient&lt;A&gt;&gt; {
+    <span class="kw">pub fn </span>get_client(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>AuthorityName) -&gt; <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>Arc&lt;SafeClient&lt;A&gt;&gt;&gt; {
         <span class="self">self</span>.authority_clients.get(name)
     }
 
-    <span class="kw">pub fn </span>clone_client(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>AuthorityName) -&gt; SafeClient&lt;A&gt;
+    <span class="kw">pub fn </span>clone_client_test_only(<span class="kw-2">&amp;</span><span class="self">self</span>, name: <span class="kw-2">&amp;</span>AuthorityName) -&gt; Arc&lt;SafeClient&lt;A&gt;&gt;
     <span class="kw">where
         </span>A: Clone,
     {
         <span class="self">self</span>.authority_clients[name].clone()
     }
 
-    <span class="kw">pub fn </span>clone_inner_clients(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BTreeMap&lt;AuthorityName, A&gt;
-    <span class="kw">where
-        </span>A: Clone,
-    {
-        <span class="kw">let </span><span class="kw-2">mut </span>clients = BTreeMap::new();
-        <span class="kw">for </span>(name, client) <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.authority_clients {
-            clients.insert(<span class="kw-2">*</span>name, client.authority_client().clone());
-        }
-        clients
-    }
-
     <span class="kw">pub fn </span>clone_committee_store(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Arc&lt;CommitteeStore&gt; {
         <span class="self">self</span>.committee_store.clone()
+    }
+
+    <span class="kw">pub fn </span>clone_inner_committee_test_only(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; Committee {
+        (<span class="kw-2">*</span><span class="self">self</span>.committee).clone()
+    }
+
+    <span class="kw">pub fn </span>clone_inner_clients_test_only(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; BTreeMap&lt;AuthorityName, SafeClient&lt;A&gt;&gt; {
+        (<span class="kw-2">*</span><span class="self">self</span>.authority_clients)
+            .clone()
+            .into_iter()
+            .map(|(k, v)| (k, (<span class="kw-2">*</span>v).clone()))
+            .collect()
     }
 }
 
@@ -2292,7 +2431,7 @@
             sui_system_state.get_current_epoch_committee(),
             committee_store,
             safe_client_metrics_base,
-            auth_agg_metrics,
+            Arc::new(auth_agg_metrics),
         )
     }
 
@@ -2300,7 +2439,7 @@
         committee: CommitteeWithNetworkMetadata,
         committee_store: <span class="kw-2">&amp;</span>Arc&lt;CommitteeStore&gt;,
         safe_client_metrics_base: SafeClientMetricsBase,
-        auth_agg_metrics: AuthAggMetrics,
+        auth_agg_metrics: Arc&lt;AuthAggMetrics&gt;,
     ) -&gt; anyhow::Result&lt;<span class="self">Self</span>&gt; {
         <span class="kw">let </span>net_config = default_mysten_network_config();
         <span class="kw">let </span>authority_clients =
@@ -2341,8 +2480,16 @@
     /// This function provides a flexible way to communicate with a quorum of authorities, processing and
     /// processing their results into a safe overall result, and also safely allowing operations to continue
     /// past the quorum to ensure all authorities are up to date (up to a timeout).
-    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>quorum_map_then_reduce_with_timeout&lt;<span class="lifetime">&#39;a</span>, S, V, R, FMap, FReduce&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
+    </span><span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>quorum_map_then_reduce_with_timeout&lt;
+        <span class="lifetime">&#39;a</span>,
+        S: <span class="lifetime">&#39;a</span>,
+        V: <span class="lifetime">&#39;a</span>,
+        R: <span class="lifetime">&#39;a</span>,
+        FMap,
+        FReduce,
+    &gt;(
+        committee: Arc&lt;Committee&gt;,
+        authority_clients: Arc&lt;BTreeMap&lt;AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;&gt;&gt;,
         <span class="comment">// The initial state that will be used to fold in values from authorities.
         </span>initial_state: S,
         <span class="comment">// The async function used to apply to each authority. It takes an authority name,
@@ -2353,17 +2500,27 @@
         </span>reduce_result: FReduce,
         <span class="comment">// The initial timeout applied to all
         </span>initial_timeout: Duration,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;R, S&gt;
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;
+        (
+            R,
+            FuturesUnordered&lt;<span class="kw">impl </span>Future&lt;Output = (AuthorityName, <span class="prelude-ty">Result</span>&lt;V, SuiError&gt;)&gt; + <span class="lifetime">&#39;a</span>&gt;,
+        ),
+        S,
+    &gt;
     <span class="kw">where
-        </span>FMap: FnOnce(AuthorityName, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>SafeClient&lt;A&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, V, SuiError&gt; + Clone,
+        </span>FMap:
+            FnOnce(AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, V, SuiError&gt; + Clone + <span class="lifetime">&#39;a</span>,
         FReduce: Fn(
-            S,
-            AuthorityName,
-            StakeUnit,
-            <span class="prelude-ty">Result</span>&lt;V, SuiError&gt;,
-        ) -&gt; BoxFuture&lt;<span class="lifetime">&#39;a</span>, ReduceOutput&lt;R, S&gt;&gt;,
+                S,
+                AuthorityName,
+                StakeUnit,
+                <span class="prelude-ty">Result</span>&lt;V, SuiError&gt;,
+            ) -&gt; BoxFuture&lt;<span class="lifetime">&#39;a</span>, ReduceOutput&lt;R, S&gt;&gt;
+            + <span class="lifetime">&#39;a</span>,
     {
-        <span class="self">self</span>.quorum_map_then_reduce_with_timeout_and_prefs(
+        AuthorityAggregator::quorum_map_then_reduce_with_timeout_and_prefs(
+            committee,
+            authority_clients,
             <span class="prelude-val">None</span>,
             initial_state,
             map_each_authority,
@@ -2374,15 +2531,22 @@
     </span>}
 
     <span class="kw">pub</span>(<span class="kw">crate</span>) <span class="kw">async fn </span>quorum_map_then_reduce_with_timeout_and_prefs&lt;<span class="lifetime">&#39;a</span>, S, V, R, FMap, FReduce&gt;(
-        <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span><span class="self">self</span>,
+        committee: Arc&lt;Committee&gt;,
+        authority_clients: Arc&lt;BTreeMap&lt;AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;&gt;&gt;,
         authority_preferences: <span class="prelude-ty">Option</span>&lt;<span class="kw-2">&amp;</span>BTreeSet&lt;AuthorityName&gt;&gt;,
         initial_state: S,
         map_each_authority: FMap,
         reduce_result: FReduce,
         initial_timeout: Duration,
-    ) -&gt; <span class="prelude-ty">Result</span>&lt;R, S&gt;
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;
+        (
+            R,
+            FuturesUnordered&lt;<span class="kw">impl </span>Future&lt;Output = (AuthorityName, <span class="prelude-ty">Result</span>&lt;V, SuiError&gt;)&gt;&gt;,
+        ),
+        S,
+    &gt;
     <span class="kw">where
-        </span>FMap: FnOnce(AuthorityName, <span class="kw-2">&amp;</span><span class="lifetime">&#39;a </span>SafeClient&lt;A&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, V, SuiError&gt; + Clone,
+        </span>FMap: FnOnce(AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, V, SuiError&gt; + Clone,
         FReduce: Fn(
             S,
             AuthorityName,
@@ -2390,18 +2554,18 @@
             <span class="prelude-ty">Result</span>&lt;V, SuiError&gt;,
         ) -&gt; BoxFuture&lt;<span class="lifetime">&#39;a</span>, ReduceOutput&lt;R, S&gt;&gt;,
     {
-        <span class="kw">let </span>authorities_shuffled = <span class="self">self</span>.committee.shuffle_by_stake(authority_preferences, <span class="prelude-val">None</span>);
+        <span class="kw">let </span>authorities_shuffled = committee.shuffle_by_stake(authority_preferences, <span class="prelude-val">None</span>);
 
         <span class="comment">// First, execute in parallel for each authority FMap.
         </span><span class="kw">let </span><span class="kw-2">mut </span>responses: futures::stream::FuturesUnordered&lt;<span class="kw">_</span>&gt; = authorities_shuffled
-            .iter()
+            .into_iter()
             .map(|name| {
-                <span class="kw">let </span>client = <span class="kw-2">&amp;</span><span class="self">self</span>.authority_clients[name];
+                <span class="kw">let </span>client = authority_clients[<span class="kw-2">&amp;</span>name].clone();
                 <span class="kw">let </span>execute = map_each_authority.clone();
                 <span class="macro">monitored_future!</span>(<span class="kw">async move </span>{
                     (
-                        <span class="kw-2">*</span>name,
-                        execute(<span class="kw-2">*</span>name, client)
+                        name,
+                        execute(name, client)
                             .instrument(<span class="macro">tracing::trace_span!</span>(<span class="string">&quot;quorum_map_auth&quot;</span>, authority =<span class="question-mark">? </span>name.concise()))
                             .<span class="kw">await</span>,
                     )
@@ -2415,7 +2579,7 @@
         </span><span class="kw">while let </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>((authority_name, result))) =
             timeout(current_timeout, responses.next()).<span class="kw">await
         </span>{
-            <span class="kw">let </span>authority_weight = <span class="self">self</span>.committee.weight(<span class="kw-2">&amp;</span>authority_name);
+            <span class="kw">let </span>authority_weight = committee.weight(<span class="kw-2">&amp;</span>authority_name);
             accumulated_state =
                 <span class="kw">match </span>reduce_result(accumulated_state, authority_name, authority_weight, result)
                     .<span class="kw">await
@@ -2432,7 +2596,7 @@
                     }
                     ReduceOutput::Success(result) =&gt; {
                         <span class="comment">// The reducer tells us that we have the result needed. Just return it.
-                        </span><span class="kw">return </span><span class="prelude-val">Ok</span>(result);
+                        </span><span class="kw">return </span><span class="prelude-val">Ok</span>((result, responses));
                     }
                 }
         }
@@ -2457,7 +2621,10 @@
         authority_errors: <span class="kw-2">&amp;mut </span>HashMap&lt;AuthorityName, SuiError&gt;,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;S, SuiError&gt;
     <span class="kw">where
-        </span>FMap: Fn(AuthorityName, SafeClient&lt;A&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, S, SuiError&gt; + Send + Clone + <span class="lifetime">&#39;a</span>,
+        </span>FMap: Fn(AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, S, SuiError&gt;
+            + Send
+            + Clone
+            + <span class="lifetime">&#39;a</span>,
         S: Send,
     {
         <span class="kw">let </span>start = tokio::time::Instant::now();
@@ -2475,7 +2642,7 @@
 
             <span class="kw">let </span><span class="kw-2">mut </span>futures = FuturesUnordered::&lt;BoxFuture&lt;<span class="lifetime">&#39;a</span>, Event&lt;S&gt;&gt;&gt;::new();
 
-            <span class="kw">let </span>start_req = |name: AuthorityName, client: SafeClient&lt;A&gt;| {
+            <span class="kw">let </span>start_req = |name: AuthorityName, client: Arc&lt;SafeClient&lt;A&gt;&gt;| {
                 <span class="kw">let </span>map_each_authority = map_each_authority.clone();
                 Box::pin(<span class="macro">monitored_future!</span>(<span class="kw">async move </span>{
                     <span class="macro">trace!</span>(name=<span class="question-mark">?</span>name.concise(), now = <span class="question-mark">?</span>tokio::time::Instant::now() - start, <span class="string">&quot;new request&quot;</span>);
@@ -2590,7 +2757,10 @@
         </span>description: String,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;S, SuiError&gt;
     <span class="kw">where
-        </span>FMap: Fn(AuthorityName, SafeClient&lt;A&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, S, SuiError&gt; + Send + Clone + <span class="lifetime">&#39;a</span>,
+        </span>FMap: Fn(AuthorityName, Arc&lt;SafeClient&lt;A&gt;&gt;) -&gt; AsyncResult&lt;<span class="lifetime">&#39;a</span>, S, SuiError&gt;
+            + Send
+            + Clone
+            + <span class="lifetime">&#39;a</span>,
         S: Send,
     {
         <span class="kw">let </span><span class="kw-2">mut </span>authority_errors = HashMap::new();
@@ -2637,8 +2807,9 @@
             total_weight: StakeUnit,
         }
         <span class="kw">let </span>initial_state = State::default();
-        <span class="self">self
-            </span>.quorum_map_then_reduce_with_timeout(
+        <span class="kw">let </span>result = AuthorityAggregator::quorum_map_then_reduce_with_timeout(
+                <span class="self">self</span>.committee.clone(),
+                <span class="self">self</span>.authority_clients.clone(),
                 initial_state,
                 |_name, client| {
                     Box::pin(<span class="kw">async move </span>{
@@ -2676,10 +2847,11 @@
                 <span class="comment">// A long timeout before we hear back from a quorum
                 </span><span class="self">self</span>.timeouts.pre_quorum_timeout,
             )
-            .<span class="kw">await</span>.map_err(|_state| UserInputError::ObjectNotFound {
+            .<span class="kw">await</span>.map_err(|_state| SuiError::from(UserInputError::ObjectNotFound {
                 object_id,
                 version: <span class="prelude-val">None</span>,
-            }.into())
+            }))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(result.<span class="number">0</span>)
     }
 
     <span class="doccomment">/// Get the latest system state object from the authorities.
@@ -2694,7 +2866,9 @@
             total_weight: StakeUnit,
         }
         <span class="kw">let </span>initial_state = State::default();
-        <span class="self">self</span>.quorum_map_then_reduce_with_timeout(
+        <span class="kw">let </span>result = AuthorityAggregator::quorum_map_then_reduce_with_timeout(
+            <span class="self">self</span>.committee.clone(),
+            <span class="self">self</span>.authority_clients.clone(),
             initial_state,
             |_name, client| Box::pin(<span class="kw">async move </span>{ client.handle_system_state_object().<span class="kw">await </span>}),
             |<span class="kw-2">mut </span>state, name, weight, result| {
@@ -2737,7 +2911,8 @@
             </span><span class="self">self</span>.timeouts.pre_quorum_timeout,
         )
         .<span class="kw">await
-        </span>.map_err(|<span class="kw">_</span>| <span class="macro">anyhow::anyhow!</span>(<span class="string">&quot;Failed to get latest system state from the authorities&quot;</span>))
+        </span>.map_err(|<span class="kw">_</span>| <span class="macro">anyhow::anyhow!</span>(<span class="string">&quot;Failed to get latest system state from the authorities&quot;</span>))<span class="question-mark">?</span>;
+        <span class="prelude-val">Ok</span>(result.<span class="number">0</span>)
     }
 
     <span class="doccomment">/// Submits the transaction to a quorum of validators to make a certificate.
@@ -2755,8 +2930,7 @@
             <span class="string">&quot;Transaction data: {:?}&quot;</span>,
             transaction.data().intent_message().value
         );
-
-        <span class="kw">let </span>committee = Arc::new(<span class="self">self</span>.committee.clone());
+        <span class="kw">let </span>committee = <span class="self">self</span>.committee.clone();
         <span class="kw">let </span>state = ProcessTransactionState {
             tx_signatures: StakeAggregator::new(committee.clone()),
             effects_map: MultiStakeAggregator::new(committee.clone()),
@@ -2771,8 +2945,9 @@
         <span class="kw">let </span>transaction_ref = <span class="kw-2">&amp;</span>transaction;
         <span class="kw">let </span>validity_threshold = committee.validity_threshold();
         <span class="kw">let </span>quorum_threshold = committee.quorum_threshold();
-        <span class="kw">let </span>result = <span class="self">self
-            </span>.quorum_map_then_reduce_with_timeout(
+        <span class="kw">let </span>result = AuthorityAggregator::quorum_map_then_reduce_with_timeout(
+                committee.clone(),
+                <span class="self">self</span>.authority_clients.clone(),
                 state,
                 |_name, client| {
                     Box::pin(
@@ -2809,7 +2984,7 @@
                                     .process_tx_errors
                                     .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>concise_name.to_string(), err.as_ref()])
                                     .inc();
-                                <span class="self">self</span>.record_rpc_error_maybe(concise_name, <span class="kw-2">&amp;</span>err);
+                                <span class="self">Self</span>::record_rpc_error_maybe(<span class="self">self</span>.metrics.clone(), concise_name, <span class="kw-2">&amp;</span>err);
                                 <span class="kw">let </span>(retryable, categorized) = err.is_retryable();
                                 <span class="kw">if </span>!categorized {
                                     <span class="comment">// TODO: Should minimize possible uncategorized errors here
@@ -2855,7 +3030,7 @@
             .<span class="kw">await</span>;
 
         <span class="kw">match </span>result {
-            <span class="prelude-val">Ok</span>(result) =&gt; <span class="prelude-val">Ok</span>(result),
+            <span class="prelude-val">Ok</span>((result, <span class="kw">_</span>)) =&gt; <span class="prelude-val">Ok</span>(result),
             <span class="prelude-val">Err</span>(state) =&gt; {
                 <span class="self">self</span>.record_process_transaction_metrics(tx_digest, <span class="kw-2">&amp;</span>state);
                 <span class="kw">let </span>state = <span class="self">self</span>.record_non_quorum_effects_maybe(tx_digest, state);
@@ -2864,9 +3039,13 @@
         }
     }
 
-    <span class="kw">fn </span>record_rpc_error_maybe(<span class="kw-2">&amp;</span><span class="self">self</span>, name: ConciseAuthorityPublicKeyBytesRef, error: <span class="kw-2">&amp;</span>SuiError) {
+    <span class="kw">fn </span>record_rpc_error_maybe(
+        metrics: Arc&lt;AuthAggMetrics&gt;,
+        name: ConciseAuthorityPublicKeyBytesRef,
+        error: <span class="kw-2">&amp;</span>SuiError,
+    ) {
         <span class="kw">if let </span>SuiError::RpcError(_message, code) = error {
-            <span class="self">self</span>.metrics
+            metrics
                 .total_rpc_err
                 .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>name.to_string(), code.as_str()])
                 .inc();
@@ -3165,11 +3344,16 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         certificate: CertifiedTransaction,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;
-        (VerifiedCertifiedTransactionEffects, TransactionEvents),
+        (
+            VerifiedCertifiedTransactionEffects,
+            TransactionEvents,
+            Vec&lt;Object&gt;,
+        ),
         AggregatorProcessCertificateError,
     &gt; {
         <span class="kw">let </span>state = ProcessCertificateState {
-            effects_map: MultiStakeAggregator::new(Arc::new(<span class="self">self</span>.committee.clone())),
+            effects_map: MultiStakeAggregator::new(<span class="self">self</span>.committee.clone()),
+            object_map: HashMap::new(),
             non_retryable_stake: <span class="number">0</span>,
             non_retryable_errors: <span class="macro">vec!</span>[],
             retryable_errors: <span class="macro">vec!</span>[],
@@ -3179,7 +3363,7 @@
         <span class="kw">let </span>tx_digest = <span class="kw-2">*</span>certificate.digest();
         <span class="kw">let </span>timeout_after_quorum = <span class="self">self</span>.timeouts.post_quorum_timeout;
 
-        <span class="kw">let </span>cert_ref = <span class="kw-2">&amp;</span>certificate;
+        <span class="kw">let </span>cert_ref = certificate;
         <span class="kw">let </span>threshold = <span class="self">self</span>.committee.quorum_threshold();
         <span class="kw">let </span>validity = <span class="self">self</span>.committee.validity_threshold();
 
@@ -3192,32 +3376,40 @@
             <span class="string">&quot;Broadcasting certificate to authorities&quot;
         </span>);
         <span class="comment">// TODO: We show the below messages for debugging purposes re. incident #267. When this is fixed, we should remove them again.
-        </span><span class="kw">let </span>cert_bytes = fastcrypto::encoding::Base64::encode(bcs::to_bytes(cert_ref).unwrap());
+        </span><span class="kw">let </span>cert_bytes = fastcrypto::encoding::Base64::encode(bcs::to_bytes(<span class="kw-2">&amp;</span>cert_ref).unwrap());
         <span class="macro">info!</span>(
             <span class="question-mark">?</span>tx_digest,
             <span class="question-mark">?</span>cert_bytes,
             <span class="string">&quot;Broadcasting certificate (serialized) to authorities&quot;
         </span>);
-
-        <span class="self">self</span>.quorum_map_then_reduce_with_timeout(
+        <span class="kw">let </span>committee: Arc&lt;Committee&gt; = <span class="self">self</span>.committee.clone();
+        <span class="kw">let </span>authority_clients = <span class="self">self</span>.authority_clients.clone();
+        <span class="kw">let </span>metrics = <span class="self">self</span>.metrics.clone();
+        <span class="kw">let </span>metrics_clone = metrics.clone();
+        <span class="kw">let </span>(result, <span class="kw-2">mut </span>remaining_tasks) = AuthorityAggregator::quorum_map_then_reduce_with_timeout(
+            committee.clone(),
+            authority_clients.clone(),
             state,
-            |name, client| {
+            <span class="kw">move </span>|name, client| {
                 Box::pin(<span class="kw">async move </span>{
-                    <span class="kw">let </span>_guard = GaugeGuard::acquire(<span class="kw-2">&amp;</span><span class="self">self</span>.metrics.inflight_certificate_requests);
+                    <span class="kw">let </span>_guard = GaugeGuard::acquire(<span class="kw-2">&amp;</span>metrics_clone.inflight_certificate_requests);
                     client
-                        .handle_certificate(cert_ref.clone())
+                        .handle_certificate_v2(cert_ref.clone())
                         .instrument(
                             <span class="macro">tracing::trace_span!</span>(<span class="string">&quot;handle_certificate&quot;</span>, authority =<span class="question-mark">? </span>name.concise()),
                         )
                         .<span class="kw">await
                 </span>})
             },
-            |<span class="kw-2">mut </span>state, name, weight, response| {
+            <span class="kw">move </span>|<span class="kw-2">mut </span>state, name, weight, response| {
+                <span class="kw">let </span>committee_clone = committee.clone();
+                <span class="kw">let </span>metrics = metrics.clone();
                 Box::pin(<span class="kw">async move </span>{
                     <span class="comment">// We aggregate the effects response, until we have more than 2f
                     // and return.
-                    </span><span class="kw">match </span><span class="self">self
-                        </span>.handle_process_certificate_response(<span class="kw-2">&amp;</span>tx_digest, <span class="kw-2">&amp;mut </span>state, response, name)
+                    </span><span class="kw">match </span>AuthorityAggregator::&lt;A&gt;::handle_process_certificate_response(
+                        committee_clone,
+                        <span class="kw-2">&amp;</span>tx_digest, <span class="kw-2">&amp;mut </span>state, response, name)
                     {
                         <span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(effects)) =&gt; ReduceOutput::Success(effects),
                         <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>) =&gt; {
@@ -3234,11 +3426,11 @@
                         <span class="prelude-val">Err</span>(err) =&gt; {
                             <span class="kw">let </span>concise_name = name.concise();
                             <span class="macro">debug!</span>(<span class="question-mark">?</span>tx_digest, name=<span class="question-mark">?</span>concise_name, <span class="string">&quot;Error processing certificate from validator: {:?}&quot;</span>, err);
-                            <span class="self">self</span>.metrics
+                            metrics
                                 .process_cert_errors
                                 .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>concise_name.to_string(), err.as_ref()])
                                 .inc();
-                            <span class="self">self</span>.record_rpc_error_maybe(concise_name, <span class="kw-2">&amp;</span>err);
+                            <span class="self">Self</span>::record_rpc_error_maybe(metrics, concise_name, <span class="kw-2">&amp;</span>err);
                             <span class="kw">let </span>(retryable, categorized) = err.is_retryable();
                             <span class="kw">if </span>!categorized {
                                 <span class="comment">// TODO: Should minimize possible uncategorized errors here
@@ -3297,29 +3489,64 @@
                     non_retryable_errors: group_errors(state.non_retryable_errors),
                 }
             }
-        })
+        })<span class="question-mark">?</span>;
+
+        <span class="kw">let </span>metrics = <span class="self">self</span>.metrics.clone();
+        metrics
+            .remaining_tasks_when_reaching_cert_quorum
+            .report(remaining_tasks.len() <span class="kw">as </span>u64);
+        <span class="kw">if </span>!remaining_tasks.is_empty() {
+            <span class="comment">// Use best efforts to send the cert to remaining validators.
+            </span><span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+                <span class="kw">let </span><span class="kw-2">mut </span>timeout = Box::pin(sleep(timeout_after_quorum));
+                <span class="kw">loop </span>{
+                    <span class="macro">tokio::select! </span>{
+                        <span class="kw">_ </span>= <span class="kw-2">&amp;mut </span>timeout =&gt; {
+                            <span class="macro">debug!</span>(<span class="question-mark">?</span>tx_digest, <span class="string">&quot;Timed out in post quorum cert broadcasting: {:?}. Remaining tasks: {:?}&quot;</span>, timeout_after_quorum, remaining_tasks.len());
+                            metrics.cert_broadcasting_post_quorum_timeout.inc();
+                            metrics.remaining_tasks_when_cert_broadcasting_post_quorum_timeout.report(remaining_tasks.len() <span class="kw">as </span>u64);
+                            <span class="kw">break</span>;
+                        }
+                        res = remaining_tasks.next() =&gt; {
+                            <span class="kw">if </span>res.is_none() {
+                                <span class="kw">break</span>;
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        <span class="prelude-val">Ok</span>(result)
     }
 
     <span class="kw">fn </span>handle_process_certificate_response(
-        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        committee: Arc&lt;Committee&gt;,
         tx_digest: <span class="kw-2">&amp;</span>TransactionDigest,
         state: <span class="kw-2">&amp;mut </span>ProcessCertificateState,
-        response: SuiResult&lt;HandleCertificateResponse&gt;,
+        response: SuiResult&lt;HandleCertificateResponseV2&gt;,
         name: AuthorityName,
-    ) -&gt; SuiResult&lt;<span class="prelude-ty">Option</span>&lt;(VerifiedCertifiedTransactionEffects, TransactionEvents)&gt;&gt; {
+    ) -&gt; SuiResult&lt;
+        <span class="prelude-ty">Option</span>&lt;(
+            VerifiedCertifiedTransactionEffects,
+            TransactionEvents,
+            Vec&lt;Object&gt;,
+        )&gt;,
+    &gt; {
         <span class="kw">match </span>response {
-            <span class="prelude-val">Ok</span>(HandleCertificateResponse {
+            <span class="prelude-val">Ok</span>(HandleCertificateResponseV2 {
                 signed_effects,
                 events,
+                fastpath_input_objects,
             }) =&gt; {
                 <span class="macro">debug!</span>(
                     <span class="question-mark">?</span>tx_digest,
                     name = <span class="question-mark">?</span>name.concise(),
                     <span class="string">&quot;Validator handled certificate successfully&quot;</span>,
                 );
+                <span class="kw">let </span>effects_digest = <span class="kw-2">*</span>signed_effects.digest();
                 <span class="comment">// Note: here we aggregate votes by the hash of the effects structure
-                </span><span class="kw">match </span>state.effects_map.insert(
-                    (signed_effects.epoch(), <span class="kw-2">*</span>signed_effects.digest()),
+                </span><span class="kw">let </span>result = <span class="kw">match </span>state.effects_map.insert(
+                    (signed_effects.epoch(), effects_digest),
                     signed_effects.clone(),
                 ) {
                     InsertResult::NotEnoughVotes {
@@ -3344,12 +3571,27 @@
                             signed_effects.into_data(),
                             cert_sig,
                         );
-                        ct.verify(<span class="kw-2">&amp;</span><span class="self">self</span>.committee).map(|ct| {
+                        ct.verify(<span class="kw-2">&amp;</span>committee).map(|ct| {
                             <span class="macro">debug!</span>(<span class="question-mark">?</span>tx_digest, <span class="string">&quot;Got quorum for validators handle_certificate.&quot;</span>);
-                            <span class="prelude-val">Some</span>((ct, events))
+                            <span class="kw">let </span>fastpath_input_objects =
+                                state.object_map.remove(<span class="kw-2">&amp;</span>effects_digest).unwrap_or_default();
+                            <span class="prelude-val">Some</span>((ct, events, fastpath_input_objects.into_iter().collect()))
                         })
                     }
+                };
+                <span class="kw">if </span>result.is_ok() {
+                    <span class="comment">// We verified the objects&#39; relevance and content&#39;s integrity in `safe_client.rs`
+                    // based on the effects. Only responses with legit objects will reach here.
+                    // Therefore, as long as we have quorum on effects, we have quorum on objects.
+                    // One thing to note is objects may be missing in some responses e.g. validators are on
+                    // different code versions, but this is fine as long as their content is correct.
+                    </span>state
+                        .object_map
+                        .entry(effects_digest)
+                        .or_default()
+                        .extend(fastpath_input_objects.into_iter());
                 }
+                result
             }
             <span class="prelude-val">Err</span>(err) =&gt; <span class="prelude-val">Err</span>(err),
         }

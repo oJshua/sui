@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-json-rpc/src/transaction_builder_api.rs`."><title>transaction_builder_api.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_json_rpc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_json_rpc/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-json-rpc/src/transaction_builder_api.rs`."><title>transaction_builder_api.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_json_rpc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_json_rpc/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -320,43 +320,6 @@
 <a href="#320" id="320">320</a>
 <a href="#321" id="321">321</a>
 <a href="#322" id="322">322</a>
-<a href="#323" id="323">323</a>
-<a href="#324" id="324">324</a>
-<a href="#325" id="325">325</a>
-<a href="#326" id="326">326</a>
-<a href="#327" id="327">327</a>
-<a href="#328" id="328">328</a>
-<a href="#329" id="329">329</a>
-<a href="#330" id="330">330</a>
-<a href="#331" id="331">331</a>
-<a href="#332" id="332">332</a>
-<a href="#333" id="333">333</a>
-<a href="#334" id="334">334</a>
-<a href="#335" id="335">335</a>
-<a href="#336" id="336">336</a>
-<a href="#337" id="337">337</a>
-<a href="#338" id="338">338</a>
-<a href="#339" id="339">339</a>
-<a href="#340" id="340">340</a>
-<a href="#341" id="341">341</a>
-<a href="#342" id="342">342</a>
-<a href="#343" id="343">343</a>
-<a href="#344" id="344">344</a>
-<a href="#345" id="345">345</a>
-<a href="#346" id="346">346</a>
-<a href="#347" id="347">347</a>
-<a href="#348" id="348">348</a>
-<a href="#349" id="349">349</a>
-<a href="#350" id="350">350</a>
-<a href="#351" id="351">351</a>
-<a href="#352" id="352">352</a>
-<a href="#353" id="353">353</a>
-<a href="#354" id="354">354</a>
-<a href="#355" id="355">355</a>
-<a href="#356" id="356">356</a>
-<a href="#357" id="357">357</a>
-<a href="#358" id="358">358</a>
-<a href="#359" id="359">359</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -368,7 +331,6 @@
 <span class="kw">use </span>jsonrpsee::RpcModule;
 <span class="kw">use </span>move_core_types::language_storage::StructTag;
 
-<span class="kw">use </span>sui_adapter::execution_mode::{DevInspect, Normal};
 <span class="kw">use </span>sui_core::authority::AuthorityState;
 <span class="kw">use </span>sui_json::SuiJsonValue;
 <span class="kw">use </span>sui_json_rpc_types::{RPCTransactionRequestParams, SuiObjectDataFilter};
@@ -379,27 +341,18 @@
 <span class="kw">use </span>sui_open_rpc::Module;
 <span class="kw">use </span>sui_transaction_builder::{DataReader, TransactionBuilder};
 <span class="kw">use </span>sui_types::base_types::ObjectInfo;
+<span class="kw">use </span>sui_types::base_types::{ObjectID, SuiAddress};
 <span class="kw">use </span>sui_types::sui_serde::BigInt;
-<span class="kw">use </span>sui_types::{
-    base_types::{ObjectID, SuiAddress},
-    messages::TransactionData,
-};
 
 <span class="kw">use </span><span class="kw">crate</span>::api::TransactionBuilderServer;
 <span class="kw">use </span><span class="kw">crate</span>::SuiRpcModule;
 
-<span class="kw">pub struct </span>TransactionBuilderApi {
-    builder: TransactionBuilder&lt;Normal&gt;,
-    dev_inspect_builder: TransactionBuilder&lt;DevInspect&gt;,
-}
+<span class="kw">pub struct </span>TransactionBuilderApi(TransactionBuilder);
 
 <span class="kw">impl </span>TransactionBuilderApi {
     <span class="kw">pub fn </span>new(state: Arc&lt;AuthorityState&gt;) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>reader = Arc::new(AuthorityStateDataReader::new(state));
-        <span class="self">Self </span>{
-            builder: TransactionBuilder::new(reader.clone()),
-            dev_inspect_builder: TransactionBuilder::new(reader),
-        }
+        <span class="self">Self</span>(TransactionBuilder::new(reader))
     }
 }
 
@@ -455,8 +408,8 @@
         recipient: SuiAddress,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .transfer_object(signer, object_id, gas, <span class="kw-2">*</span>gas_budget, recipient)
+            </span>.<span class="number">0
+            </span>.transfer_object(signer, object_id, gas, <span class="kw-2">*</span>gas_budget, recipient)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
     }
@@ -470,8 +423,8 @@
         amount: <span class="prelude-ty">Option</span>&lt;BigInt&lt;u64&gt;&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .transfer_sui(
+            </span>.<span class="number">0
+            </span>.transfer_sui(
                 signer,
                 sui_object_id,
                 <span class="kw-2">*</span>gas_budget,
@@ -492,8 +445,8 @@
         gas_budget: BigInt&lt;u64&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .pay(
+            </span>.<span class="number">0
+            </span>.pay(
                 signer,
                 input_coins,
                 recipients,
@@ -514,8 +467,8 @@
         gas_budget: BigInt&lt;u64&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .pay_sui(
+            </span>.<span class="number">0
+            </span>.pay_sui(
                 signer,
                 input_coins,
                 recipients,
@@ -534,8 +487,8 @@
         gas_budget: BigInt&lt;u64&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .pay_all_sui(signer, input_coins, recipient, <span class="kw-2">*</span>gas_budget)
+            </span>.<span class="number">0
+            </span>.pay_all_sui(signer, input_coins, recipient, <span class="kw-2">*</span>gas_budget)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
     }
@@ -553,8 +506,8 @@
             .map(|data| data.to_vec().map_err(|e| <span class="macro">anyhow::anyhow!</span>(e)))
             .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;<span class="kw">_</span>&gt;, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>;
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .publish(sender, compiled_modules, dependencies, gas, <span class="kw-2">*</span>gas_budget)
+            </span>.<span class="number">0
+            </span>.publish(sender, compiled_modules, dependencies, gas, <span class="kw-2">*</span>gas_budget)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
     }
@@ -569,8 +522,8 @@
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>split_amounts = split_amounts.into_iter().map(|a| <span class="kw-2">*</span>a).collect();
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .split_coin(signer, coin_object_id, split_amounts, gas, <span class="kw-2">*</span>gas_budget)
+            </span>.<span class="number">0
+            </span>.split_coin(signer, coin_object_id, split_amounts, gas, <span class="kw-2">*</span>gas_budget)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
     }
@@ -584,8 +537,8 @@
         gas_budget: BigInt&lt;u64&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .split_coin_equal(signer, coin_object_id, <span class="kw-2">*</span>split_count, gas, <span class="kw-2">*</span>gas_budget)
+            </span>.<span class="number">0
+            </span>.split_coin_equal(signer, coin_object_id, <span class="kw-2">*</span>split_count, gas, <span class="kw-2">*</span>gas_budget)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
     }
@@ -599,8 +552,8 @@
         gas_budget: BigInt&lt;u64&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>data = <span class="self">self
-            </span>.builder
-            .merge_coins(signer, primary_coin, coin_to_merge, gas, <span class="kw-2">*</span>gas_budget)
+            </span>.<span class="number">0
+            </span>.merge_coins(signer, primary_coin, coin_to_merge, gas, <span class="kw-2">*</span>gas_budget)
             .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
     }
@@ -615,40 +568,22 @@
         rpc_arguments: Vec&lt;SuiJsonValue&gt;,
         gas: <span class="prelude-ty">Option</span>&lt;ObjectID&gt;,
         gas_budget: BigInt&lt;u64&gt;,
-        txn_builder_mode: <span class="prelude-ty">Option</span>&lt;SuiTransactionBlockBuilderMode&gt;,
+        _txn_builder_mode: <span class="prelude-ty">Option</span>&lt;SuiTransactionBlockBuilderMode&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
-        <span class="kw">let </span>mode = txn_builder_mode.unwrap_or(SuiTransactionBlockBuilderMode::Commit);
-        <span class="kw">let </span>data: TransactionData = <span class="kw">match </span>mode {
-            SuiTransactionBlockBuilderMode::DevInspect =&gt; {
-                <span class="self">self</span>.dev_inspect_builder
-                    .move_call(
-                        signer,
-                        package_object_id,
-                        <span class="kw-2">&amp;</span>module,
-                        <span class="kw-2">&amp;</span>function,
-                        type_arguments,
-                        rpc_arguments,
-                        gas,
-                        <span class="kw-2">*</span>gas_budget,
-                    )
-                    .<span class="kw">await</span><span class="question-mark">?
-            </span>}
-            SuiTransactionBlockBuilderMode::Commit =&gt; {
-                <span class="self">self</span>.builder
-                    .move_call(
-                        signer,
-                        package_object_id,
-                        <span class="kw-2">&amp;</span>module,
-                        <span class="kw-2">&amp;</span>function,
-                        type_arguments,
-                        rpc_arguments,
-                        gas,
-                        <span class="kw-2">*</span>gas_budget,
-                    )
-                    .<span class="kw">await</span><span class="question-mark">?
-            </span>}
-        };
-        <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
+        <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(
+            <span class="self">self</span>.<span class="number">0
+                </span>.move_call(
+                    signer,
+                    package_object_id,
+                    <span class="kw-2">&amp;</span>module,
+                    <span class="kw-2">&amp;</span>function,
+                    type_arguments,
+                    rpc_arguments,
+                    gas,
+                    <span class="kw-2">*</span>gas_budget,
+                )
+                .<span class="kw">await</span><span class="question-mark">?</span>,
+        )<span class="question-mark">?</span>)
     }
 
     <span class="kw">async fn </span>batch_transaction(
@@ -657,22 +592,13 @@
         params: Vec&lt;RPCTransactionRequestParams&gt;,
         gas: <span class="prelude-ty">Option</span>&lt;ObjectID&gt;,
         gas_budget: BigInt&lt;u64&gt;,
-        txn_builder_mode: <span class="prelude-ty">Option</span>&lt;SuiTransactionBlockBuilderMode&gt;,
+        _txn_builder_mode: <span class="prelude-ty">Option</span>&lt;SuiTransactionBlockBuilderMode&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
-        <span class="kw">let </span>mode = txn_builder_mode.unwrap_or(SuiTransactionBlockBuilderMode::Commit);
-        <span class="kw">let </span>data = <span class="kw">match </span>mode {
-            SuiTransactionBlockBuilderMode::DevInspect =&gt; {
-                <span class="self">self</span>.dev_inspect_builder
-                    .batch_transaction(signer, params, gas, <span class="kw-2">*</span>gas_budget)
-                    .<span class="kw">await</span><span class="question-mark">?
-            </span>}
-            SuiTransactionBlockBuilderMode::Commit =&gt; {
-                <span class="self">self</span>.builder
-                    .batch_transaction(signer, params, gas, <span class="kw-2">*</span>gas_budget)
-                    .<span class="kw">await</span><span class="question-mark">?
-            </span>}
-        };
-        <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(data)<span class="question-mark">?</span>)
+        <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(
+            <span class="self">self</span>.<span class="number">0
+                </span>.batch_transaction(signer, params, gas, <span class="kw-2">*</span>gas_budget)
+                .<span class="kw">await</span><span class="question-mark">?</span>,
+        )<span class="question-mark">?</span>)
     }
 
     <span class="kw">async fn </span>request_add_stake(
@@ -686,8 +612,8 @@
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="kw">let </span>amount = amount.map(|a| <span class="kw-2">*</span>a);
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(
-            <span class="self">self</span>.builder
-                .request_add_stake(signer, coins, amount, validator, gas, <span class="kw-2">*</span>gas_budget)
+            <span class="self">self</span>.<span class="number">0
+                </span>.request_add_stake(signer, coins, amount, validator, gas, <span class="kw-2">*</span>gas_budget)
                 .<span class="kw">await</span><span class="question-mark">?</span>,
         )<span class="question-mark">?</span>)
     }
@@ -700,8 +626,8 @@
         gas_budget: BigInt&lt;u64&gt;,
     ) -&gt; RpcResult&lt;TransactionBlockBytes&gt; {
         <span class="prelude-val">Ok</span>(TransactionBlockBytes::from_data(
-            <span class="self">self</span>.builder
-                .request_withdraw_stake(signer, staked_sui, gas, <span class="kw-2">*</span>gas_budget)
+            <span class="self">self</span>.<span class="number">0
+                </span>.request_withdraw_stake(signer, staked_sui, gas, <span class="kw-2">*</span>gas_budget)
                 .<span class="kw">await</span><span class="question-mark">?</span>,
         )<span class="question-mark">?</span>)
     }

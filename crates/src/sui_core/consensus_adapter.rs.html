@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/consensus_adapter.rs`."><title>consensus_adapter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_core/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/consensus_adapter.rs`."><title>consensus_adapter.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_core/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -992,6 +992,110 @@
 <a href="#992" id="992">992</a>
 <a href="#993" id="993">993</a>
 <a href="#994" id="994">994</a>
+<a href="#995" id="995">995</a>
+<a href="#996" id="996">996</a>
+<a href="#997" id="997">997</a>
+<a href="#998" id="998">998</a>
+<a href="#999" id="999">999</a>
+<a href="#1000" id="1000">1000</a>
+<a href="#1001" id="1001">1001</a>
+<a href="#1002" id="1002">1002</a>
+<a href="#1003" id="1003">1003</a>
+<a href="#1004" id="1004">1004</a>
+<a href="#1005" id="1005">1005</a>
+<a href="#1006" id="1006">1006</a>
+<a href="#1007" id="1007">1007</a>
+<a href="#1008" id="1008">1008</a>
+<a href="#1009" id="1009">1009</a>
+<a href="#1010" id="1010">1010</a>
+<a href="#1011" id="1011">1011</a>
+<a href="#1012" id="1012">1012</a>
+<a href="#1013" id="1013">1013</a>
+<a href="#1014" id="1014">1014</a>
+<a href="#1015" id="1015">1015</a>
+<a href="#1016" id="1016">1016</a>
+<a href="#1017" id="1017">1017</a>
+<a href="#1018" id="1018">1018</a>
+<a href="#1019" id="1019">1019</a>
+<a href="#1020" id="1020">1020</a>
+<a href="#1021" id="1021">1021</a>
+<a href="#1022" id="1022">1022</a>
+<a href="#1023" id="1023">1023</a>
+<a href="#1024" id="1024">1024</a>
+<a href="#1025" id="1025">1025</a>
+<a href="#1026" id="1026">1026</a>
+<a href="#1027" id="1027">1027</a>
+<a href="#1028" id="1028">1028</a>
+<a href="#1029" id="1029">1029</a>
+<a href="#1030" id="1030">1030</a>
+<a href="#1031" id="1031">1031</a>
+<a href="#1032" id="1032">1032</a>
+<a href="#1033" id="1033">1033</a>
+<a href="#1034" id="1034">1034</a>
+<a href="#1035" id="1035">1035</a>
+<a href="#1036" id="1036">1036</a>
+<a href="#1037" id="1037">1037</a>
+<a href="#1038" id="1038">1038</a>
+<a href="#1039" id="1039">1039</a>
+<a href="#1040" id="1040">1040</a>
+<a href="#1041" id="1041">1041</a>
+<a href="#1042" id="1042">1042</a>
+<a href="#1043" id="1043">1043</a>
+<a href="#1044" id="1044">1044</a>
+<a href="#1045" id="1045">1045</a>
+<a href="#1046" id="1046">1046</a>
+<a href="#1047" id="1047">1047</a>
+<a href="#1048" id="1048">1048</a>
+<a href="#1049" id="1049">1049</a>
+<a href="#1050" id="1050">1050</a>
+<a href="#1051" id="1051">1051</a>
+<a href="#1052" id="1052">1052</a>
+<a href="#1053" id="1053">1053</a>
+<a href="#1054" id="1054">1054</a>
+<a href="#1055" id="1055">1055</a>
+<a href="#1056" id="1056">1056</a>
+<a href="#1057" id="1057">1057</a>
+<a href="#1058" id="1058">1058</a>
+<a href="#1059" id="1059">1059</a>
+<a href="#1060" id="1060">1060</a>
+<a href="#1061" id="1061">1061</a>
+<a href="#1062" id="1062">1062</a>
+<a href="#1063" id="1063">1063</a>
+<a href="#1064" id="1064">1064</a>
+<a href="#1065" id="1065">1065</a>
+<a href="#1066" id="1066">1066</a>
+<a href="#1067" id="1067">1067</a>
+<a href="#1068" id="1068">1068</a>
+<a href="#1069" id="1069">1069</a>
+<a href="#1070" id="1070">1070</a>
+<a href="#1071" id="1071">1071</a>
+<a href="#1072" id="1072">1072</a>
+<a href="#1073" id="1073">1073</a>
+<a href="#1074" id="1074">1074</a>
+<a href="#1075" id="1075">1075</a>
+<a href="#1076" id="1076">1076</a>
+<a href="#1077" id="1077">1077</a>
+<a href="#1078" id="1078">1078</a>
+<a href="#1079" id="1079">1079</a>
+<a href="#1080" id="1080">1080</a>
+<a href="#1081" id="1081">1081</a>
+<a href="#1082" id="1082">1082</a>
+<a href="#1083" id="1083">1083</a>
+<a href="#1084" id="1084">1084</a>
+<a href="#1085" id="1085">1085</a>
+<a href="#1086" id="1086">1086</a>
+<a href="#1087" id="1087">1087</a>
+<a href="#1088" id="1088">1088</a>
+<a href="#1089" id="1089">1089</a>
+<a href="#1090" id="1090">1090</a>
+<a href="#1091" id="1091">1091</a>
+<a href="#1092" id="1092">1092</a>
+<a href="#1093" id="1093">1093</a>
+<a href="#1094" id="1094">1094</a>
+<a href="#1095" id="1095">1095</a>
+<a href="#1096" id="1096">1096</a>
+<a href="#1097" id="1097">1097</a>
+<a href="#1098" id="1098">1098</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -1006,13 +1110,11 @@
 <span class="kw">use </span>narwhal_types::{TransactionProto, TransactionsClient};
 <span class="kw">use </span>narwhal_worker::LocalNarwhalClient;
 <span class="kw">use </span>parking_lot::{Mutex, RwLockReadGuard};
+<span class="kw">use </span>prometheus::register_int_counter_with_registry;
+<span class="kw">use </span>prometheus::register_int_gauge_with_registry;
+<span class="kw">use </span>prometheus::IntCounter;
 <span class="kw">use </span>prometheus::IntGauge;
 <span class="kw">use </span>prometheus::Registry;
-<span class="kw">use </span>prometheus::{
-    linear_buckets, register_histogram_with_registry, register_int_counter_with_registry, Histogram,
-};
-<span class="kw">use </span>prometheus::{register_histogram_vec_with_registry, register_int_gauge_with_registry};
-<span class="kw">use </span>prometheus::{HistogramVec, IntCounter};
 <span class="kw">use </span>rand::rngs::StdRng;
 <span class="kw">use </span>rand::SeedableRng;
 <span class="kw">use </span>std::collections::{HashMap, VecDeque};
@@ -1048,33 +1150,23 @@
 #[path = <span class="string">&quot;unit_tests/consensus_tests.rs&quot;</span>]
 </span><span class="kw">pub mod </span>consensus_tests;
 
-<span class="kw">const </span>SEQUENCING_CERTIFICATE_LATENCY_SEC_BUCKETS: <span class="kw-2">&amp;</span>[f64] = <span class="kw-2">&amp;</span>[
-    <span class="number">0.1</span>, <span class="number">0.25</span>, <span class="number">0.5</span>, <span class="number">1.</span>, <span class="number">2.5</span>, <span class="number">5.</span>, <span class="number">7.5</span>, <span class="number">10.</span>, <span class="number">12.5</span>, <span class="number">15.</span>, <span class="number">20.</span>, <span class="number">25.</span>, <span class="number">30.</span>, <span class="number">60.</span>, <span class="number">90.</span>, <span class="number">120.</span>, <span class="number">180.</span>, <span class="number">300.</span>,
-    <span class="number">600.</span>,
-];
-
 <span class="kw">pub struct </span>ConsensusAdapterMetrics {
     <span class="comment">// Certificate sequencing metrics
     </span><span class="kw">pub </span>sequencing_certificate_attempt: IntCounter,
     <span class="kw">pub </span>sequencing_certificate_success: IntCounter,
     <span class="kw">pub </span>sequencing_certificate_failures: IntCounter,
     <span class="kw">pub </span>sequencing_certificate_inflight: IntGauge,
-    <span class="kw">pub </span>sequencing_acknowledge_latency: HistogramVec,
-    <span class="kw">pub </span>sequencing_certificate_latency: HistogramVec,
-    <span class="kw">pub </span>sequencing_certificate_authority_position: Histogram,
+    <span class="kw">pub </span>sequencing_acknowledge_latency: mysten_metrics::histogram::HistogramVec,
+    <span class="kw">pub </span>sequencing_certificate_latency: mysten_metrics::histogram::HistogramVec,
+    <span class="kw">pub </span>sequencing_certificate_authority_position: mysten_metrics::histogram::Histogram,
     <span class="kw">pub </span>sequencing_in_flight_semaphore_wait: IntGauge,
     <span class="kw">pub </span>sequencing_in_flight_submissions: IntGauge,
     <span class="kw">pub </span>sequencing_estimated_latency: IntGauge,
+    <span class="kw">pub </span>sequencing_resubmission_interval_ms: IntGauge,
 }
 
 <span class="kw">impl </span>ConsensusAdapterMetrics {
     <span class="kw">pub fn </span>new(registry: <span class="kw-2">&amp;</span>Registry) -&gt; <span class="self">Self </span>{
-        <span class="kw">let </span>authority_position_buckets = <span class="kw-2">&amp;</span>[
-            linear_buckets(<span class="number">0.0</span>, <span class="number">1.0</span>, <span class="number">19</span>).unwrap().as_slice(),
-            linear_buckets(<span class="number">20.0</span>, <span class="number">5.0</span>, <span class="number">10</span>).unwrap().as_slice(),
-        ]
-        .concat();
-
         <span class="self">Self </span>{
             sequencing_certificate_attempt: <span class="macro">register_int_counter_with_registry!</span>(
                 <span class="string">&quot;sequencing_certificate_attempt&quot;</span>,
@@ -1100,28 +1192,23 @@
                 registry,
             )
                 .unwrap(),
-            sequencing_acknowledge_latency: <span class="macro">register_histogram_vec_with_registry!</span>(
+            sequencing_acknowledge_latency: mysten_metrics::histogram::HistogramVec::new_in_registry(
                 <span class="string">&quot;sequencing_acknowledge_latency&quot;</span>,
                 <span class="string">&quot;The latency for acknowledgement from sequencing engine. The overall sequencing latency is measured by the sequencing_certificate_latency metric&quot;</span>,
                 <span class="kw-2">&amp;</span>[<span class="string">&quot;retry&quot;</span>],
-                SEQUENCING_CERTIFICATE_LATENCY_SEC_BUCKETS.to_vec(),
                 registry,
-            )
-                .unwrap(),
-            sequencing_certificate_latency: <span class="macro">register_histogram_vec_with_registry!</span>(
+            ),
+            sequencing_certificate_latency: mysten_metrics::histogram::HistogramVec::new_in_registry(
                 <span class="string">&quot;sequencing_certificate_latency&quot;</span>,
                 <span class="string">&quot;The latency for sequencing a certificate.&quot;</span>,
-                <span class="kw-2">&amp;</span>[<span class="string">&quot;position&quot;</span>, <span class="string">&quot;mapped_to_low_scoring&quot;</span>],
-                SEQUENCING_CERTIFICATE_LATENCY_SEC_BUCKETS.to_vec(),
+                <span class="kw-2">&amp;</span>[<span class="string">&quot;position&quot;</span>, <span class="string">&quot;mapped_to_low_scoring&quot;</span>, <span class="string">&quot;first_submitter&quot;</span>],
                 registry,
-            )
-                .unwrap(),
-            sequencing_certificate_authority_position: <span class="macro">register_histogram_with_registry!</span>(
+            ),
+            sequencing_certificate_authority_position: mysten_metrics::histogram::Histogram::new_in_registry(
                 <span class="string">&quot;sequencing_certificate_authority_position&quot;</span>,
                 <span class="string">&quot;The position of the authority when submitted a certificate to consensus.&quot;</span>,
-                authority_position_buckets.to_vec(),
                 registry,
-            ).unwrap(),
+            ),
             sequencing_in_flight_semaphore_wait: <span class="macro">register_int_gauge_with_registry!</span>(
                 <span class="string">&quot;sequencing_in_flight_semaphore_wait&quot;</span>,
                 <span class="string">&quot;How many requests are blocked on submit_permit.&quot;</span>,
@@ -1136,7 +1223,13 @@
                 .unwrap(),
             sequencing_estimated_latency: <span class="macro">register_int_gauge_with_registry!</span>(
                 <span class="string">&quot;sequencing_estimated_latency&quot;</span>,
-                <span class="string">&quot;Consensus latency estimated by consensus adapter&quot;</span>,
+                <span class="string">&quot;Consensus latency estimated by consensus adapter in milliseconds&quot;</span>,
+                registry,
+            )
+                .unwrap(),
+            sequencing_resubmission_interval_ms: <span class="macro">register_int_gauge_with_registry!</span>(
+                <span class="string">&quot;sequencing_resubmission_interval_ms&quot;</span>,
+                <span class="string">&quot;Resubmission interval used by consensus adapter in milliseconds&quot;</span>,
                 registry,
             )
                 .unwrap(),
@@ -1265,6 +1358,12 @@
     </span>max_pending_transactions: usize,
     <span class="doccomment">/// Number of submitted transactions still inflight at this node.
     </span>num_inflight_transactions: AtomicU64,
+    <span class="doccomment">/// Dictates the maximum position  from which will submit to consensus. Even if the is elected to
+    /// submit from a higher position than this, it will &quot;reset&quot; to the max_submit_position.
+    </span>max_submit_position: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+    <span class="doccomment">/// When provided it will override the current back off logic and will use this value instead
+    /// as delay step.
+    </span>submit_delay_step_override: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
     <span class="doccomment">/// A structure to check the connection statuses populated by the Connection Monitor Listener
     </span>connection_monitor_status: Box&lt;Arc&lt;<span class="kw">dyn </span>CheckConnection&gt;&gt;,
     <span class="doccomment">/// A structure to check the reputation scores populated by Consensus
@@ -1302,6 +1401,8 @@
         connection_monitor_status: Box&lt;Arc&lt;<span class="kw">dyn </span>CheckConnection&gt;&gt;,
         max_pending_transactions: usize,
         max_pending_local_submissions: usize,
+        max_submit_position: <span class="prelude-ty">Option</span>&lt;usize&gt;,
+        submit_delay_step_override: <span class="prelude-ty">Option</span>&lt;Duration&gt;,
         metrics: ConsensusAdapterMetrics,
     ) -&gt; <span class="self">Self </span>{
         <span class="kw">let </span>num_inflight_transactions = Default::default();
@@ -1311,6 +1412,8 @@
             consensus_client,
             authority,
             max_pending_transactions,
+            max_submit_position,
+            submit_delay_step_override,
             num_inflight_transactions,
             connection_monitor_status,
             low_scoring_authorities,
@@ -1366,33 +1469,53 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         committee: <span class="kw-2">&amp;</span>Committee,
         transaction: <span class="kw-2">&amp;</span>ConsensusTransaction,
-    ) -&gt; (<span class="kw">impl </span>Future&lt;Output = ()&gt;, usize, bool) {
-        <span class="kw">let </span>(duration, position, mapped_to_low_scoring) = <span class="kw">match </span><span class="kw-2">&amp;</span>transaction.kind {
+    ) -&gt; (<span class="kw">impl </span>Future&lt;Output = ()&gt;, usize, bool, AuthorityName) {
+        <span class="kw">let </span>(duration, position, mapped_to_low_scoring, first_submitter) = <span class="kw">match </span><span class="kw-2">&amp;</span>transaction.kind {
             ConsensusTransactionKind::UserTransaction(certificate) =&gt; {
-                <span class="kw">let </span>tx_digest = certificate.digest();
-                <span class="kw">let </span>(position, mapped_to_low_scoring) =
-                    <span class="self">self</span>.submission_position(committee, tx_digest);
-                <span class="kw">const </span>DEFAULT_LATENCY: Duration = Duration::from_secs(<span class="number">5</span>);
-                <span class="kw">const </span>MAX_LATENCY: Duration = Duration::from_secs(<span class="number">5 </span>* <span class="number">60</span>);
-                <span class="kw">let </span>latency = <span class="self">self</span>.latency_observer.latency().unwrap_or(DEFAULT_LATENCY);
-                <span class="kw">let </span>latency = std::cmp::max(latency, DEFAULT_LATENCY);
-                <span class="kw">let </span>latency = std::cmp::min(latency, MAX_LATENCY);
-                <span class="self">self</span>.metrics
-                    .sequencing_estimated_latency
-                    .set(latency.as_millis() <span class="kw">as </span>i64);
-                <span class="kw">let </span>delay_step = latency * <span class="number">3 </span>/ <span class="number">2</span>;
-                (
-                    delay_step * position <span class="kw">as </span>u32,
-                    position,
-                    mapped_to_low_scoring,
-                )
+                <span class="self">self</span>.await_submit_delay_user_transaction(committee, certificate.digest())
             }
-            <span class="kw">_ </span>=&gt; (Duration::ZERO, <span class="number">0</span>, <span class="bool-val">false</span>),
+            <span class="kw">_ </span>=&gt; (Duration::ZERO, <span class="number">0</span>, <span class="bool-val">false</span>, AuthorityName::default()),
         };
         (
             tokio::time::sleep(duration),
             position,
             mapped_to_low_scoring,
+            first_submitter,
+        )
+    }
+
+    <span class="kw">fn </span>await_submit_delay_user_transaction(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        committee: <span class="kw-2">&amp;</span>Committee,
+        tx_digest: <span class="kw-2">&amp;</span>TransactionDigest,
+    ) -&gt; (Duration, usize, bool, AuthorityName) {
+        <span class="kw">let </span>(<span class="kw-2">mut </span>position, mapped_to_low_scoring, first_submitter) =
+            <span class="self">self</span>.submission_position(committee, tx_digest);
+
+        <span class="kw">const </span>MAX_LATENCY: Duration = Duration::from_secs(<span class="number">5 </span>* <span class="number">60</span>);
+        <span class="kw">const </span>DEFAULT_LATENCY: Duration = Duration::from_secs(<span class="number">3</span>); <span class="comment">// &gt; p50 consensus latency with global deployment
+        </span><span class="kw">let </span>latency = <span class="self">self</span>.latency_observer.latency().unwrap_or(DEFAULT_LATENCY);
+        <span class="self">self</span>.metrics
+            .sequencing_estimated_latency
+            .set(latency.as_millis() <span class="kw">as </span>i64);
+
+        <span class="kw">let </span>latency = std::cmp::max(latency, DEFAULT_LATENCY);
+        <span class="kw">let </span>latency = std::cmp::min(latency, MAX_LATENCY);
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>(max_submit_position) = <span class="self">self</span>.max_submit_position {
+            position = std::cmp::min(position, max_submit_position);
+        }
+
+        <span class="kw">let </span>delay_step = <span class="self">self</span>.submit_delay_step_override.unwrap_or(latency * <span class="number">2</span>);
+        <span class="self">self</span>.metrics
+            .sequencing_resubmission_interval_ms
+            .set(delay_step.as_millis() <span class="kw">as </span>i64);
+
+        (
+            delay_step * position <span class="kw">as </span>u32,
+            position,
+            mapped_to_low_scoring,
+            first_submitter,
         )
     }
 
@@ -1407,7 +1530,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         committee: <span class="kw-2">&amp;</span>Committee,
         tx_digest: <span class="kw-2">&amp;</span>TransactionDigest,
-    ) -&gt; (usize, bool) {
+    ) -&gt; (usize, bool, AuthorityName) {
         <span class="kw">let </span>positions = order_validators_for_submission(committee, tx_digest);
 
         <span class="self">self</span>.check_submission_wrt_connectivity_and_scores(positions)
@@ -1436,14 +1559,15 @@
     </span><span class="kw">fn </span>check_submission_wrt_connectivity_and_scores(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         positions: Vec&lt;AuthorityName&gt;,
-    ) -&gt; (usize, bool) {
+    ) -&gt; (usize, bool, AuthorityName) {
         <span class="kw">let </span>low_scoring_authorities = <span class="self">self</span>.low_scoring_authorities.load().load_full();
+        <span class="kw">let </span>first_submitter = <span class="kw-2">*</span>positions.first().unwrap_or(<span class="kw-2">&amp;</span>AuthorityName::default());
         <span class="kw">if </span>low_scoring_authorities.get(<span class="kw-2">&amp;</span><span class="self">self</span>.authority).is_some() {
-            <span class="kw">return </span>(positions.len(), <span class="bool-val">true</span>);
+            <span class="kw">return </span>(positions.len(), <span class="bool-val">true</span>, first_submitter);
         }
         <span class="kw">let </span>initial_position = get_position_in_list(<span class="self">self</span>.authority, positions.clone());
 
-        <span class="kw">let </span>filtered_positions = positions
+        <span class="kw">let </span>filtered_positions: Vec&lt;<span class="kw">_</span>&gt; = positions
             .into_iter()
             .filter(|authority| {
                 <span class="self">self</span>.authority == <span class="kw-2">*</span>authority <span class="comment">// Don&#39;t filter yourself out!
@@ -1460,8 +1584,11 @@
             })
             .collect();
 
+        <span class="kw">let </span>first_submitter = <span class="kw-2">*</span>filtered_positions
+            .first()
+            .unwrap_or(<span class="kw-2">&amp;</span>AuthorityName::default());
         <span class="kw">let </span>position = get_position_in_list(<span class="self">self</span>.authority, filtered_positions);
-        (position, position &lt; initial_position)
+        (position, position &lt; initial_position, first_submitter)
     }
 
     <span class="doccomment">/// This method blocks until transaction is persisted in local database
@@ -1547,7 +1674,7 @@
             .consensus_message_processed_notify(transaction_key)
             .boxed();
 
-        <span class="kw">let </span>(await_submit, position, mapped_to_low_scoring) =
+        <span class="kw">let </span>(await_submit, position, mapped_to_low_scoring, first_submitter) =
             <span class="self">self</span>.await_submit_delay(epoch_store.committee(), <span class="kw-2">&amp;</span>transaction);
         <span class="kw">let </span><span class="kw-2">mut </span>guard = InflightDropGuard::acquire(<span class="kw-2">&amp;</span><span class="self">self</span>);
 
@@ -1587,6 +1714,7 @@
             // to consensus
             </span>guard.position = <span class="prelude-val">Some</span>(position);
             guard.mapped_to_low_scoring = mapped_to_low_scoring;
+            guard.first_submitter = <span class="prelude-val">Some</span>(first_submitter);
 
             <span class="kw">let </span>_permit: SemaphorePermit = <span class="self">self
                 </span>.submit_semaphore
@@ -1634,7 +1762,7 @@
                 <span class="self">self</span>.metrics
                     .sequencing_acknowledge_latency
                     .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>bucket])
-                    .observe(ack_start.elapsed().as_secs_f64());
+                    .report(ack_start.elapsed().as_millis() <span class="kw">as </span>u64);
             };
             <span class="kw">match </span>select(processed_waiter, submit_inner.boxed()).<span class="kw">await </span>{
                 Either::Left((processed, _submit_inner)) =&gt; processed,
@@ -1812,6 +1940,7 @@
     start: Instant,
     position: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     mapped_to_low_scoring: bool,
+    first_submitter: <span class="prelude-ty">Option</span>&lt;AuthorityName&gt;,
 }
 
 <span class="kw">impl</span>&lt;<span class="lifetime">&#39;a</span>&gt; InflightDropGuard&lt;<span class="lifetime">&#39;a</span>&gt; {
@@ -1829,6 +1958,7 @@
             start: Instant::now(),
             position: <span class="prelude-val">None</span>,
             mapped_to_low_scoring: <span class="bool-val">false</span>,
+            first_submitter: <span class="prelude-val">None</span>,
         }
     }
 }
@@ -1849,7 +1979,7 @@
             <span class="self">self</span>.adapter
                 .metrics
                 .sequencing_certificate_authority_position
-                .observe(position <span class="kw">as </span>f64);
+                .report(position <span class="kw">as </span>u64);
             position.to_string()
         } <span class="kw">else </span>{
             <span class="string">&quot;not_submitted&quot;</span>.to_string()
@@ -1862,8 +1992,17 @@
         <span class="self">self</span>.adapter
             .metrics
             .sequencing_certificate_latency
-            .with_label_values(<span class="kw-2">&amp;</span>[<span class="kw-2">&amp;</span>position, <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.mapped_to_low_scoring)])
-            .observe(latency.as_secs_f64());
+            .with_label_values(<span class="kw-2">&amp;</span>[
+                <span class="kw-2">&amp;</span>position,
+                <span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">&quot;{:?}&quot;</span>, <span class="self">self</span>.mapped_to_low_scoring),
+                <span class="kw-2">&amp;</span><span class="self">self
+                    </span>.first_submitter
+                    .as_ref()
+                    .unwrap_or(<span class="kw-2">&amp;</span>AuthorityName::default())
+                    .concise()
+                    .to_string(),
+            ])
+            .report(latency.as_millis() <span class="kw">as </span>u64);
     }
 }
 
@@ -1936,35 +2075,104 @@
 <span class="attr">#[cfg(test)]
 </span><span class="kw">mod </span>adapter_tests {
     <span class="kw">use </span><span class="kw">super</span>::position_submit_certificate;
+    <span class="kw">use </span><span class="kw">crate</span>::consensus_adapter::{
+        ConnectionMonitorStatusForTests, ConsensusAdapter, ConsensusAdapterMetrics,
+        LazyNarwhalClient,
+    };
     <span class="kw">use </span>fastcrypto::traits::KeyPair;
-    <span class="kw">use </span>rand::{rngs::StdRng, Rng, SeedableRng};
+    <span class="kw">use </span>rand::Rng;
+    <span class="kw">use </span>rand::{rngs::StdRng, SeedableRng};
+    <span class="kw">use </span>std::sync::Arc;
+    <span class="kw">use </span>std::time::Duration;
     <span class="kw">use </span>sui_types::{
         base_types::TransactionDigest,
         committee::Committee,
         crypto::{get_key_pair_from_rng, AuthorityKeyPair, AuthorityPublicKeyBytes},
     };
 
-    <span class="attr">#[test]
-    </span><span class="kw">fn </span>test_position_submit_certificate() {
-        <span class="comment">// grab a random committee and a random stake distribution
-        </span><span class="kw">let </span><span class="kw-2">mut </span>rng = StdRng::from_seed([<span class="number">0</span>; <span class="number">32</span>]);
-        <span class="kw">const </span>COMMITTEE_SIZE: usize = <span class="number">10</span>; <span class="comment">// 3 * 3 + 1;
-        </span><span class="kw">let </span>authorities = (<span class="number">0</span>..COMMITTEE_SIZE)
+    <span class="kw">fn </span>test_committee(rng: <span class="kw-2">&amp;mut </span>StdRng, size: usize) -&gt; Committee {
+        <span class="kw">let </span>authorities = (<span class="number">0</span>..size)
             .map(|_k| {
                 (
                     AuthorityPublicKeyBytes::from(
-                        get_key_pair_from_rng::&lt;AuthorityKeyPair, <span class="kw">_</span>&gt;(<span class="kw-2">&amp;mut </span>rng)
-                            .<span class="number">1
-                            </span>.public(),
+                        get_key_pair_from_rng::&lt;AuthorityKeyPair, <span class="kw">_</span>&gt;(rng).<span class="number">1</span>.public(),
                     ),
                     rng.gen_range(<span class="number">0u64</span>..<span class="number">10u64</span>),
                 )
             })
             .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
-        <span class="kw">let </span>committee = Committee::new_for_testing_with_normalized_voting_power(
+        Committee::new_for_testing_with_normalized_voting_power(
             <span class="number">0</span>,
             authorities.iter().cloned().collect(),
+        )
+    }
+
+    <span class="attr">#[tokio::test]
+    </span><span class="kw">async fn </span>test_await_submit_delay_user_transaction() {
+        <span class="comment">// grab a random committee and a random stake distribution
+        </span><span class="kw">let </span><span class="kw-2">mut </span>rng = StdRng::from_seed([<span class="number">0</span>; <span class="number">32</span>]);
+        <span class="kw">let </span>committee = test_committee(<span class="kw-2">&amp;mut </span>rng, <span class="number">10</span>);
+
+        <span class="comment">// When we define max submit position and delay step
+        </span><span class="kw">let </span>consensus_adapter = ConsensusAdapter::new(
+            Box::new(LazyNarwhalClient::new(
+                <span class="string">&quot;/ip4/127.0.0.1/tcp/0/http&quot;</span>.parse().unwrap(),
+            )),
+            <span class="kw-2">*</span>committee.authority_by_index(<span class="number">0</span>).unwrap(),
+            Box::new(Arc::new(ConnectionMonitorStatusForTests {})),
+            <span class="number">100_000</span>,
+            <span class="number">100_000</span>,
+            <span class="prelude-val">Some</span>(<span class="number">1</span>),
+            <span class="prelude-val">Some</span>(Duration::from_secs(<span class="number">2</span>)),
+            ConsensusAdapterMetrics::new_test(),
         );
+
+        <span class="comment">// transaction to submit
+        </span><span class="kw">let </span>tx_digest = TransactionDigest::generate(<span class="kw-2">&amp;mut </span>rng);
+
+        <span class="comment">// Ensure that the original position is higher
+        </span><span class="kw">let </span>(position, low_scoring_authority, _first_submitter) =
+            consensus_adapter.submission_position(<span class="kw-2">&amp;</span>committee, <span class="kw-2">&amp;</span>tx_digest);
+        <span class="macro">assert_eq!</span>(position, <span class="number">7</span>);
+        <span class="macro">assert!</span>(!low_scoring_authority);
+
+        <span class="comment">// Make sure that position is set to max value 0
+        </span><span class="kw">let </span>(delay_step, position, low_scoring_authority, <span class="kw">_</span>) =
+            consensus_adapter.await_submit_delay_user_transaction(<span class="kw-2">&amp;</span>committee, <span class="kw-2">&amp;</span>tx_digest);
+
+        <span class="macro">assert_eq!</span>(position, <span class="number">1</span>);
+        <span class="macro">assert_eq!</span>(delay_step, Duration::from_secs(<span class="number">2</span>));
+        <span class="macro">assert!</span>(!low_scoring_authority);
+
+        <span class="comment">// Without submit position and delay step
+        </span><span class="kw">let </span>consensus_adapter = ConsensusAdapter::new(
+            Box::new(LazyNarwhalClient::new(
+                <span class="string">&quot;/ip4/127.0.0.1/tcp/0/http&quot;</span>.parse().unwrap(),
+            )),
+            <span class="kw-2">*</span>committee.authority_by_index(<span class="number">0</span>).unwrap(),
+            Box::new(Arc::new(ConnectionMonitorStatusForTests {})),
+            <span class="number">100_000</span>,
+            <span class="number">100_000</span>,
+            <span class="prelude-val">None</span>,
+            <span class="prelude-val">None</span>,
+            ConsensusAdapterMetrics::new_test(),
+        );
+
+        <span class="kw">let </span>(delay_step, position, low_scoring_authority, _first_submitter) =
+            consensus_adapter.await_submit_delay_user_transaction(<span class="kw-2">&amp;</span>committee, <span class="kw-2">&amp;</span>tx_digest);
+
+        <span class="macro">assert_eq!</span>(position, <span class="number">7</span>);
+
+        <span class="comment">// delay_step * position = 3 * 2 * 7 = 42
+        </span><span class="macro">assert_eq!</span>(delay_step, Duration::from_secs(<span class="number">42</span>));
+        <span class="macro">assert!</span>(!low_scoring_authority);
+    }
+
+    <span class="attr">#[test]
+    </span><span class="kw">fn </span>test_position_submit_certificate() {
+        <span class="comment">// grab a random committee and a random stake distribution
+        </span><span class="kw">let </span><span class="kw-2">mut </span>rng = StdRng::from_seed([<span class="number">0</span>; <span class="number">32</span>]);
+        <span class="kw">let </span>committee = test_committee(<span class="kw-2">&amp;mut </span>rng, <span class="number">10</span>);
 
         <span class="comment">// generate random transaction digests, and account for validator selection
         </span><span class="kw">const </span>NUM_TEST_TRANSACTIONS: usize = <span class="number">1000</span>;
@@ -1973,7 +2181,7 @@
             <span class="kw">let </span>tx_digest = TransactionDigest::generate(<span class="kw-2">&amp;mut </span>rng);
 
             <span class="kw">let </span><span class="kw-2">mut </span>zero_found = <span class="bool-val">false</span>;
-            <span class="kw">for </span>(name, <span class="kw">_</span>) <span class="kw">in </span>authorities.iter() {
+            <span class="kw">for </span>(name, <span class="kw">_</span>) <span class="kw">in </span>committee.members() {
                 <span class="kw">let </span>f = position_submit_certificate(<span class="kw-2">&amp;</span>committee, name, <span class="kw-2">&amp;</span>tx_digest);
                 <span class="macro">assert!</span>(f &lt; committee.num_members());
                 <span class="kw">if </span>f == <span class="number">0 </span>{

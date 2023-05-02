@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-json-rpc/src/read_api.rs`."><title>read_api.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_json_rpc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_json_rpc/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-json-rpc/src/read_api.rs`."><title>read_api.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_json_rpc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_json_rpc/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1193,6 +1193,42 @@
 <a href="#1193" id="1193">1193</a>
 <a href="#1194" id="1194">1194</a>
 <a href="#1195" id="1195">1195</a>
+<a href="#1196" id="1196">1196</a>
+<a href="#1197" id="1197">1197</a>
+<a href="#1198" id="1198">1198</a>
+<a href="#1199" id="1199">1199</a>
+<a href="#1200" id="1200">1200</a>
+<a href="#1201" id="1201">1201</a>
+<a href="#1202" id="1202">1202</a>
+<a href="#1203" id="1203">1203</a>
+<a href="#1204" id="1204">1204</a>
+<a href="#1205" id="1205">1205</a>
+<a href="#1206" id="1206">1206</a>
+<a href="#1207" id="1207">1207</a>
+<a href="#1208" id="1208">1208</a>
+<a href="#1209" id="1209">1209</a>
+<a href="#1210" id="1210">1210</a>
+<a href="#1211" id="1211">1211</a>
+<a href="#1212" id="1212">1212</a>
+<a href="#1213" id="1213">1213</a>
+<a href="#1214" id="1214">1214</a>
+<a href="#1215" id="1215">1215</a>
+<a href="#1216" id="1216">1216</a>
+<a href="#1217" id="1217">1217</a>
+<a href="#1218" id="1218">1218</a>
+<a href="#1219" id="1219">1219</a>
+<a href="#1220" id="1220">1220</a>
+<a href="#1221" id="1221">1221</a>
+<a href="#1222" id="1222">1222</a>
+<a href="#1223" id="1223">1223</a>
+<a href="#1224" id="1224">1224</a>
+<a href="#1225" id="1225">1225</a>
+<a href="#1226" id="1226">1226</a>
+<a href="#1227" id="1227">1227</a>
+<a href="#1228" id="1228">1228</a>
+<a href="#1229" id="1229">1229</a>
+<a href="#1230" id="1230">1230</a>
+<a href="#1231" id="1231">1231</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -1230,12 +1266,10 @@
 <span class="kw">use </span>sui_types::crypto::default_hash;
 <span class="kw">use </span>sui_types::digests::TransactionEventsDigest;
 <span class="kw">use </span>sui_types::display::DisplayVersionUpdatedEvent;
+<span class="kw">use </span>sui_types::effects::{TransactionEffects, TransactionEffectsAPI, TransactionEvents};
 <span class="kw">use </span>sui_types::error::{SuiObjectResponseError, UserInputError};
 <span class="kw">use </span>sui_types::messages::TransactionDataAPI;
-<span class="kw">use </span>sui_types::messages::{
-    TransactionData, TransactionEffects, TransactionEffectsAPI, TransactionEvents,
-    VerifiedTransaction,
-};
+<span class="kw">use </span>sui_types::messages::{TransactionData, VerifiedTransaction};
 <span class="kw">use </span>sui_types::messages_checkpoint::{CheckpointSequenceNumber, CheckpointTimestamp};
 <span class="kw">use </span>sui_types::move_package::normalize_modules;
 <span class="kw">use </span>sui_types::object::{Data, Object, ObjectRead, PastObjectRead};
@@ -1245,6 +1279,7 @@
 <span class="kw">use </span><span class="kw">crate</span>::api::{validate_limit, ReadApiServer};
 <span class="kw">use </span><span class="kw">crate</span>::api::{QUERY_MAX_RESULT_LIMIT, QUERY_MAX_RESULT_LIMIT_CHECKPOINTS};
 <span class="kw">use </span><span class="kw">crate</span>::error::Error;
+<span class="kw">use </span><span class="kw">crate</span>::with_tracing;
 <span class="kw">use crate</span>::{
     get_balance_changes_from_effect, get_object_changes, ObjectProviderCache, SuiRpcModule,
 };
@@ -1360,12 +1395,10 @@
         <span class="kw">if </span>opts.require_input() {
             <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
             <span class="kw">let </span>digest_clone = digests.clone();
-            <span class="kw">let </span>transactions = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+            <span class="kw">let </span>transactions =
                 state.multi_get_executed_transactions(<span class="kw-2">&amp;</span>digest_clone).tap_err(
                     |err| <span class="macro">debug!</span>(digests=<span class="question-mark">?</span>digest_clone, <span class="string">&quot;Failed to multi get transaction: {:?}&quot;</span>, err),
-                )
-            })
-                .<span class="kw">await</span><span class="question-mark">??</span>;
+                )<span class="question-mark">?</span>;
 
             <span class="kw">for </span>((_digest, cache_entry), txn) <span class="kw">in
                 </span>temp_response.iter_mut().zip(transactions.into_iter())
@@ -1378,12 +1411,9 @@
         </span><span class="kw">if </span>opts.require_effects() {
             <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
             <span class="kw">let </span>digests_clone = digests.clone();
-            <span class="kw">let </span>effects_list = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
-                state.multi_get_executed_effects(<span class="kw-2">&amp;</span>digests_clone).tap_err(
-                    |err| <span class="macro">debug!</span>(digests=<span class="question-mark">?</span>digests_clone, <span class="string">&quot;Failed to multi get effects: {:?}&quot;</span>, err),
-                )
-            })
-            .<span class="kw">await</span><span class="question-mark">??</span>;
+            <span class="kw">let </span>effects_list = state.multi_get_executed_effects(<span class="kw-2">&amp;</span>digests_clone).tap_err(
+                |err| <span class="macro">debug!</span>(digests=<span class="question-mark">?</span>digests_clone, <span class="string">&quot;Failed to multi get effects: {:?}&quot;</span>, err),
+            )<span class="question-mark">?</span>;
             <span class="kw">for </span>((_digest, cache_entry), e) <span class="kw">in
                 </span>temp_response.iter_mut().zip(effects_list.into_iter())
             {
@@ -1393,11 +1423,11 @@
 
         <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
         <span class="kw">let </span>digests_clone = digests.clone();
-        <span class="kw">let </span>checkpoint_seq_list = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+        <span class="kw">let </span>checkpoint_seq_list =
             state
             .multi_get_transaction_checkpoint(<span class="kw-2">&amp;</span>digests_clone)
             .tap_err(
-                |err| <span class="macro">debug!</span>(digests=<span class="question-mark">?</span>digests_clone, <span class="string">&quot;Failed to multi get checkpoint sequence number: {:?}&quot;</span>, err))}).<span class="kw">await</span><span class="question-mark">??</span>;
+                |err| <span class="macro">debug!</span>(digests=<span class="question-mark">?</span>digests_clone, <span class="string">&quot;Failed to multi get checkpoint sequence number: {:?}&quot;</span>, err))<span class="question-mark">?</span>;
         <span class="kw">for </span>((_digest, cache_entry), seq) <span class="kw">in </span>temp_response
             .iter_mut()
             .zip(checkpoint_seq_list.into_iter())
@@ -1601,49 +1631,50 @@
         object_id: ObjectID,
         options: <span class="prelude-ty">Option</span>&lt;SuiObjectDataOptions&gt;,
     ) -&gt; RpcResult&lt;SuiObjectResponse&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_object&quot;</span>);
-        <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-        <span class="kw">let </span>object_read = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
-            state.get_object_read(<span class="kw-2">&amp;</span>object_id).map_err(|e| {
-                <span class="macro">warn!</span>(<span class="question-mark">?</span>object_id, <span class="string">&quot;Failed to get object: {:?}&quot;</span>, e);
-                <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_object&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+            <span class="kw">let </span>object_read = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+                state.get_object_read(<span class="kw-2">&amp;</span>object_id).map_err(|e| {
+                    <span class="macro">warn!</span>(<span class="question-mark">?</span>object_id, <span class="string">&quot;Failed to get object: {:?}&quot;</span>, e);
+                    <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
+                })
             })
-        })
-        .<span class="kw">await
-        </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
-        <span class="kw">let </span>options = options.unwrap_or_default();
+            .<span class="kw">await
+            </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
+            <span class="kw">let </span>options = options.unwrap_or_default();
 
-        <span class="kw">match </span>object_read {
-            ObjectRead::NotExists(id) =&gt; <span class="prelude-val">Ok</span>(SuiObjectResponse::new_with_error(
-                SuiObjectResponseError::NotExists { object_id: id },
-            )),
-            ObjectRead::Exists(object_ref, o, layout) =&gt; {
-                <span class="kw">let </span><span class="kw-2">mut </span>display_fields = <span class="prelude-val">None</span>;
-                <span class="kw">if </span>options.show_display {
-                    <span class="kw">match </span>get_display_fields(<span class="self">self</span>, <span class="kw-2">&amp;</span>o, <span class="kw-2">&amp;</span>layout) {
-                        <span class="prelude-val">Ok</span>(rendered_fields) =&gt; display_fields = <span class="prelude-val">Some</span>(rendered_fields),
-                        <span class="prelude-val">Err</span>(e) =&gt; {
-                            <span class="kw">return </span><span class="prelude-val">Ok</span>(SuiObjectResponse::new(
-                                <span class="prelude-val">Some</span>((object_ref, o, layout, options, <span class="prelude-val">None</span>).try_into()<span class="question-mark">?</span>),
-                                <span class="prelude-val">Some</span>(SuiObjectResponseError::DisplayError {
-                                    error: e.to_string(),
-                                }),
-                            ));
+            <span class="kw">match </span>object_read {
+                ObjectRead::NotExists(id) =&gt; <span class="prelude-val">Ok</span>(SuiObjectResponse::new_with_error(
+                    SuiObjectResponseError::NotExists { object_id: id },
+                )),
+                ObjectRead::Exists(object_ref, o, layout) =&gt; {
+                    <span class="kw">let </span><span class="kw-2">mut </span>display_fields = <span class="prelude-val">None</span>;
+                    <span class="kw">if </span>options.show_display {
+                        <span class="kw">match </span>get_display_fields(<span class="self">self</span>, <span class="kw-2">&amp;</span>o, <span class="kw-2">&amp;</span>layout) {
+                            <span class="prelude-val">Ok</span>(rendered_fields) =&gt; display_fields = <span class="prelude-val">Some</span>(rendered_fields),
+                            <span class="prelude-val">Err</span>(e) =&gt; {
+                                <span class="kw">return </span><span class="prelude-val">Ok</span>(SuiObjectResponse::new(
+                                    <span class="prelude-val">Some</span>((object_ref, o, layout, options, <span class="prelude-val">None</span>).try_into()<span class="question-mark">?</span>),
+                                    <span class="prelude-val">Some</span>(SuiObjectResponseError::DisplayError {
+                                        error: e.to_string(),
+                                    }),
+                                ));
+                            }
                         }
                     }
+                    <span class="prelude-val">Ok</span>(SuiObjectResponse::new_with_data(
+                        (object_ref, o, layout, options, display_fields).try_into()<span class="question-mark">?</span>,
+                    ))
                 }
-                <span class="prelude-val">Ok</span>(SuiObjectResponse::new_with_data(
-                    (object_ref, o, layout, options, display_fields).try_into()<span class="question-mark">?</span>,
-                ))
+                ObjectRead::Deleted((object_id, version, digest)) =&gt; <span class="prelude-val">Ok</span>(
+                    SuiObjectResponse::new_with_error(SuiObjectResponseError::Deleted {
+                        object_id,
+                        version,
+                        digest,
+                    }),
+                ),
             }
-            ObjectRead::Deleted((object_id, version, digest)) =&gt; <span class="prelude-val">Ok</span>(
-                SuiObjectResponse::new_with_error(SuiObjectResponseError::Deleted {
-                    object_id,
-                    version,
-                    digest,
-                }),
-            ),
-        }
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -1652,46 +1683,47 @@
         object_ids: Vec&lt;ObjectID&gt;,
         options: <span class="prelude-ty">Option</span>&lt;SuiObjectDataOptions&gt;,
     ) -&gt; RpcResult&lt;Vec&lt;SuiObjectResponse&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;multi_get_objects&quot;</span>);
-        <span class="kw">if </span>object_ids.len() &lt;= <span class="kw-2">*</span>QUERY_MAX_RESULT_LIMIT {
-            <span class="self">self</span>.metrics
-                .get_objects_limit
-                .report(object_ids.len() <span class="kw">as </span>u64);
-            <span class="kw">let </span><span class="kw-2">mut </span>futures = <span class="macro">vec!</span>[];
-            <span class="kw">for </span>object_id <span class="kw">in </span>object_ids {
-                futures.push(<span class="self">self</span>.get_object(object_id, options.clone()));
-            }
-            <span class="kw">let </span>results = join_all(futures).<span class="kw">await</span>;
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;multi_get_objects&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">if </span>object_ids.len() &lt;= <span class="kw-2">*</span>QUERY_MAX_RESULT_LIMIT {
+                <span class="self">self</span>.metrics
+                    .get_objects_limit
+                    .report(object_ids.len() <span class="kw">as </span>u64);
+                <span class="kw">let </span><span class="kw-2">mut </span>futures = <span class="macro">vec!</span>[];
+                <span class="kw">for </span>object_id <span class="kw">in </span>object_ids {
+                    futures.push(<span class="self">self</span>.get_object(object_id, options.clone()));
+                }
+                <span class="kw">let </span>results = join_all(futures).<span class="kw">await</span>;
 
-            <span class="kw">let </span>objects_result: <span class="prelude-ty">Result</span>&lt;Vec&lt;SuiObjectResponse&gt;, String&gt; = results
-                .into_iter()
-                .map(|result| <span class="kw">match </span>result {
-                    <span class="prelude-val">Ok</span>(response) =&gt; <span class="prelude-val">Ok</span>(response),
-                    <span class="prelude-val">Err</span>(error) =&gt; {
-                        <span class="macro">error!</span>(<span class="string">&quot;Failed to fetch object with error: {error:?}&quot;</span>);
-                        <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Error: {}&quot;</span>, error))
-                    }
+                <span class="kw">let </span>objects_result: <span class="prelude-ty">Result</span>&lt;Vec&lt;SuiObjectResponse&gt;, String&gt; = results
+                    .into_iter()
+                    .map(|result| <span class="kw">match </span>result {
+                        <span class="prelude-val">Ok</span>(response) =&gt; <span class="prelude-val">Ok</span>(response),
+                        <span class="prelude-val">Err</span>(error) =&gt; {
+                            <span class="macro">error!</span>(<span class="string">&quot;Failed to fetch object with error: {error:?}&quot;</span>);
+                            <span class="prelude-val">Err</span>(<span class="macro">format!</span>(<span class="string">&quot;Error: {}&quot;</span>, error))
+                        }
+                    })
+                    .collect();
+
+                <span class="kw">let </span>objects = objects_result.map_err(|err| {
+                    Error::UnexpectedError(<span class="macro">format!</span>(<span class="string">&quot;Failed to fetch objects with error: {}&quot;</span>, err))
+                })<span class="question-mark">?</span>;
+
+                <span class="self">self</span>.metrics
+                    .get_objects_result_size
+                    .report(objects.len() <span class="kw">as </span>u64);
+                <span class="self">self</span>.metrics
+                    .get_objects_result_size_total
+                    .inc_by(objects.len() <span class="kw">as </span>u64);
+                <span class="prelude-val">Ok</span>(objects)
+            } <span class="kw">else </span>{
+                <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(UserInputError::SizeLimitExceeded {
+                    limit: <span class="string">&quot;input limit&quot;</span>.to_string(),
+                    value: QUERY_MAX_RESULT_LIMIT.to_string()
                 })
-                .collect();
-
-            <span class="kw">let </span>objects = objects_result.map_err(|err| {
-                Error::UnexpectedError(<span class="macro">format!</span>(<span class="string">&quot;Failed to fetch objects with error: {}&quot;</span>, err))
-            })<span class="question-mark">?</span>;
-
-            <span class="self">self</span>.metrics
-                .get_objects_result_size
-                .report(objects.len() <span class="kw">as </span>u64);
-            <span class="self">self</span>.metrics
-                .get_objects_result_size_total
-                .inc_by(objects.len() <span class="kw">as </span>u64);
-            <span class="prelude-val">Ok</span>(objects)
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(UserInputError::SizeLimitExceeded {
-                limit: <span class="string">&quot;input limit&quot;</span>.to_string(),
-                value: QUERY_MAX_RESULT_LIMIT.to_string()
-            })
-            .into())
-        }
+                .into())
+            }
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -1701,44 +1733,47 @@
         version: SequenceNumber,
         options: <span class="prelude-ty">Option</span>&lt;SuiObjectDataOptions&gt;,
     ) -&gt; RpcResult&lt;SuiPastObjectResponse&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;try_get_past_object&quot;</span>);
-        <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-        <span class="kw">let </span>past_read = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;try_get_past_object&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+            <span class="kw">let </span>past_read = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
             state.get_past_object_read(<span class="kw-2">&amp;</span>object_id, version)
             .map_err(|e| {
                 <span class="macro">error!</span>(<span class="string">&quot;Failed to call try_get_past_object for object: {object_id:?} version: {version:?} with error: {e:?}&quot;</span>);
                 <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
             })}).<span class="kw">await</span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
-        <span class="kw">let </span>options = options.unwrap_or_default();
-        <span class="kw">match </span>past_read {
-            PastObjectRead::ObjectNotExists(id) =&gt; <span class="prelude-val">Ok</span>(SuiPastObjectResponse::ObjectNotExists(id)),
-            PastObjectRead::VersionFound(object_ref, o, layout) =&gt; {
-                <span class="kw">let </span>display_fields = <span class="kw">if </span>options.show_display {
-                    <span class="comment">// TODO (jian): api breaking change to also modify past objects.
-                    </span><span class="prelude-val">Some</span>(get_display_fields(<span class="self">self</span>, <span class="kw-2">&amp;</span>o, <span class="kw-2">&amp;</span>layout)<span class="question-mark">?</span>)
-                } <span class="kw">else </span>{
-                    <span class="prelude-val">None
-                </span>};
-                <span class="prelude-val">Ok</span>(SuiPastObjectResponse::VersionFound(
-                    (object_ref, o, layout, options, display_fields).try_into()<span class="question-mark">?</span>,
-                ))
+            <span class="kw">let </span>options = options.unwrap_or_default();
+            <span class="kw">match </span>past_read {
+                PastObjectRead::ObjectNotExists(id) =&gt; {
+                    <span class="prelude-val">Ok</span>(SuiPastObjectResponse::ObjectNotExists(id))
+                }
+                PastObjectRead::VersionFound(object_ref, o, layout) =&gt; {
+                    <span class="kw">let </span>display_fields = <span class="kw">if </span>options.show_display {
+                        <span class="comment">// TODO (jian): api breaking change to also modify past objects.
+                        </span><span class="prelude-val">Some</span>(get_display_fields(<span class="self">self</span>, <span class="kw-2">&amp;</span>o, <span class="kw-2">&amp;</span>layout)<span class="question-mark">?</span>)
+                    } <span class="kw">else </span>{
+                        <span class="prelude-val">None
+                    </span>};
+                    <span class="prelude-val">Ok</span>(SuiPastObjectResponse::VersionFound(
+                        (object_ref, o, layout, options, display_fields).try_into()<span class="question-mark">?</span>,
+                    ))
+                }
+                PastObjectRead::ObjectDeleted(oref) =&gt; {
+                    <span class="prelude-val">Ok</span>(SuiPastObjectResponse::ObjectDeleted(oref.into()))
+                }
+                PastObjectRead::VersionNotFound(id, seq_num) =&gt; {
+                    <span class="prelude-val">Ok</span>(SuiPastObjectResponse::VersionNotFound(id, seq_num))
+                }
+                PastObjectRead::VersionTooHigh {
+                    object_id,
+                    asked_version,
+                    latest_version,
+                } =&gt; <span class="prelude-val">Ok</span>(SuiPastObjectResponse::VersionTooHigh {
+                    object_id,
+                    asked_version,
+                    latest_version,
+                }),
             }
-            PastObjectRead::ObjectDeleted(oref) =&gt; {
-                <span class="prelude-val">Ok</span>(SuiPastObjectResponse::ObjectDeleted(oref.into()))
-            }
-            PastObjectRead::VersionNotFound(id, seq_num) =&gt; {
-                <span class="prelude-val">Ok</span>(SuiPastObjectResponse::VersionNotFound(id, seq_num))
-            }
-            PastObjectRead::VersionTooHigh {
-                object_id,
-                asked_version,
-                latest_version,
-            } =&gt; <span class="prelude-val">Ok</span>(SuiPastObjectResponse::VersionTooHigh {
-                object_id,
-                asked_version,
-                latest_version,
-            }),
-        }
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -1747,44 +1782,46 @@
         past_objects: Vec&lt;SuiGetPastObjectRequest&gt;,
         options: <span class="prelude-ty">Option</span>&lt;SuiObjectDataOptions&gt;,
     ) -&gt; RpcResult&lt;Vec&lt;SuiPastObjectResponse&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;try_multi_get_past_objects&quot;</span>);
-        <span class="kw">if </span>past_objects.len() &lt;= <span class="kw-2">*</span>QUERY_MAX_RESULT_LIMIT {
-            <span class="kw">let </span><span class="kw-2">mut </span>futures = <span class="macro">vec!</span>[];
-            <span class="kw">for </span>past_object <span class="kw">in </span>past_objects {
-                futures.push(<span class="self">self</span>.try_get_past_object(
-                    past_object.object_id,
-                    past_object.version,
-                    options.clone(),
-                ));
-            }
-            <span class="kw">let </span>results = join_all(futures).<span class="kw">await</span>;
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;try_multi_get_past_objects&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">if </span>past_objects.len() &lt;= <span class="kw-2">*</span>QUERY_MAX_RESULT_LIMIT {
+                <span class="kw">let </span><span class="kw-2">mut </span>futures = <span class="macro">vec!</span>[];
+                <span class="kw">for </span>past_object <span class="kw">in </span>past_objects {
+                    futures.push(<span class="self">self</span>.try_get_past_object(
+                        past_object.object_id,
+                        past_object.version,
+                        options.clone(),
+                    ));
+                }
+                <span class="kw">let </span>results = join_all(futures).<span class="kw">await</span>;
 
-            <span class="kw">let </span>(oks, errs): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = results.into_iter().partition(Result::is_ok);
-            <span class="kw">let </span>success = oks.into_iter().filter_map(Result::ok).collect();
-            <span class="kw">let </span>errors: Vec&lt;<span class="kw">_</span>&gt; = errs.into_iter().filter_map(Result::err).collect();
-            <span class="kw">if </span>!errors.is_empty() {
-                <span class="kw">let </span>error_string = errors
-                    .iter()
-                    .map(|e| e.to_string())
-                    .collect::&lt;Vec&lt;String&gt;&gt;()
-                    .join(<span class="string">&quot;; &quot;</span>);
-                <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;{error_string}&quot;</span>).into())
+                <span class="kw">let </span>(oks, errs): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) = results.into_iter().partition(Result::is_ok);
+                <span class="kw">let </span>success = oks.into_iter().filter_map(Result::ok).collect();
+                <span class="kw">let </span>errors: Vec&lt;<span class="kw">_</span>&gt; = errs.into_iter().filter_map(Result::err).collect();
+                <span class="kw">if </span>!errors.is_empty() {
+                    <span class="kw">let </span>error_string = errors
+                        .iter()
+                        .map(|e| e.to_string())
+                        .collect::&lt;Vec&lt;String&gt;&gt;()
+                        .join(<span class="string">&quot;; &quot;</span>);
+                    <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;{error_string}&quot;</span>).into())
+                } <span class="kw">else </span>{
+                    <span class="prelude-val">Ok</span>(success)
+                }
             } <span class="kw">else </span>{
-                <span class="prelude-val">Ok</span>(success)
+                <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(UserInputError::SizeLimitExceeded {
+                    limit: <span class="string">&quot;input limit&quot;</span>.to_string(),
+                    value: QUERY_MAX_RESULT_LIMIT.to_string()
+                })
+                .into())
             }
-        } <span class="kw">else </span>{
-            <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(UserInputError::SizeLimitExceeded {
-                limit: <span class="string">&quot;input limit&quot;</span>.to_string(),
-                value: QUERY_MAX_RESULT_LIMIT.to_string()
-            })
-            .into())
-        }
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>get_total_transaction_blocks(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RpcResult&lt;BigInt&lt;u64&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_total_transaction_blocks&quot;</span>);
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.state.get_total_transaction_blocks()<span class="question-mark">?</span>.into())
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_total_transaction_blocks&quot;</span>, <span class="kw">async move </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.state.get_total_transaction_blocks()<span class="question-mark">?</span>.into())
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -1793,49 +1830,48 @@
         digest: TransactionDigest,
         opts: <span class="prelude-ty">Option</span>&lt;SuiTransactionBlockResponseOptions&gt;,
     ) -&gt; RpcResult&lt;SuiTransactionBlockResponse&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_transaction_block&quot;</span>);
-        <span class="kw">let </span>opts = opts.unwrap_or_default();
-        <span class="kw">let </span><span class="kw-2">mut </span>temp_response = IntermediateTransactionResponse::new(digest);
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_transaction_block&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>opts = opts.unwrap_or_default();
+            <span class="kw">let </span><span class="kw-2">mut </span>temp_response = IntermediateTransactionResponse::new(digest);
 
-        <span class="comment">// Fetch transaction to determine existence
-        </span><span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-        <span class="kw">let </span>transaction = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
-            state
-                .get_executed_transaction(digest)
-                .<span class="kw">await
-                </span>.tap_err(|err| <span class="macro">debug!</span>(tx_digest=<span class="question-mark">?</span>digest, <span class="string">&quot;Failed to get transaction: {:?}&quot;</span>, err))
-        })
-        .<span class="kw">await
-        </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
-        <span class="kw">let </span>input_objects = transaction
-            .data()
-            .inner()
-            .intent_message
-            .value
-            .input_objects()
-            .unwrap_or_default();
+            <span class="comment">// Fetch transaction to determine existence
+            </span><span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+            <span class="kw">let </span>transaction = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+                state.get_executed_transaction(digest).<span class="kw">await</span>.tap_err(
+                    |err| <span class="macro">debug!</span>(tx_digest=<span class="question-mark">?</span>digest, <span class="string">&quot;Failed to get transaction: {:?}&quot;</span>, err),
+                )
+            })
+            .<span class="kw">await
+            </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
+            <span class="kw">let </span>input_objects = transaction
+                .data()
+                .inner()
+                .intent_message
+                .value
+                .input_objects()
+                .unwrap_or_default();
 
-        <span class="comment">// the input is needed for object_changes to retrieve the sender address.
-        </span><span class="kw">if </span>opts.require_input() {
-            temp_response.transaction = <span class="prelude-val">Some</span>(transaction);
-        }
+            <span class="comment">// the input is needed for object_changes to retrieve the sender address.
+            </span><span class="kw">if </span>opts.require_input() {
+                temp_response.transaction = <span class="prelude-val">Some</span>(transaction);
+            }
 
-        <span class="comment">// Fetch effects when `show_events` is true because events relies on effects
-        </span><span class="kw">if </span>opts.require_effects() {
+            <span class="comment">// Fetch effects when `show_events` is true because events relies on effects
+            </span><span class="kw">if </span>opts.require_effects() {
+                <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+                temp_response.effects = <span class="prelude-val">Some</span>(
+                    <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+                        state.get_executed_effects(digest).tap_err(
+                            |err| <span class="macro">debug!</span>(tx_digest=<span class="question-mark">?</span>digest, <span class="string">&quot;Failed to get effects: {:?}&quot;</span>, err),
+                        )
+                    })
+                    .<span class="kw">await
+                    </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>,
+                );
+            }
+
             <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-            temp_response.effects = <span class="prelude-val">Some</span>(
-                <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
-                    state.get_executed_effects(digest).tap_err(
-                        |err| <span class="macro">debug!</span>(tx_digest=<span class="question-mark">?</span>digest, <span class="string">&quot;Failed to get effects: {:?}&quot;</span>, err),
-                    )
-                })
-                .<span class="kw">await
-                </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>,
-            );
-        }
-
-        <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-        <span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw">_</span>, seq)) = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move</span>{
+            <span class="kw">if let </span><span class="prelude-val">Some</span>((<span class="kw">_</span>, seq)) = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move</span>{
             state.get_transaction_checkpoint_sequence(<span class="kw-2">&amp;</span>digest)
             .map_err(|e| {
                 <span class="macro">error!</span>(<span class="string">&quot;Failed to retrieve checkpoint sequence for transaction {digest:?} with error: {e:?}&quot;</span>);
@@ -1845,10 +1881,10 @@
             temp_response.checkpoint_seq = <span class="prelude-val">Some</span>(seq);
         }
 
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(checkpoint_seq) = <span class="kw-2">&amp;</span>temp_response.checkpoint_seq {
-            <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-            <span class="kw">let </span>checkpoint_seq = <span class="kw-2">*</span>checkpoint_seq;
-            <span class="kw">let </span>checkpoint = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(checkpoint_seq) = <span class="kw-2">&amp;</span>temp_response.checkpoint_seq {
+                <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+                <span class="kw">let </span>checkpoint_seq = <span class="kw-2">*</span>checkpoint_seq;
+                <span class="kw">let </span>checkpoint = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
                 state
                 <span class="comment">// safe to unwrap because we have checked `is_some` above
                 </span>.get_checkpoint_by_sequence_number(checkpoint_seq)
@@ -1857,16 +1893,17 @@
                     <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;
                 </span>)
                 })}).<span class="kw">await</span>.map_err(|e|<span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
-            <span class="comment">// TODO(chris): we don&#39;t need to fetch the whole checkpoint summary
-            </span>temp_response.timestamp = checkpoint.as_ref().map(|c| c.timestamp_ms);
-        }
+                <span class="comment">// TODO(chris): we don&#39;t need to fetch the whole checkpoint summary
+                </span>temp_response.timestamp = checkpoint.as_ref().map(|c| c.timestamp_ms);
+            }
 
-        <span class="kw">if </span>opts.show_events &amp;&amp; temp_response.effects.is_some() {
-            <span class="comment">// safe to unwrap because we have checked is_some
-            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(event_digest) = temp_response.effects.as_ref().unwrap().events_digest() {
-                <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-                <span class="kw">let </span>event_digest = <span class="kw-2">*</span>event_digest;
-                <span class="kw">let </span>events = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move</span>{
+            <span class="kw">if </span>opts.show_events &amp;&amp; temp_response.effects.is_some() {
+                <span class="comment">// safe to unwrap because we have checked is_some
+                </span><span class="kw">if let </span><span class="prelude-val">Some</span>(event_digest) = temp_response.effects.as_ref().unwrap().events_digest()
+                {
+                    <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+                    <span class="kw">let </span>event_digest = <span class="kw-2">*</span>event_digest;
+                    <span class="kw">let </span>events = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move</span>{
                     state
                     .get_transaction_events(<span class="kw-2">&amp;</span>event_digest)
                     .map_err(|e|
@@ -1874,47 +1911,66 @@
                             <span class="macro">error!</span>(<span class="string">&quot;Failed to call get transaction events for events digest: {event_digest:?} with error {e:?}&quot;</span>);
                             Error::from(e)
                         })}).<span class="kw">await</span>.map_err(|e|<span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
-                <span class="kw">match </span>to_sui_transaction_events(<span class="self">self</span>, digest, events) {
-                    <span class="prelude-val">Ok</span>(e) =&gt; temp_response.events = <span class="prelude-val">Some</span>(e),
-                    <span class="prelude-val">Err</span>(e) =&gt; temp_response.errors.push(e.to_string()),
-                };
-            } <span class="kw">else </span>{
-                <span class="comment">// events field will be Some if and only if `show_events` is true and
-                // there is no error in converting fetching events
-                </span>temp_response.events = <span class="prelude-val">Some</span>(SuiTransactionBlockEvents::default());
+                    <span class="kw">match </span>to_sui_transaction_events(<span class="self">self</span>, digest, events) {
+                        <span class="prelude-val">Ok</span>(e) =&gt; temp_response.events = <span class="prelude-val">Some</span>(e),
+                        <span class="prelude-val">Err</span>(e) =&gt; temp_response.errors.push(e.to_string()),
+                    };
+                } <span class="kw">else </span>{
+                    <span class="comment">// events field will be Some if and only if `show_events` is true and
+                    // there is no error in converting fetching events
+                    </span>temp_response.events = <span class="prelude-val">Some</span>(SuiTransactionBlockEvents::default());
+                }
             }
-        }
 
-        <span class="kw">let </span>object_cache = ObjectProviderCache::new(<span class="self">self</span>.state.clone());
-        <span class="kw">if </span>opts.show_balance_changes {
-            <span class="kw">if let </span><span class="prelude-val">Some</span>(effects) = <span class="kw-2">&amp;</span>temp_response.effects {
-                <span class="kw">let </span>balance_changes =
-                    get_balance_changes_from_effect(<span class="kw-2">&amp;</span>object_cache, effects, input_objects, <span class="prelude-val">None</span>)
-                        .<span class="kw">await
-                        </span>.map_err(Error::SuiError)<span class="question-mark">?</span>;
-                temp_response.balance_changes = <span class="prelude-val">Some</span>(balance_changes);
-            }
-        }
+            <span class="kw">let </span>object_cache = ObjectProviderCache::new(<span class="self">self</span>.state.clone());
+            <span class="kw">if </span>opts.show_balance_changes {
+                <span class="kw">if let </span><span class="prelude-val">Some</span>(effects) = <span class="kw-2">&amp;</span>temp_response.effects {
+                    <span class="kw">let </span>balance_changes = get_balance_changes_from_effect(
+                        <span class="kw-2">&amp;</span>object_cache,
+                        effects,
+                        input_objects,
+                        <span class="prelude-val">None</span>,
+                    )
+                    .<span class="kw">await</span>;
 
-        <span class="kw">if </span>opts.show_object_changes {
-            <span class="kw">if let </span>(<span class="prelude-val">Some</span>(effects), <span class="prelude-val">Some</span>(input)) =
-                (<span class="kw-2">&amp;</span>temp_response.effects, <span class="kw-2">&amp;</span>temp_response.transaction)
-            {
-                <span class="kw">let </span>sender = input.data().intent_message().value.sender();
-                <span class="kw">let </span>object_changes = get_object_changes(
-                    <span class="kw-2">&amp;</span>object_cache,
-                    sender,
-                    effects.modified_at_versions(),
-                    effects.all_changed_objects(),
-                    effects.all_deleted(),
-                )
-                .<span class="kw">await
-                </span>.map_err(Error::SuiError)<span class="question-mark">?</span>;
-                temp_response.object_changes = <span class="prelude-val">Some</span>(object_changes);
+                    <span class="kw">if let </span><span class="prelude-val">Ok</span>(balance_changes) = balance_changes {
+                        temp_response.balance_changes = <span class="prelude-val">Some</span>(balance_changes);
+                    } <span class="kw">else </span>{
+                        temp_response.errors.push(<span class="macro">format!</span>(
+                            <span class="string">&quot;Cannot retrieve balance changes: {}&quot;</span>,
+                            balance_changes.unwrap_err()
+                        ));
+                    }
+                }
             }
-        }
-        <span class="kw">let </span>epoch_store = <span class="self">self</span>.state.load_epoch_store_one_call_per_task();
-        convert_to_response(temp_response, <span class="kw-2">&amp;</span>opts, epoch_store.module_cache())
+
+            <span class="kw">if </span>opts.show_object_changes {
+                <span class="kw">if let </span>(<span class="prelude-val">Some</span>(effects), <span class="prelude-val">Some</span>(input)) =
+                    (<span class="kw-2">&amp;</span>temp_response.effects, <span class="kw-2">&amp;</span>temp_response.transaction)
+                {
+                    <span class="kw">let </span>sender = input.data().intent_message().value.sender();
+                    <span class="kw">let </span>object_changes = get_object_changes(
+                        <span class="kw-2">&amp;</span>object_cache,
+                        sender,
+                        effects.modified_at_versions(),
+                        effects.all_changed_objects(),
+                        effects.all_deleted(),
+                    )
+                    .<span class="kw">await</span>;
+
+                    <span class="kw">if let </span><span class="prelude-val">Ok</span>(object_changes) = object_changes {
+                        temp_response.object_changes = <span class="prelude-val">Some</span>(object_changes);
+                    } <span class="kw">else </span>{
+                        temp_response.errors.push(<span class="macro">format!</span>(
+                            <span class="string">&quot;Cannot retrieve object changes: {}&quot;</span>,
+                            object_changes.unwrap_err()
+                        ));
+                    }
+                }
+            }
+            <span class="kw">let </span>epoch_store = <span class="self">self</span>.state.load_epoch_store_one_call_per_task();
+            convert_to_response(temp_response, <span class="kw-2">&amp;</span>opts, epoch_store.module_cache())
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -1923,17 +1979,23 @@
         digests: Vec&lt;TransactionDigest&gt;,
         opts: <span class="prelude-ty">Option</span>&lt;SuiTransactionBlockResponseOptions&gt;,
     ) -&gt; RpcResult&lt;Vec&lt;SuiTransactionBlockResponse&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;multi_get_transaction_blocks&quot;</span>);
-        <span class="prelude-val">Ok</span>(<span class="self">self
-            </span>.multi_get_transaction_blocks_internal(digests, opts)
-            .<span class="kw">await</span><span class="question-mark">?</span>)
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;multi_get_transaction_blocks&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>cloned_self = <span class="self">self</span>.clone();
+            <span class="prelude-val">Ok</span>(<span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+                cloned_self
+                    .multi_get_transaction_blocks_internal(digests, opts)
+                    .<span class="kw">await
+            </span>})
+            .<span class="kw">await
+            </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>)
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>get_events(<span class="kw-2">&amp;</span><span class="self">self</span>, transaction_digest: TransactionDigest) -&gt; RpcResult&lt;Vec&lt;SuiEvent&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_events&quot;</span>);
-        <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
-        <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move</span>{
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_events&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+            <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move</span>{
             <span class="kw">let </span>store = state.load_epoch_store_one_call_per_task();
             <span class="kw">let </span>effect = state.get_executed_effects(transaction_digest)<span class="question-mark">?</span>;
             <span class="kw">let </span>events = <span class="kw">if let </span><span class="prelude-val">Some</span>(event_digest) = effect.events_digest() {
@@ -1963,24 +2025,27 @@
         };
         <span class="prelude-val">Ok</span>(events)
         }).<span class="kw">await</span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">?
-    </span>}
+        </span>})
+    }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>get_latest_checkpoint_sequence_number(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; RpcResult&lt;BigInt&lt;u64&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_latest_checkpoint_sequence_number&quot;</span>);
-        <span class="prelude-val">Ok</span>(<span class="self">self
-            </span>.state
-            .get_latest_checkpoint_sequence_number()
-            .map_err(|e| {
-                <span class="macro">anyhow!</span>(<span class="string">&quot;Latest checkpoint sequence number was not found with error :{e}&quot;</span>)
-            })<span class="question-mark">?
-            </span>.into())
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_latest_checkpoint_sequence_number&quot;</span>, <span class="kw">async move </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self
+                </span>.state
+                .get_latest_checkpoint_sequence_number()
+                .map_err(|e| {
+                    <span class="macro">anyhow!</span>(<span class="string">&quot;Latest checkpoint sequence number was not found with error :{e}&quot;</span>)
+                })<span class="question-mark">?
+                </span>.into())
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>get_checkpoint(<span class="kw-2">&amp;</span><span class="self">self</span>, id: CheckpointId) -&gt; RpcResult&lt;Checkpoint&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_checkpoint&quot;</span>);
-        <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_checkpoint_internal(id)<span class="question-mark">?</span>)
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_checkpoint&quot;</span>, <span class="kw">async move </span>{
+            <span class="prelude-val">Ok</span>(<span class="self">self</span>.get_checkpoint_internal(id)<span class="question-mark">?</span>)
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -1991,39 +2056,40 @@
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
         descending_order: bool,
     ) -&gt; RpcResult&lt;CheckpointPage&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_checkpoints&quot;</span>);
-        <span class="kw">let </span>limit = validate_limit(limit, QUERY_MAX_RESULT_LIMIT_CHECKPOINTS)<span class="question-mark">?</span>;
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_checkpoints&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>limit = validate_limit(limit, QUERY_MAX_RESULT_LIMIT_CHECKPOINTS)<span class="question-mark">?</span>;
 
-        <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
+            <span class="kw">let </span>state = <span class="self">self</span>.state.clone();
 
-        <span class="self">self</span>.metrics.get_checkpoints_limit.report(limit <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics.get_checkpoints_limit.report(limit <span class="kw">as </span>u64);
 
-        <span class="kw">let </span><span class="kw-2">mut </span>data = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
-            state.get_checkpoints(cursor.map(|s| <span class="kw-2">*</span>s), limit <span class="kw">as </span>u64 + <span class="number">1</span>, descending_order)
-        })
-        .<span class="kw">await
-        </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
+            <span class="kw">let </span><span class="kw-2">mut </span>data = <span class="macro">spawn_monitored_task!</span>(<span class="kw">async move </span>{
+                state.get_checkpoints(cursor.map(|s| <span class="kw-2">*</span>s), limit <span class="kw">as </span>u64 + <span class="number">1</span>, descending_order)
+            })
+            .<span class="kw">await
+            </span>.map_err(|e| <span class="macro">anyhow!</span>(e))<span class="question-mark">??</span>;
 
-        <span class="kw">let </span>has_next_page = data.len() &gt; limit;
-        data.truncate(limit);
+            <span class="kw">let </span>has_next_page = data.len() &gt; limit;
+            data.truncate(limit);
 
-        <span class="kw">let </span>next_cursor = <span class="kw">if </span>has_next_page {
-            data.last().cloned().map(|d| d.sequence_number.into())
-        } <span class="kw">else </span>{
-            <span class="prelude-val">None
-        </span>};
+            <span class="kw">let </span>next_cursor = <span class="kw">if </span>has_next_page {
+                data.last().cloned().map(|d| d.sequence_number.into())
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
 
-        <span class="self">self</span>.metrics
-            .get_checkpoints_result_size
-            .report(data.len() <span class="kw">as </span>u64);
-        <span class="self">self</span>.metrics
-            .get_checkpoints_result_size_total
-            .inc_by(data.len() <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics
+                .get_checkpoints_result_size
+                .report(data.len() <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics
+                .get_checkpoints_result_size_total
+                .inc_by(data.len() <span class="kw">as </span>u64);
 
-        <span class="prelude-val">Ok</span>(CheckpointPage {
-            data,
-            next_cursor,
-            has_next_page,
+            <span class="prelude-val">Ok</span>(CheckpointPage {
+                data,
+                next_cursor,
+                has_next_page,
+            })
         })
     }
 
@@ -2034,30 +2100,35 @@
         limit: <span class="prelude-ty">Option</span>&lt;BigInt&lt;u64&gt;&gt;,
         descending_order: bool,
     ) -&gt; RpcResult&lt;CheckpointPage&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_checkpoints_deprecated_limit&quot;</span>);
-        <span class="self">self</span>.get_checkpoints(cursor, limit.map(|l| <span class="kw-2">*</span>l <span class="kw">as </span>usize), descending_order)
-            .<span class="kw">await
-    </span>}
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_checkpoints_deprecated_limit&quot;</span>, <span class="kw">async move </span>{
+            <span class="self">self</span>.get_checkpoints(cursor, limit.map(|l| <span class="kw-2">*</span>l <span class="kw">as </span>usize), descending_order)
+                .<span class="kw">await
+        </span>})
+    }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>get_loaded_child_objects(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         digest: TransactionDigest,
     ) -&gt; RpcResult&lt;SuiLoadedChildObjectsResponse&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;get_loaded_child_objects&quot;</span>);
-        <span class="prelude-val">Ok</span>(SuiLoadedChildObjectsResponse {
-            loaded_child_objects: <span class="kw">match </span><span class="self">self</span>.state.loaded_child_object_versions(<span class="kw-2">&amp;</span>digest).map_err(
-                |e| {
-                    <span class="macro">error!</span>(<span class="string">&quot;Failed to get loaded child objects at {digest:?} with error: {e:?}&quot;</span>);
-                    Error::SuiError(e)
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_loaded_child_objects&quot;</span>, <span class="kw">async move </span>{
+            <span class="prelude-val">Ok</span>(SuiLoadedChildObjectsResponse {
+                loaded_child_objects: <span class="kw">match </span><span class="self">self
+                    </span>.state
+                    .loaded_child_object_versions(<span class="kw-2">&amp;</span>digest)
+                    .map_err(|e| {
+                        <span class="macro">error!</span>(
+                            <span class="string">&quot;Failed to get loaded child objects at {digest:?} with error: {e:?}&quot;
+                        </span>);
+                        Error::SuiError(e)
+                    })<span class="question-mark">? </span>{
+                    <span class="prelude-val">Some</span>(v) =&gt; v
+                        .into_iter()
+                        .map(|q| SuiLoadedChildObject::new(q.<span class="number">0</span>, q.<span class="number">1</span>))
+                        .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
+                    <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
                 },
-            )<span class="question-mark">? </span>{
-                <span class="prelude-val">Some</span>(v) =&gt; v
-                    .into_iter()
-                    .map(|q| SuiLoadedChildObject::new(q.<span class="number">0</span>, q.<span class="number">1</span>))
-                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;(),
-                <span class="prelude-val">None </span>=&gt; <span class="macro">vec!</span>[],
-            },
+            })
         })
     }
 }
@@ -2188,6 +2259,7 @@
                 </span>normalize_modules(
                     p.serialized_module_map().values(),
                     <span class="comment">/* max_binary_format_version */ </span>VERSION_MAX,
+                    <span class="comment">/* no_extraneous_module_bytes */ </span><span class="bool-val">false</span>,
                 )
                 .map_err(|e| {
                     <span class="macro">error!</span>(<span class="string">&quot;Failed to call get_move_modules_by_package for package: {package:?}&quot;</span>);

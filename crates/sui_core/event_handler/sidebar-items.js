@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"constant":["EVENT_DISPATCH_BUFFER_SIZE"],"struct":["EventHandler"]};
+window.SIDEBAR_ITEMS = {"constant":["EVENT_DISPATCH_BUFFER_SIZE"],"struct":["SubscriptionHandler"]};

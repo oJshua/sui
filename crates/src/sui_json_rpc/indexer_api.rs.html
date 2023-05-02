@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-json-rpc/src/indexer_api.rs`."><title>indexer_api.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_json_rpc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_json_rpc/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-json-rpc/src/indexer_api.rs`."><title>indexer_api.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_json_rpc" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_json_rpc/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -466,6 +466,36 @@
 <a href="#466" id="466">466</a>
 <a href="#467" id="467">467</a>
 <a href="#468" id="468">468</a>
+<a href="#469" id="469">469</a>
+<a href="#470" id="470">470</a>
+<a href="#471" id="471">471</a>
+<a href="#472" id="472">472</a>
+<a href="#473" id="473">473</a>
+<a href="#474" id="474">474</a>
+<a href="#475" id="475">475</a>
+<a href="#476" id="476">476</a>
+<a href="#477" id="477">477</a>
+<a href="#478" id="478">478</a>
+<a href="#479" id="479">479</a>
+<a href="#480" id="480">480</a>
+<a href="#481" id="481">481</a>
+<a href="#482" id="482">482</a>
+<a href="#483" id="483">483</a>
+<a href="#484" id="484">484</a>
+<a href="#485" id="485">485</a>
+<a href="#486" id="486">486</a>
+<a href="#487" id="487">487</a>
+<a href="#488" id="488">488</a>
+<a href="#489" id="489">489</a>
+<a href="#490" id="490">490</a>
+<a href="#491" id="491">491</a>
+<a href="#492" id="492">492</a>
+<a href="#493" id="493">493</a>
+<a href="#494" id="494">494</a>
+<a href="#495" id="495">495</a>
+<a href="#496" id="496">496</a>
+<a href="#497" id="497">497</a>
+<a href="#498" id="498">498</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -481,8 +511,9 @@
 <span class="kw">use </span>move_bytecode_utils::layout::TypeLayoutBuilder;
 <span class="kw">use </span>serde::Serialize;
 <span class="kw">use </span>sui_json::SuiJsonValue;
+<span class="kw">use </span>sui_types::error::SuiObjectResponseError;
 <span class="kw">use </span>sui_types::MOVE_STDLIB_ADDRESS;
-<span class="kw">use </span>tracing::{info, instrument, warn};
+<span class="kw">use </span>tracing::{instrument, warn};
 
 <span class="kw">use </span>move_core_types::language_storage::{StructTag, TypeTag};
 <span class="kw">use </span>mysten_metrics::spawn_monitored_task;
@@ -491,6 +522,7 @@
     DynamicFieldPage, EventFilter, EventPage, ObjectsPage, Page, SuiMoveValue,
     SuiObjectDataOptions, SuiObjectResponse, SuiObjectResponseQuery, SuiParsedMoveObject,
     SuiTransactionBlockResponse, SuiTransactionBlockResponseQuery, TransactionBlocksPage,
+    TransactionFilter,
 };
 <span class="kw">use </span>sui_open_rpc::Module;
 <span class="kw">use </span>sui_types::base_types::{ObjectID, SuiAddress, STD_UTF8_MODULE_NAME, STD_UTF8_STRUCT_NAME};
@@ -502,6 +534,7 @@
     cap_page_limit, validate_limit, IndexerApiServer, JsonRpcMetrics, ReadApiServer,
     QUERY_MAX_RESULT_LIMIT,
 };
+<span class="kw">use </span><span class="kw">crate</span>::with_tracing;
 <span class="kw">use </span><span class="kw">crate</span>::SuiRpcModule;
 
 <span class="kw">const </span>NAME_SERVICE_LOOKUP_KEY: <span class="kw-2">&amp;</span>str = <span class="string">&quot;records&quot;</span>;
@@ -528,7 +561,6 @@
         };
     });
 }
-
 <span class="kw">pub struct </span>IndexerApi&lt;R&gt; {
     state: Arc&lt;AuthorityState&gt;,
     read_api: R,
@@ -562,47 +594,48 @@
         cursor: <span class="prelude-ty">Option</span>&lt;ObjectID&gt;,
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     ) -&gt; RpcResult&lt;ObjectsPage&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_get_owned_objects&quot;</span>);
-        <span class="kw">let </span>limit = validate_limit(limit, <span class="kw-2">*</span>QUERY_MAX_RESULT_LIMIT)<span class="question-mark">?</span>;
-        <span class="self">self</span>.metrics.get_owned_objects_limit.report(limit <span class="kw">as </span>u64);
-        <span class="kw">let </span>SuiObjectResponseQuery { filter, options } = query.unwrap_or_default();
-        <span class="kw">let </span>options = options.unwrap_or_default();
-        <span class="kw">let </span><span class="kw-2">mut </span>objects = <span class="self">self
-            </span>.state
-            .get_owner_objects(address, cursor, limit + <span class="number">1</span>, filter)
-            .map_err(|e| <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>))<span class="question-mark">?</span>;
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_owned_objects&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>limit = validate_limit(limit, <span class="kw-2">*</span>QUERY_MAX_RESULT_LIMIT)<span class="question-mark">?</span>;
+            <span class="self">self</span>.metrics.get_owned_objects_limit.report(limit <span class="kw">as </span>u64);
+            <span class="kw">let </span>SuiObjectResponseQuery { filter, options } = query.unwrap_or_default();
+            <span class="kw">let </span>options = options.unwrap_or_default();
+            <span class="kw">let </span><span class="kw-2">mut </span>objects = <span class="self">self
+                </span>.state
+                .get_owner_objects(address, cursor, limit + <span class="number">1</span>, filter)
+                .map_err(|e| <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>))<span class="question-mark">?</span>;
 
-        <span class="comment">// objects here are of size (limit + 1), where the last one is the cursor for the next page
-        </span><span class="kw">let </span>has_next_page = objects.len() &gt; limit;
-        objects.truncate(limit);
-        <span class="kw">let </span>next_cursor = objects
-            .last()
-            .cloned()
-            .map_or(cursor, |o_info| <span class="prelude-val">Some</span>(o_info.object_id));
+            <span class="comment">// objects here are of size (limit + 1), where the last one is the cursor for the next page
+            </span><span class="kw">let </span>has_next_page = objects.len() &gt; limit;
+            objects.truncate(limit);
+            <span class="kw">let </span>next_cursor = objects
+                .last()
+                .cloned()
+                .map_or(cursor, |o_info| <span class="prelude-val">Some</span>(o_info.object_id));
 
-        <span class="kw">let </span>data = <span class="kw">match </span>options.is_not_in_object_info() {
-            <span class="bool-val">true </span>=&gt; {
-                <span class="kw">let </span>object_ids = objects.iter().map(|obj| obj.object_id).collect();
-                <span class="self">self</span>.read_api
-                    .multi_get_objects(object_ids, <span class="prelude-val">Some</span>(options))
-                    .<span class="kw">await</span><span class="question-mark">?
-            </span>}
-            <span class="bool-val">false </span>=&gt; objects
-                .into_iter()
-                .map(|o_info| SuiObjectResponse::try_from((o_info, options.clone())))
-                .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;SuiObjectResponse&gt;, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>,
-        };
+            <span class="kw">let </span>data = <span class="kw">match </span>options.is_not_in_object_info() {
+                <span class="bool-val">true </span>=&gt; {
+                    <span class="kw">let </span>object_ids = objects.iter().map(|obj| obj.object_id).collect();
+                    <span class="self">self</span>.read_api
+                        .multi_get_objects(object_ids, <span class="prelude-val">Some</span>(options))
+                        .<span class="kw">await</span><span class="question-mark">?
+                </span>}
+                <span class="bool-val">false </span>=&gt; objects
+                    .into_iter()
+                    .map(|o_info| SuiObjectResponse::try_from((o_info, options.clone())))
+                    .collect::&lt;<span class="prelude-ty">Result</span>&lt;Vec&lt;SuiObjectResponse&gt;, <span class="kw">_</span>&gt;&gt;()<span class="question-mark">?</span>,
+            };
 
-        <span class="self">self</span>.metrics
-            .get_owned_objects_result_size
-            .report(data.len() <span class="kw">as </span>u64);
-        <span class="self">self</span>.metrics
-            .get_owned_objects_result_size_total
-            .inc_by(data.len() <span class="kw">as </span>u64);
-        <span class="prelude-val">Ok</span>(Page {
-            data,
-            next_cursor,
-            has_next_page,
+            <span class="self">self</span>.metrics
+                .get_owned_objects_result_size
+                .report(data.len() <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics
+                .get_owned_objects_result_size_total
+                .inc_by(data.len() <span class="kw">as </span>u64);
+            <span class="prelude-val">Ok</span>(Page {
+                data,
+                next_cursor,
+                has_next_page,
+            })
         })
     }
 
@@ -615,43 +648,44 @@
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
         descending_order: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     ) -&gt; RpcResult&lt;TransactionBlocksPage&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_query_transaction_blocks&quot;</span>);
-        <span class="kw">let </span>limit = cap_page_limit(limit);
-        <span class="self">self</span>.metrics.query_tx_blocks_limit.report(limit <span class="kw">as </span>u64);
-        <span class="kw">let </span>descending = descending_order.unwrap_or_default();
-        <span class="kw">let </span>opts = query.options.unwrap_or_default();
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;query_transaction_blocks&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>limit = cap_page_limit(limit);
+            <span class="self">self</span>.metrics.query_tx_blocks_limit.report(limit <span class="kw">as </span>u64);
+            <span class="kw">let </span>descending = descending_order.unwrap_or_default();
+            <span class="kw">let </span>opts = query.options.unwrap_or_default();
 
-        <span class="comment">// Retrieve 1 extra item for next cursor
-        </span><span class="kw">let </span><span class="kw-2">mut </span>digests =
-            <span class="self">self</span>.state
-                .get_transactions(query.filter, cursor, <span class="prelude-val">Some</span>(limit + <span class="number">1</span>), descending)<span class="question-mark">?</span>;
+            <span class="comment">// Retrieve 1 extra item for next cursor
+            </span><span class="kw">let </span><span class="kw-2">mut </span>digests =
+                <span class="self">self</span>.state
+                    .get_transactions(query.filter, cursor, <span class="prelude-val">Some</span>(limit + <span class="number">1</span>), descending)<span class="question-mark">?</span>;
 
-        <span class="comment">// extract next cursor
-        </span><span class="kw">let </span>has_next_page = digests.len() &gt; limit;
-        digests.truncate(limit);
-        <span class="kw">let </span>next_cursor = digests.last().cloned().map_or(cursor, <span class="prelude-val">Some</span>);
+            <span class="comment">// extract next cursor
+            </span><span class="kw">let </span>has_next_page = digests.len() &gt; limit;
+            digests.truncate(limit);
+            <span class="kw">let </span>next_cursor = digests.last().cloned().map_or(cursor, <span class="prelude-val">Some</span>);
 
-        <span class="kw">let </span>data: Vec&lt;SuiTransactionBlockResponse&gt; = <span class="kw">if </span>opts.only_digest() {
-            digests
-                .into_iter()
-                .map(SuiTransactionBlockResponse::new)
-                .collect()
-        } <span class="kw">else </span>{
-            <span class="self">self</span>.read_api
-                .multi_get_transaction_blocks(digests, <span class="prelude-val">Some</span>(opts))
-                .<span class="kw">await</span><span class="question-mark">?
-        </span>};
+            <span class="kw">let </span>data: Vec&lt;SuiTransactionBlockResponse&gt; = <span class="kw">if </span>opts.only_digest() {
+                digests
+                    .into_iter()
+                    .map(SuiTransactionBlockResponse::new)
+                    .collect()
+            } <span class="kw">else </span>{
+                <span class="self">self</span>.read_api
+                    .multi_get_transaction_blocks(digests, <span class="prelude-val">Some</span>(opts))
+                    .<span class="kw">await</span><span class="question-mark">?
+            </span>};
 
-        <span class="self">self</span>.metrics
-            .query_tx_blocks_result_size
-            .report(data.len() <span class="kw">as </span>u64);
-        <span class="self">self</span>.metrics
-            .query_tx_blocks_result_size_total
-            .inc_by(data.len() <span class="kw">as </span>u64);
-        <span class="prelude-val">Ok</span>(Page {
-            data,
-            next_cursor,
-            has_next_page,
+            <span class="self">self</span>.metrics
+                .query_tx_blocks_result_size
+                .report(data.len() <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics
+                .query_tx_blocks_result_size_total
+                .inc_by(data.len() <span class="kw">as </span>u64);
+            <span class="prelude-val">Ok</span>(Page {
+                data,
+                next_cursor,
+                has_next_page,
+            })
         })
     }
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -663,34 +697,54 @@
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
         descending_order: <span class="prelude-ty">Option</span>&lt;bool&gt;,
     ) -&gt; RpcResult&lt;EventPage&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_query_events&quot;</span>);
-        <span class="kw">let </span>descending = descending_order.unwrap_or_default();
-        <span class="kw">let </span>limit = cap_page_limit(limit);
-        <span class="self">self</span>.metrics.query_events_limit.report(limit <span class="kw">as </span>u64);
-        <span class="comment">// Retrieve 1 extra item for next cursor
-        </span><span class="kw">let </span><span class="kw-2">mut </span>data = <span class="self">self
-            </span>.state
-            .query_events(query, cursor.clone(), limit + <span class="number">1</span>, descending)<span class="question-mark">?</span>;
-        <span class="kw">let </span>has_next_page = data.len() &gt; limit;
-        data.truncate(limit);
-        <span class="kw">let </span>next_cursor = data.last().map_or(cursor, |e| <span class="prelude-val">Some</span>(e.id.clone()));
-        <span class="self">self</span>.metrics
-            .query_events_result_size
-            .report(data.len() <span class="kw">as </span>u64);
-        <span class="self">self</span>.metrics
-            .query_events_result_size_total
-            .inc_by(data.len() <span class="kw">as </span>u64);
-        <span class="prelude-val">Ok</span>(EventPage {
-            data,
-            next_cursor,
-            has_next_page,
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;query_events&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>descending = descending_order.unwrap_or_default();
+            <span class="kw">let </span>limit = cap_page_limit(limit);
+            <span class="self">self</span>.metrics.query_events_limit.report(limit <span class="kw">as </span>u64);
+            <span class="comment">// Retrieve 1 extra item for next cursor
+            </span><span class="kw">let </span><span class="kw-2">mut </span>data = <span class="self">self
+                </span>.state
+                .query_events(query, cursor.clone(), limit + <span class="number">1</span>, descending)<span class="question-mark">?</span>;
+            <span class="kw">let </span>has_next_page = data.len() &gt; limit;
+            data.truncate(limit);
+            <span class="kw">let </span>next_cursor = data.last().map_or(cursor, |e| <span class="prelude-val">Some</span>(e.id.clone()));
+            <span class="self">self</span>.metrics
+                .query_events_result_size
+                .report(data.len() <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics
+                .query_events_result_size_total
+                .inc_by(data.len() <span class="kw">as </span>u64);
+            <span class="prelude-val">Ok</span>(EventPage {
+                data,
+                next_cursor,
+                has_next_page,
+            })
         })
     }
 
-    <span class="kw">fn </span>subscribe_event(<span class="kw-2">&amp;</span><span class="self">self</span>, sink: SubscriptionSink, filter: EventFilter) -&gt; SubscriptionResult {
-        spawn_subscription(sink, <span class="self">self</span>.state.event_handler.subscribe(filter));
+    <span class="attr">#[instrument(skip(<span class="self">self</span>))]
+    </span><span class="kw">fn </span>subscribe_event(<span class="kw-2">&amp;</span><span class="self">self</span>, sink: SubscriptionSink, filter: EventFilter) -&gt; SubscriptionResult {
+        spawn_subscription(
+            sink,
+            <span class="self">self</span>.state.subscription_handler.subscribe_events(filter),
+        );
         <span class="prelude-val">Ok</span>(())
     }
+
+    <span class="kw">fn </span>subscribe_transaction(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        sink: SubscriptionSink,
+        filter: TransactionFilter,
+    ) -&gt; SubscriptionResult {
+        spawn_subscription(
+            sink,
+            <span class="self">self</span>.state
+                .subscription_handler
+                .subscribe_transactions(filter),
+        );
+        <span class="prelude-val">Ok</span>(())
+    }
+
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>get_dynamic_fields(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
@@ -699,26 +753,27 @@
         </span>cursor: <span class="prelude-ty">Option</span>&lt;ObjectID&gt;,
         limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     ) -&gt; RpcResult&lt;DynamicFieldPage&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_get_dynamic_fields&quot;</span>);
-        <span class="kw">let </span>limit = cap_page_limit(limit);
-        <span class="self">self</span>.metrics.get_dynamic_fields_limit.report(limit <span class="kw">as </span>u64);
-        <span class="kw">let </span><span class="kw-2">mut </span>data = <span class="self">self
-            </span>.state
-            .get_dynamic_fields(parent_object_id, cursor, limit + <span class="number">1</span>)
-            .map_err(|e| <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>))<span class="question-mark">?</span>;
-        <span class="kw">let </span>has_next_page = data.len() &gt; limit;
-        data.truncate(limit);
-        <span class="kw">let </span>next_cursor = data.last().cloned().map_or(cursor, |c| <span class="prelude-val">Some</span>(c.object_id));
-        <span class="self">self</span>.metrics
-            .get_dynamic_fields_result_size
-            .report(data.len() <span class="kw">as </span>u64);
-        <span class="self">self</span>.metrics
-            .get_dynamic_fields_result_size_total
-            .inc_by(data.len() <span class="kw">as </span>u64);
-        <span class="prelude-val">Ok</span>(DynamicFieldPage {
-            data,
-            next_cursor,
-            has_next_page,
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_dynamic_fields&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>limit = cap_page_limit(limit);
+            <span class="self">self</span>.metrics.get_dynamic_fields_limit.report(limit <span class="kw">as </span>u64);
+            <span class="kw">let </span><span class="kw-2">mut </span>data = <span class="self">self
+                </span>.state
+                .get_dynamic_fields(parent_object_id, cursor, limit + <span class="number">1</span>)
+                .map_err(|e| <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>))<span class="question-mark">?</span>;
+            <span class="kw">let </span>has_next_page = data.len() &gt; limit;
+            data.truncate(limit);
+            <span class="kw">let </span>next_cursor = data.last().cloned().map_or(cursor, |c| <span class="prelude-val">Some</span>(c.object_id));
+            <span class="self">self</span>.metrics
+                .get_dynamic_fields_result_size
+                .report(data.len() <span class="kw">as </span>u64);
+            <span class="self">self</span>.metrics
+                .get_dynamic_fields_result_size_total
+                .inc_by(data.len() <span class="kw">as </span>u64);
+            <span class="prelude-val">Ok</span>(DynamicFieldPage {
+                data,
+                next_cursor,
+                has_next_page,
+            })
         })
     }
 
@@ -728,94 +783,98 @@
         parent_object_id: ObjectID,
         name: DynamicFieldName,
     ) -&gt; RpcResult&lt;SuiObjectResponse&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_get_dynamic_field_object&quot;</span>);
-        <span class="kw">let </span>DynamicFieldName {
-            type_: name_type,
-            value,
-        } = name.clone();
-        <span class="kw">let </span>layout = TypeLayoutBuilder::build_with_types(<span class="kw-2">&amp;</span>name_type, <span class="kw-2">&amp;</span><span class="self">self</span>.state.database)<span class="question-mark">?</span>;
-        <span class="kw">let </span>sui_json_value = SuiJsonValue::new(value)<span class="question-mark">?</span>;
-        <span class="kw">let </span>name_bcs_value = sui_json_value.to_bcs_bytes(<span class="kw-2">&amp;</span>layout)<span class="question-mark">?</span>;
-        <span class="kw">let </span>id = <span class="self">self
-            </span>.state
-            .get_dynamic_field_object_id(parent_object_id, name_type, <span class="kw-2">&amp;</span>name_bcs_value)
-            .map_err(|e| <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>))<span class="question-mark">?
-            </span>.ok_or_else(|| {
-                <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot find dynamic field [{name:?}] for object [{parent_object_id}].&quot;</span>)
-            })<span class="question-mark">?</span>;
-        <span class="comment">// TODO(chris): add options to `get_dynamic_field_object` API as well
-        </span><span class="self">self</span>.read_api
-            .get_object(id, <span class="prelude-val">Some</span>(SuiObjectDataOptions::full_content()))
-            .<span class="kw">await
-    </span>}
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;get_dynamic_field_object&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>DynamicFieldName {
+                type_: name_type,
+                value,
+            } = name.clone();
+            <span class="kw">let </span>layout = TypeLayoutBuilder::build_with_types(<span class="kw-2">&amp;</span>name_type, <span class="kw-2">&amp;</span><span class="self">self</span>.state.database)<span class="question-mark">?</span>;
+            <span class="kw">let </span>sui_json_value = SuiJsonValue::new(value)<span class="question-mark">?</span>;
+            <span class="kw">let </span>name_bcs_value = sui_json_value.to_bcs_bytes(<span class="kw-2">&amp;</span>layout)<span class="question-mark">?</span>;
+            <span class="kw">let </span>id = <span class="self">self
+                </span>.state
+                .get_dynamic_field_object_id(parent_object_id, name_type, <span class="kw-2">&amp;</span>name_bcs_value)
+                .map_err(|e| <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>))<span class="question-mark">?</span>;
+            <span class="comment">// TODO(chris): add options to `get_dynamic_field_object` API as well
+            </span><span class="kw">if let </span><span class="prelude-val">Some</span>(id) = id {
+                <span class="self">self</span>.read_api
+                    .get_object(id, <span class="prelude-val">Some</span>(SuiObjectDataOptions::full_content()))
+                    .<span class="kw">await
+            </span>} <span class="kw">else </span>{
+                <span class="prelude-val">Ok</span>(SuiObjectResponse::new_with_error(
+                    SuiObjectResponseError::DynamicFieldNotFound { parent_object_id },
+                ))
+            }
+        })
+    }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
     </span><span class="kw">async fn </span>resolve_name_service_address(<span class="kw-2">&amp;</span><span class="self">self</span>, name: String) -&gt; RpcResult&lt;<span class="prelude-ty">Option</span>&lt;SuiAddress&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_resolve_name_service_address&quot;</span>);
-        <span class="kw">let </span>dynamic_field_table_object_id = <span class="self">self
-            </span>.get_name_service_dynamic_field_table_object_id(<span class="comment">/* reverse_lookup */ </span><span class="bool-val">false</span>)
-            .<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="comment">// NOTE: 0x1::string::String is the type tag of fields in dynamic_field_table
-        </span><span class="kw">let </span>name_type_tag = TypeTag::Struct(Box::new(StructTag {
-            address: MOVE_STDLIB_ADDRESS,
-            module: STD_UTF8_MODULE_NAME.to_owned(),
-            name: STD_UTF8_STRUCT_NAME.to_owned(),
-            type_params: <span class="macro">vec!</span>[],
-        }));
-        <span class="kw">let </span>name_bcs_value = bcs::to_bytes(<span class="kw-2">&amp;</span>name).context(<span class="string">&quot;Unable to serialize name&quot;</span>)<span class="question-mark">?</span>;
-        <span class="comment">// record of the input `name`
-        </span><span class="kw">let </span>record_object_id_option = <span class="self">self
-            </span>.state
-            .get_dynamic_field_object_id(
-                dynamic_field_table_object_id,
-                name_type_tag,
-                <span class="kw-2">&amp;</span>name_bcs_value,
-            )
-            .map_err(|e| {
-                <span class="macro">anyhow!</span>(
-                    <span class="string">&quot;Read name service dynamic field table failed with error: {:?}&quot;</span>,
-                    e
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;resolve_name_service_address&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>dynamic_field_table_object_id = <span class="self">self
+                </span>.get_name_service_dynamic_field_table_object_id(<span class="comment">/* reverse_lookup */ </span><span class="bool-val">false</span>)
+                .<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="comment">// NOTE: 0x1::string::String is the type tag of fields in dynamic_field_table
+            </span><span class="kw">let </span>name_type_tag = TypeTag::Struct(Box::new(StructTag {
+                address: MOVE_STDLIB_ADDRESS,
+                module: STD_UTF8_MODULE_NAME.to_owned(),
+                name: STD_UTF8_STRUCT_NAME.to_owned(),
+                type_params: <span class="macro">vec!</span>[],
+            }));
+            <span class="kw">let </span>name_bcs_value = bcs::to_bytes(<span class="kw-2">&amp;</span>name).context(<span class="string">&quot;Unable to serialize name&quot;</span>)<span class="question-mark">?</span>;
+            <span class="comment">// record of the input `name`
+            </span><span class="kw">let </span>record_object_id_option = <span class="self">self
+                </span>.state
+                .get_dynamic_field_object_id(
+                    dynamic_field_table_object_id,
+                    name_type_tag,
+                    <span class="kw-2">&amp;</span>name_bcs_value,
                 )
-            })<span class="question-mark">?</span>;
-        <span class="kw">if let </span><span class="prelude-val">Some</span>(record_object_id) = record_object_id_option {
-            <span class="kw">let </span>record_object_read =
-                <span class="self">self</span>.state.get_object_read(<span class="kw-2">&amp;</span>record_object_id).map_err(|e| {
-                    <span class="macro">warn!</span>(
-                        <span class="string">&quot;Failed to get object read of name: {:?} with error: {:?}&quot;</span>,
-                        record_object_id, e
-                    );
-                    <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
-                })<span class="question-mark">?</span>;
-            <span class="kw">let </span>record_parsed_move_object =
-                SuiParsedMoveObject::try_from_object_read(record_object_read)<span class="question-mark">?</span>;
-            <span class="comment">// NOTE: &quot;value&quot; is the field name to get the address info
-            </span><span class="kw">let </span>address_info_move_value = record_parsed_move_object
-                .read_dynamic_field_value(NAME_SERVICE_VALUE)
-                .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot find value field in record Move struct&quot;</span>))<span class="question-mark">?</span>;
-            <span class="kw">let </span>address_info_move_struct = <span class="kw">match </span>address_info_move_value {
-                SuiMoveValue::Struct(a) =&gt; <span class="prelude-val">Ok</span>(a),
-                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;value field is not found.&quot;</span>)),
-            }<span class="question-mark">?</span>;
-            <span class="comment">// NOTE: &quot;marker&quot; is the field name to get the address
-            </span><span class="kw">let </span>address_str_move_value = address_info_move_struct
-                .read_dynamic_field_value(NAME_SERVICE_MARKER)
-                .ok_or_else(|| {
+                .map_err(|e| {
                     <span class="macro">anyhow!</span>(
-                        <span class="string">&quot;Cannot find marker field in address info Move struct: {:?}&quot;</span>,
-                        address_info_move_struct
+                        <span class="string">&quot;Read name service dynamic field table failed with error: {:?}&quot;</span>,
+                        e
                     )
                 })<span class="question-mark">?</span>;
-            <span class="kw">let </span>addr = <span class="kw">match </span>address_str_move_value {
-                SuiMoveValue::Address(addr) =&gt; <span class="prelude-val">Ok</span>(addr),
-                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(
-                    <span class="string">&quot;No SuiAddress found in: {:?}&quot;</span>,
-                    address_str_move_value
-                )),
-            }<span class="question-mark">?</span>;
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(addr));
-        } <span class="kw">else </span>{
-            <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
-        }
+            <span class="kw">if let </span><span class="prelude-val">Some</span>(record_object_id) = record_object_id_option {
+                <span class="kw">let </span>record_object_read =
+                    <span class="self">self</span>.state.get_object_read(<span class="kw-2">&amp;</span>record_object_id).map_err(|e| {
+                        <span class="macro">warn!</span>(
+                            <span class="string">&quot;Failed to get object read of name: {:?} with error: {:?}&quot;</span>,
+                            record_object_id, e
+                        );
+                        <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
+                    })<span class="question-mark">?</span>;
+                <span class="kw">let </span>record_parsed_move_object =
+                    SuiParsedMoveObject::try_from_object_read(record_object_read)<span class="question-mark">?</span>;
+                <span class="comment">// NOTE: &quot;value&quot; is the field name to get the address info
+                </span><span class="kw">let </span>address_info_move_value = record_parsed_move_object
+                    .read_dynamic_field_value(NAME_SERVICE_VALUE)
+                    .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot find value field in record Move struct&quot;</span>))<span class="question-mark">?</span>;
+                <span class="kw">let </span>address_info_move_struct = <span class="kw">match </span>address_info_move_value {
+                    SuiMoveValue::Struct(a) =&gt; <span class="prelude-val">Ok</span>(a),
+                    <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(<span class="string">&quot;value field is not found.&quot;</span>)),
+                }<span class="question-mark">?</span>;
+                <span class="comment">// NOTE: &quot;marker&quot; is the field name to get the address
+                </span><span class="kw">let </span>address_str_move_value = address_info_move_struct
+                    .read_dynamic_field_value(NAME_SERVICE_MARKER)
+                    .ok_or_else(|| {
+                        <span class="macro">anyhow!</span>(
+                            <span class="string">&quot;Cannot find marker field in address info Move struct: {:?}&quot;</span>,
+                            address_info_move_struct
+                        )
+                    })<span class="question-mark">?</span>;
+                <span class="kw">let </span>addr = <span class="kw">match </span>address_str_move_value {
+                    SuiMoveValue::Address(addr) =&gt; <span class="prelude-val">Ok</span>(addr),
+                    <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(
+                        <span class="string">&quot;No SuiAddress found in: {:?}&quot;</span>,
+                        address_str_move_value
+                    )),
+                }<span class="question-mark">?</span>;
+                <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">Some</span>(addr));
+            }
+            <span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>)
+        })
     }
 
     <span class="attr">#[instrument(skip(<span class="self">self</span>))]
@@ -825,49 +884,50 @@
         _cursor: <span class="prelude-ty">Option</span>&lt;ObjectID&gt;,
         _limit: <span class="prelude-ty">Option</span>&lt;usize&gt;,
     ) -&gt; RpcResult&lt;Page&lt;String, ObjectID&gt;&gt; {
-        <span class="macro">info!</span>(<span class="string">&quot;indexer_resolve_name_service_names&quot;</span>);
-        <span class="kw">let </span>dynamic_field_table_object_id = <span class="self">self
-            </span>.get_name_service_dynamic_field_table_object_id(<span class="comment">/* reverse_lookup */ </span><span class="bool-val">true</span>)
-            .<span class="kw">await</span><span class="question-mark">?</span>;
-        <span class="kw">let </span>name_type_tag = TypeTag::Address;
-        <span class="kw">let </span>name_bcs_value = bcs::to_bytes(<span class="kw-2">&amp;</span>address).context(<span class="string">&quot;Unable to serialize address&quot;</span>)<span class="question-mark">?</span>;
-        <span class="kw">let </span>addr_object_id = <span class="self">self
-            </span>.state
-            .get_dynamic_field_object_id(
-                dynamic_field_table_object_id,
-                name_type_tag,
-                <span class="kw-2">&amp;</span>name_bcs_value,
-            )
-            .map_err(|e| {
-                <span class="macro">anyhow!</span>(
-                    <span class="string">&quot;Read name service reverse dynamic field table failed with error: {:?}&quot;</span>,
-                    e
+        <span class="macro">with_tracing!</span>(<span class="string">&quot;resolve_name_service_names&quot;</span>, <span class="kw">async move </span>{
+            <span class="kw">let </span>dynamic_field_table_object_id = <span class="self">self
+                </span>.get_name_service_dynamic_field_table_object_id(<span class="comment">/* reverse_lookup */ </span><span class="bool-val">true</span>)
+                .<span class="kw">await</span><span class="question-mark">?</span>;
+            <span class="kw">let </span>name_type_tag = TypeTag::Address;
+            <span class="kw">let </span>name_bcs_value = bcs::to_bytes(<span class="kw-2">&amp;</span>address).context(<span class="string">&quot;Unable to serialize address&quot;</span>)<span class="question-mark">?</span>;
+            <span class="kw">let </span>addr_object_id = <span class="self">self
+                </span>.state
+                .get_dynamic_field_object_id(
+                    dynamic_field_table_object_id,
+                    name_type_tag,
+                    <span class="kw-2">&amp;</span>name_bcs_value,
                 )
-            })<span class="question-mark">?
-            </span>.ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Record not found for address: {:?}&quot;</span>, address))<span class="question-mark">?</span>;
-        <span class="kw">let </span>addr_object_read = <span class="self">self</span>.state.get_object_read(<span class="kw-2">&amp;</span>addr_object_id).map_err(|e| {
-            <span class="macro">warn!</span>(
-                <span class="string">&quot;Failed to get object read of address {:?} with error: {:?}&quot;</span>,
-                addr_object_id, e
-            );
-            <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
-        })<span class="question-mark">?</span>;
-        <span class="kw">let </span>addr_parsed_move_object = SuiParsedMoveObject::try_from_object_read(addr_object_read)<span class="question-mark">?</span>;
-        <span class="kw">let </span>address_info_move_value = addr_parsed_move_object
-            .read_dynamic_field_value(NAME_SERVICE_VALUE)
-            .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot find value field in record Move struct&quot;</span>))<span class="question-mark">?</span>;
-
-        <span class="kw">let </span>primary_name = <span class="kw">match </span>address_info_move_value {
-            SuiMoveValue::String(s) =&gt; <span class="prelude-val">Ok</span>(s),
-            <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(
-                <span class="string">&quot;No string field for primary name is found in {:?}&quot;</span>,
-                address_info_move_value
-            )),
-        }<span class="question-mark">?</span>;
-        <span class="prelude-val">Ok</span>(Page {
-            data: <span class="macro">vec!</span>[primary_name],
-            next_cursor: <span class="prelude-val">Some</span>(addr_object_id),
-            has_next_page: <span class="bool-val">false</span>,
+                .map_err(|e| {
+                    <span class="macro">anyhow!</span>(
+                        <span class="string">&quot;Read name service reverse dynamic field table failed with error: {:?}&quot;</span>,
+                        e
+                    )
+                })<span class="question-mark">?
+                </span>.ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Record not found for address: {:?}&quot;</span>, address))<span class="question-mark">?</span>;
+            <span class="kw">let </span>addr_object_read = <span class="self">self</span>.state.get_object_read(<span class="kw-2">&amp;</span>addr_object_id).map_err(|e| {
+                <span class="macro">warn!</span>(
+                    <span class="string">&quot;Failed to get object read of address {:?} with error: {:?}&quot;</span>,
+                    addr_object_id, e
+                );
+                <span class="macro">anyhow!</span>(<span class="string">&quot;{e}&quot;</span>)
+            })<span class="question-mark">?</span>;
+            <span class="kw">let </span>addr_parsed_move_object =
+                SuiParsedMoveObject::try_from_object_read(addr_object_read)<span class="question-mark">?</span>;
+            <span class="kw">let </span>address_info_move_value = addr_parsed_move_object
+                .read_dynamic_field_value(NAME_SERVICE_VALUE)
+                .ok_or_else(|| <span class="macro">anyhow!</span>(<span class="string">&quot;Cannot find value field in record Move struct&quot;</span>))<span class="question-mark">?</span>;
+            <span class="kw">let </span>primary_name = <span class="kw">match </span>address_info_move_value {
+                SuiMoveValue::String(s) =&gt; <span class="prelude-val">Ok</span>(s),
+                <span class="kw">_ </span>=&gt; <span class="prelude-val">Err</span>(<span class="macro">anyhow!</span>(
+                    <span class="string">&quot;No string field for primary name is found in {:?}&quot;</span>,
+                    address_info_move_value
+                )),
+            }<span class="question-mark">?</span>;
+            <span class="prelude-val">Ok</span>(Page {
+                data: <span class="macro">vec!</span>[primary_name],
+                next_cursor: <span class="prelude-val">Some</span>(addr_object_id),
+                has_next_page: <span class="bool-val">false</span>,
+            })
         })
     }
 }

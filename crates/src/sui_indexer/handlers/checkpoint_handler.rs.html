@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-indexer/src/handlers/checkpoint_handler.rs`."><title>checkpoint_handler.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sui_indexer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../sui_indexer/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-indexer/src/handlers/checkpoint_handler.rs`."><title>checkpoint_handler.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sui_indexer" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../sui_indexer/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -1149,6 +1149,20 @@
 <a href="#1149" id="1149">1149</a>
 <a href="#1150" id="1150">1150</a>
 <a href="#1151" id="1151">1151</a>
+<a href="#1152" id="1152">1152</a>
+<a href="#1153" id="1153">1153</a>
+<a href="#1154" id="1154">1154</a>
+<a href="#1155" id="1155">1155</a>
+<a href="#1156" id="1156">1156</a>
+<a href="#1157" id="1157">1157</a>
+<a href="#1158" id="1158">1158</a>
+<a href="#1159" id="1159">1159</a>
+<a href="#1160" id="1160">1160</a>
+<a href="#1161" id="1161">1161</a>
+<a href="#1162" id="1162">1162</a>
+<a href="#1163" id="1163">1163</a>
+<a href="#1164" id="1164">1164</a>
+<a href="#1165" id="1165">1165</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -1168,7 +1182,7 @@
 <span class="kw">use </span>tracing::{error, info, warn};
 
 <span class="kw">use </span>mysten_metrics::spawn_monitored_task;
-<span class="kw">use </span>sui_core::event_handler::EventHandler;
+<span class="kw">use </span>sui_core::event_handler::SubscriptionHandler;
 <span class="kw">use </span>sui_json_rpc::api::{GovernanceReadApiClient, ReadApiClient};
 <span class="kw">use </span>sui_json_rpc_types::{
     OwnedObjectRef, SuiGetPastObjectRequest, SuiObjectData, SuiObjectDataOptions, SuiRawData,
@@ -1177,6 +1191,7 @@
 <span class="kw">use </span>sui_sdk::error::Error;
 <span class="kw">use </span>sui_types::base_types::{ObjectID, SequenceNumber};
 <span class="kw">use </span>sui_types::committee::EpochId;
+<span class="kw">use </span>sui_types::messages::SenderSignedData;
 <span class="kw">use </span>sui_types::messages_checkpoint::{CheckpointCommitment, CheckpointSequenceNumber};
 <span class="kw">use </span>sui_types::sui_system_state::sui_system_state_summary::SuiSystemStateSummary;
 <span class="kw">use </span>sui_types::SUI_SYSTEM_ADDRESS;
@@ -1207,7 +1222,7 @@
 </span><span class="kw">pub struct </span>CheckpointHandler&lt;S&gt; {
     state: S,
     http_client: HttpClient,
-    event_handler: Arc&lt;EventHandler&gt;,
+    event_handler: Arc&lt;SubscriptionHandler&gt;,
     metrics: IndexerMetrics,
     config: IndexerConfig,
     checkpoint_sender: Arc&lt;Mutex&lt;Sender&lt;TemporaryCheckpointStore&gt;&gt;&gt;,
@@ -1226,7 +1241,7 @@
     <span class="kw">pub fn </span>new(
         state: S,
         http_client: HttpClient,
-        event_handler: Arc&lt;EventHandler&gt;,
+        event_handler: Arc&lt;SubscriptionHandler&gt;,
         metrics: IndexerMetrics,
         config: <span class="kw-2">&amp;</span>IndexerConfig,
     ) -&gt; <span class="self">Self </span>{
@@ -1396,7 +1411,8 @@
             <span class="comment">// Index checkpoint data
             </span><span class="kw">let </span>indexed_checkpoint_epoch_vec = join_all(downloaded_checkpoints.iter().map(
                 |downloaded_checkpoint| <span class="kw">async </span>{
-                    <span class="self">self</span>.index_checkpoint(downloaded_checkpoint).<span class="kw">await
+                    <span class="self">self</span>.index_checkpoint(downloaded_checkpoint, <span class="comment">/* index_epoch */ </span><span class="bool-val">true</span>)
+                        .<span class="kw">await
                 </span>},
             ))
             .<span class="kw">await
@@ -1410,8 +1426,35 @@
                 );
                 e
             })<span class="question-mark">?</span>;
-            <span class="kw">let </span>(indexed_checkpoints, _indexed_epochs): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) =
+            <span class="kw">let </span>(indexed_checkpoints, indexed_epochs): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) =
                 indexed_checkpoint_epoch_vec.into_iter().unzip();
+            <span class="kw">for </span>epoch <span class="kw">in </span>indexed_epochs.into_iter().flatten() {
+                <span class="comment">// for the first epoch, we need to store the epoch data first,
+                // otherwise send it to channel to be committed later.
+                </span><span class="kw">if </span>epoch.last_epoch.is_none() {
+                    <span class="kw">let </span>epoch_db_guard = <span class="self">self</span>.metrics.epoch_db_commit_latency.start_timer();
+                    <span class="macro">info!</span>(<span class="string">&quot;Persisting first epoch...&quot;</span>);
+                    <span class="kw">let </span><span class="kw-2">mut </span>persist_first_epoch_res = <span class="self">self</span>.state.persist_epoch(<span class="kw-2">&amp;</span>epoch).<span class="kw">await</span>;
+                    <span class="kw">while </span>persist_first_epoch_res.is_err() {
+                        <span class="macro">warn!</span>(<span class="string">&quot;Failed to persist first epoch, retrying...&quot;</span>);
+                        persist_first_epoch_res = <span class="self">self</span>.state.persist_epoch(<span class="kw-2">&amp;</span>epoch).<span class="kw">await</span>;
+                    }
+                    epoch_db_guard.stop_and_record();
+                    <span class="self">self</span>.metrics.total_epoch_committed.inc();
+                    <span class="macro">info!</span>(<span class="string">&quot;Persisted first epoch&quot;</span>);
+                } <span class="kw">else </span>{
+                    <span class="kw">let </span>epoch_sender_guard = <span class="self">self</span>.epoch_sender.lock().<span class="kw">await</span>;
+                    <span class="comment">// NOTE: when the channel is full, epoch_sender_guard will wait until the channel has space.
+                    </span>epoch_sender_guard.send(epoch).<span class="kw">await</span>.map_err(|e| {
+                        <span class="macro">error!</span>(
+                            <span class="string">&quot;Failed to send indexed epoch to epoch commit handler with error {}&quot;</span>,
+                            e.to_string()
+                        );
+                        IndexerError::MpscChannelError(e.to_string())
+                    })<span class="question-mark">?</span>;
+                    drop(epoch_sender_guard);
+                }
+            }
 
             <span class="kw">let </span>object_sender_guard = <span class="self">self</span>.object_checkpoint_sender.lock().<span class="kw">await</span>;
             <span class="comment">// NOTE: when the channel is full, checkpoint_sender_guard will wait until the channel has space.
@@ -1482,7 +1525,8 @@
             </span><span class="kw">let </span>index_guard = <span class="self">self</span>.metrics.checkpoint_index_latency.start_timer();
             <span class="kw">let </span>indexed_checkpoint_epoch_vec = join_all(downloaded_checkpoints.iter().map(
                 |downloaded_checkpoint| <span class="kw">async </span>{
-                    <span class="self">self</span>.index_checkpoint(downloaded_checkpoint).<span class="kw">await
+                    <span class="self">self</span>.index_checkpoint(downloaded_checkpoint, <span class="comment">/* index_epoch */ </span><span class="bool-val">false</span>)
+                        .<span class="kw">await
                 </span>},
             ))
             .<span class="kw">await
@@ -1496,7 +1540,7 @@
                 );
                 e
             })<span class="question-mark">?</span>;
-            <span class="kw">let </span>(indexed_checkpoints, indexed_epochs): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) =
+            <span class="kw">let </span>(indexed_checkpoints, _indexed_epochs): (Vec&lt;<span class="kw">_</span>&gt;, Vec&lt;<span class="kw">_</span>&gt;) =
                 indexed_checkpoint_epoch_vec.into_iter().unzip();
             index_guard.stop_and_record();
 
@@ -1514,41 +1558,14 @@
             }
             drop(checkpoint_sender_guard);
 
-            <span class="kw">for </span>epoch <span class="kw">in </span>indexed_epochs.into_iter().flatten() {
-                <span class="comment">// for the first epoch, we need to store the epoch data first,
-                // otherwise send it to channel to be committed later.
-                </span><span class="kw">if </span>epoch.last_epoch.is_none() {
-                    <span class="kw">let </span>epoch_db_guard = <span class="self">self</span>.metrics.epoch_db_commit_latency.start_timer();
-                    <span class="macro">info!</span>(<span class="string">&quot;Persisting first epoch...&quot;</span>);
-                    <span class="kw">let </span><span class="kw-2">mut </span>persist_first_epoch_res = <span class="self">self</span>.state.persist_epoch(<span class="kw-2">&amp;</span>epoch).<span class="kw">await</span>;
-                    <span class="kw">while </span>persist_first_epoch_res.is_err() {
-                        <span class="macro">warn!</span>(<span class="string">&quot;Failed to persist first epoch, retrying...&quot;</span>);
-                        persist_first_epoch_res = <span class="self">self</span>.state.persist_epoch(<span class="kw-2">&amp;</span>epoch).<span class="kw">await</span>;
-                    }
-                    epoch_db_guard.stop_and_record();
-                    <span class="self">self</span>.metrics.total_epoch_committed.inc();
-                    <span class="macro">info!</span>(<span class="string">&quot;Persisted first epoch&quot;</span>);
-                } <span class="kw">else </span>{
-                    <span class="kw">let </span>epoch_sender_guard = <span class="self">self</span>.epoch_sender.lock().<span class="kw">await</span>;
-                    <span class="comment">// NOTE: when the channel is full, epoch_sender_guard will wait until the channel has space.
-                    </span>epoch_sender_guard.send(epoch).<span class="kw">await</span>.map_err(|e| {
-                        <span class="macro">error!</span>(
-                            <span class="string">&quot;Failed to send indexed epoch to epoch commit handler with error {}&quot;</span>,
-                            e.to_string()
-                        );
-                        IndexerError::MpscChannelError(e.to_string())
-                    })<span class="question-mark">?</span>;
-                    drop(epoch_sender_guard);
-                }
-            }
-
             <span class="comment">// NOTE(gegaowp): today ws processing actually will block next checkpoint download,
             // we can pipeline this as well in the future if needed
             </span><span class="kw">for </span>checkpoint <span class="kw">in </span><span class="kw-2">&amp;</span>downloaded_checkpoints {
                 <span class="kw">let </span>ws_guard = <span class="self">self</span>.metrics.subscription_process_latency.start_timer();
                 <span class="kw">for </span>tx <span class="kw">in </span><span class="kw-2">&amp;</span>checkpoint.transactions {
+                    <span class="kw">let </span>data: SenderSignedData = bcs::from_bytes(<span class="kw-2">&amp;</span>tx.raw_transaction)<span class="question-mark">?</span>;
                     <span class="self">self</span>.event_handler
-                        .process_events(<span class="kw-2">&amp;</span>tx.effects, <span class="kw-2">&amp;</span>tx.events)
+                        .process_tx(data.transaction_data(), <span class="kw-2">&amp;</span>tx.effects, <span class="kw-2">&amp;</span>tx.events)
                         .<span class="kw">await</span><span class="question-mark">?</span>;
                 }
                 ws_guard.stop_and_record();
@@ -1760,7 +1777,7 @@
                 <span class="kw">let </span><span class="kw-2">mut </span>object_changes_commit_res = <span class="self">self
                     </span>.state
                     .persist_object_changes(
-                        checkpoint_seq,
+                        <span class="kw-2">&amp;</span>checkpoint,
                         <span class="kw-2">&amp;</span>tx_object_changes,
                         <span class="self">self</span>.metrics.object_mutation_db_commit_latency.clone(),
                         <span class="self">self</span>.metrics.object_deletion_db_commit_latency.clone(),
@@ -1778,7 +1795,7 @@
                     object_changes_commit_res = <span class="self">self
                         </span>.state
                         .persist_object_changes(
-                            checkpoint_seq,
+                            <span class="kw-2">&amp;</span>checkpoint,
                             <span class="kw-2">&amp;</span>tx_object_changes,
                             <span class="self">self</span>.metrics.object_mutation_db_commit_latency.clone(),
                             <span class="self">self</span>.metrics.object_deletion_db_commit_latency.clone(),
@@ -1929,6 +1946,7 @@
     <span class="kw">async fn </span>index_checkpoint(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         data: <span class="kw-2">&amp;</span>CheckpointData,
+        index_epoch: bool,
     ) -&gt; <span class="prelude-ty">Result</span>&lt;(TemporaryCheckpointStore, <span class="prelude-ty">Option</span>&lt;TemporaryEpochStore&gt;), IndexerError&gt; {
         <span class="kw">let </span>CheckpointData {
             checkpoint,
@@ -2018,129 +2036,139 @@
         //     })
         //     .collect();
 
-        // Index epoch
-        </span><span class="kw">let </span>epoch_index = <span class="kw">if </span>checkpoint.epoch == <span class="number">0 </span>&amp;&amp; checkpoint.sequence_number == <span class="number">0 </span>{
-            <span class="comment">// very first epoch
-            </span><span class="kw">let </span>system_state: SuiSystemStateSummary = <span class="self">self
-                </span>.http_client
-                .get_latest_sui_system_state()
-                .<span class="kw">await
-                </span>.map_err(|e| {
-                    IndexerError::FullNodeReadingError(<span class="macro">format!</span>(
-                        <span class="string">&quot;Failed to get latest system state with error {:?}&quot;</span>,
-                        e
-                    ))
-                })<span class="question-mark">?</span>;
-            <span class="kw">let </span>validators = system_state
-                .active_validators
-                .iter()
-                .map(|v| (system_state.epoch, v.clone()).into())
-                .collect();
+        // NOTE: Index epoch when object checkpoint index has reached the same checkpoint,
+        // because epoch info is based on the latest system state object by the current checkpoint.
+        </span><span class="kw">let </span><span class="kw-2">mut </span>epoch_index = <span class="prelude-val">None</span>;
+        <span class="kw">if </span>index_epoch {
+            epoch_index = <span class="kw">if </span>checkpoint.epoch == <span class="number">0 </span>&amp;&amp; checkpoint.sequence_number == <span class="number">0 </span>{
+                <span class="comment">// very first epoch
+                // NOTE: tmp. using latest system state to save storage on indexer.
+                // let system_state = get_sui_system_state(data)?;
+                // let system_state: SuiSystemStateSummary = system_state.into_sui_system_state_summary();
+                </span><span class="kw">let </span>system_state: SuiSystemStateSummary = <span class="self">self
+                    </span>.http_client
+                    .get_latest_sui_system_state()
+                    .<span class="kw">await
+                    </span>.map_err(|e| {
+                        IndexerError::FullNodeReadingError(<span class="macro">format!</span>(
+                            <span class="string">&quot;Failed to get latest system state with error {:?}&quot;</span>,
+                            e
+                        ))
+                    })<span class="question-mark">?</span>;
+                <span class="kw">let </span>validators = system_state
+                    .active_validators
+                    .iter()
+                    .map(|v| (system_state.epoch, v.clone()).into())
+                    .collect();
 
-            <span class="prelude-val">Some</span>(TemporaryEpochStore {
-                last_epoch: <span class="prelude-val">None</span>,
-                new_epoch: DBEpochInfo {
-                    epoch: <span class="number">0</span>,
-                    first_checkpoint_id: <span class="number">0</span>,
-                    epoch_start_timestamp: system_state.epoch_start_timestamp_ms <span class="kw">as </span>i64,
-                    ..Default::default()
-                },
-                system_state: system_state.into(),
-                validators,
-            })
-        } <span class="kw">else if let </span><span class="prelude-val">Some</span>(end_of_epoch_data) = <span class="kw-2">&amp;</span>checkpoint.end_of_epoch_data {
-            <span class="comment">// Find system state object
-            </span><span class="kw">let </span>system_state: SuiSystemStateSummary = <span class="self">self
-                </span>.http_client
-                .get_latest_sui_system_state()
-                .<span class="kw">await
-                </span>.map_err(|e| {
-                    IndexerError::FullNodeReadingError(<span class="macro">format!</span>(
-                        <span class="string">&quot;Failed to get latest system state with error {:?}&quot;</span>,
-                        e
-                    ))
-                })<span class="question-mark">?</span>;
-
-            <span class="kw">let </span>epoch_event = transactions.iter().find_map(|tx| {
-                tx.events.data.iter().find(|ev| {
-                    ev.type_.address == SUI_SYSTEM_ADDRESS
-                        &amp;&amp; ev.type_.module.as_ident_str() == <span class="macro">ident_str!</span>(<span class="string">&quot;sui_system_state_inner&quot;</span>)
-                        &amp;&amp; ev.type_.name.as_ident_str() == <span class="macro">ident_str!</span>(<span class="string">&quot;SystemEpochInfoEvent&quot;</span>)
-                })
-            });
-
-            <span class="kw">let </span>event = epoch_event
-                .map(|e| bcs::from_bytes::&lt;SystemEpochInfoEvent&gt;(<span class="kw-2">&amp;</span>e.bcs))
-                .transpose()<span class="question-mark">?</span>;
-
-            <span class="kw">let </span>validators = system_state
-                .active_validators
-                .iter()
-                .map(|v| (system_state.epoch, v.clone()).into())
-                .collect();
-
-            <span class="kw">let </span>epoch_commitments = end_of_epoch_data
-                .epoch_commitments
-                .iter()
-                .map(|c| <span class="kw">match </span>c {
-                    CheckpointCommitment::ECMHLiveObjectSetDigest(d) =&gt; {
-                        <span class="prelude-val">Some</span>(d.digest.into_inner().to_vec())
-                    }
-                })
-                .collect();
-
-            <span class="kw">let </span>(next_epoch_committee, next_epoch_committee_stake) =
-                end_of_epoch_data.next_epoch_committee.iter().fold(
-                    (<span class="macro">vec!</span>[], <span class="macro">vec!</span>[]),
-                    |(<span class="kw-2">mut </span>names, <span class="kw-2">mut </span>stakes), (name, stake)| {
-                        names.push(<span class="prelude-val">Some</span>(name.as_bytes().to_vec()));
-                        stakes.push(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>stake <span class="kw">as </span>i64));
-                        (names, stakes)
+                <span class="prelude-val">Some</span>(TemporaryEpochStore {
+                    last_epoch: <span class="prelude-val">None</span>,
+                    new_epoch: DBEpochInfo {
+                        epoch: <span class="number">0</span>,
+                        first_checkpoint_id: <span class="number">0</span>,
+                        epoch_start_timestamp: system_state.epoch_start_timestamp_ms <span class="kw">as </span>i64,
+                        ..Default::default()
                     },
-                );
+                    system_state: system_state.into(),
+                    validators,
+                })
+            } <span class="kw">else if let </span><span class="prelude-val">Some</span>(end_of_epoch_data) = <span class="kw-2">&amp;</span>checkpoint.end_of_epoch_data {
+                <span class="comment">// Find system state object
+                // NOTE: tmp. using latest system state to save storage on indexer.
+                // let system_state = get_sui_system_state(data)?;
+                // let system_state: SuiSystemStateSummary = system_state.into_sui_system_state_summary();
+                </span><span class="kw">let </span>system_state: SuiSystemStateSummary = <span class="self">self
+                    </span>.http_client
+                    .get_latest_sui_system_state()
+                    .<span class="kw">await
+                    </span>.map_err(|e| {
+                        IndexerError::FullNodeReadingError(<span class="macro">format!</span>(
+                            <span class="string">&quot;Failed to get latest system state with error {:?}&quot;</span>,
+                            e
+                        ))
+                    })<span class="question-mark">?</span>;
 
-            <span class="kw">let </span>event = event.as_ref();
+                <span class="kw">let </span>epoch_event = transactions.iter().find_map(|tx| {
+                    tx.events.data.iter().find(|ev| {
+                        ev.type_.address == SUI_SYSTEM_ADDRESS
+                            &amp;&amp; ev.type_.module.as_ident_str()
+                                == <span class="macro">ident_str!</span>(<span class="string">&quot;sui_system_state_inner&quot;</span>)
+                            &amp;&amp; ev.type_.name.as_ident_str() == <span class="macro">ident_str!</span>(<span class="string">&quot;SystemEpochInfoEvent&quot;</span>)
+                    })
+                });
 
-            <span class="prelude-val">Some</span>(TemporaryEpochStore {
-                last_epoch: <span class="prelude-val">Some</span>(DBEpochInfo {
-                    epoch: system_state.epoch <span class="kw">as </span>i64 - <span class="number">1</span>,
-                    first_checkpoint_id: <span class="number">0</span>,
-                    last_checkpoint_id: <span class="prelude-val">Some</span>(checkpoint.sequence_number <span class="kw">as </span>i64),
-                    epoch_start_timestamp: <span class="number">0</span>,
-                    epoch_end_timestamp: <span class="prelude-val">Some</span>(checkpoint.timestamp_ms <span class="kw">as </span>i64),
-                    epoch_total_transactions: <span class="number">0</span>,
-                    next_epoch_version: <span class="prelude-val">Some</span>(
-                        end_of_epoch_data.next_epoch_protocol_version.as_u64() <span class="kw">as </span>i64,
-                    ),
-                    next_epoch_committee,
-                    next_epoch_committee_stake,
-                    stake_subsidy_amount: event.map(|e| e.stake_subsidy_amount),
-                    reference_gas_price: event.map(|e| e.reference_gas_price),
-                    storage_fund_balance: event.map(|e| e.storage_fund_balance),
-                    total_gas_fees: event.map(|e| e.total_gas_fees),
-                    total_stake_rewards_distributed: event
-                        .map(|e| e.total_stake_rewards_distributed),
-                    total_stake: event.map(|e| e.total_stake),
-                    storage_fund_reinvestment: event.map(|e| e.storage_fund_reinvestment),
-                    storage_charge: event.map(|e| e.storage_charge),
-                    protocol_version: event.map(|e| e.protocol_version),
-                    storage_rebate: event.map(|e| e.storage_rebate),
-                    leftover_storage_fund_inflow: event.map(|e| e.leftover_storage_fund_inflow),
-                    epoch_commitments,
-                }),
-                new_epoch: DBEpochInfo {
-                    epoch: system_state.epoch <span class="kw">as </span>i64,
-                    first_checkpoint_id: checkpoint.sequence_number <span class="kw">as </span>i64 + <span class="number">1</span>,
-                    epoch_start_timestamp: system_state.epoch_start_timestamp_ms <span class="kw">as </span>i64,
-                    ..Default::default()
-                },
-                system_state: system_state.into(),
-                validators,
-            })
-        } <span class="kw">else </span>{
-            <span class="prelude-val">None
-        </span>};
+                <span class="kw">let </span>event = epoch_event
+                    .map(|e| bcs::from_bytes::&lt;SystemEpochInfoEvent&gt;(<span class="kw-2">&amp;</span>e.bcs))
+                    .transpose()<span class="question-mark">?</span>;
 
+                <span class="kw">let </span>validators = system_state
+                    .active_validators
+                    .iter()
+                    .map(|v| (system_state.epoch, v.clone()).into())
+                    .collect();
+
+                <span class="kw">let </span>epoch_commitments = end_of_epoch_data
+                    .epoch_commitments
+                    .iter()
+                    .map(|c| <span class="kw">match </span>c {
+                        CheckpointCommitment::ECMHLiveObjectSetDigest(d) =&gt; {
+                            <span class="prelude-val">Some</span>(d.digest.into_inner().to_vec())
+                        }
+                    })
+                    .collect();
+
+                <span class="kw">let </span>(next_epoch_committee, next_epoch_committee_stake) =
+                    end_of_epoch_data.next_epoch_committee.iter().fold(
+                        (<span class="macro">vec!</span>[], <span class="macro">vec!</span>[]),
+                        |(<span class="kw-2">mut </span>names, <span class="kw-2">mut </span>stakes), (name, stake)| {
+                            names.push(<span class="prelude-val">Some</span>(name.as_bytes().to_vec()));
+                            stakes.push(<span class="prelude-val">Some</span>(<span class="kw-2">*</span>stake <span class="kw">as </span>i64));
+                            (names, stakes)
+                        },
+                    );
+
+                <span class="kw">let </span>event = event.as_ref();
+
+                <span class="prelude-val">Some</span>(TemporaryEpochStore {
+                    last_epoch: <span class="prelude-val">Some</span>(DBEpochInfo {
+                        epoch: system_state.epoch <span class="kw">as </span>i64 - <span class="number">1</span>,
+                        first_checkpoint_id: <span class="number">0</span>,
+                        last_checkpoint_id: <span class="prelude-val">Some</span>(checkpoint.sequence_number <span class="kw">as </span>i64),
+                        epoch_start_timestamp: <span class="number">0</span>,
+                        epoch_end_timestamp: <span class="prelude-val">Some</span>(checkpoint.timestamp_ms <span class="kw">as </span>i64),
+                        epoch_total_transactions: <span class="number">0</span>,
+                        next_epoch_version: <span class="prelude-val">Some</span>(
+                            end_of_epoch_data.next_epoch_protocol_version.as_u64() <span class="kw">as </span>i64,
+                        ),
+                        next_epoch_committee,
+                        next_epoch_committee_stake,
+                        stake_subsidy_amount: event.map(|e| e.stake_subsidy_amount),
+                        reference_gas_price: event.map(|e| e.reference_gas_price),
+                        storage_fund_balance: event.map(|e| e.storage_fund_balance),
+                        total_gas_fees: event.map(|e| e.total_gas_fees),
+                        total_stake_rewards_distributed: event
+                            .map(|e| e.total_stake_rewards_distributed),
+                        total_stake: event.map(|e| e.total_stake),
+                        storage_fund_reinvestment: event.map(|e| e.storage_fund_reinvestment),
+                        storage_charge: event.map(|e| e.storage_charge),
+                        protocol_version: event.map(|e| e.protocol_version),
+                        storage_rebate: event.map(|e| e.storage_rebate),
+                        leftover_storage_fund_inflow: event.map(|e| e.leftover_storage_fund_inflow),
+                        epoch_commitments,
+                    }),
+                    new_epoch: DBEpochInfo {
+                        epoch: system_state.epoch <span class="kw">as </span>i64,
+                        first_checkpoint_id: checkpoint.sequence_number <span class="kw">as </span>i64 + <span class="number">1</span>,
+                        epoch_start_timestamp: system_state.epoch_start_timestamp_ms <span class="kw">as </span>i64,
+                        ..Default::default()
+                    },
+                    system_state: system_state.into(),
+                    validators,
+                })
+            } <span class="kw">else </span>{
+                <span class="prelude-val">None
+            </span>};
+        }
         <span class="kw">let </span>total_transactions = db_transactions.iter().map(|t| t.transaction_count).sum();
 
         <span class="prelude-val">Ok</span>((

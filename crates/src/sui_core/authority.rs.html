@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/authority.rs`."><title>authority.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_core/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/authority.rs`."><title>authority.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../source-files.js"></script><script defer src="../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../sui_core/index.html"><img class="rust-logo" src="../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -3793,6 +3793,108 @@
 <a href="#3793" id="3793">3793</a>
 <a href="#3794" id="3794">3794</a>
 <a href="#3795" id="3795">3795</a>
+<a href="#3796" id="3796">3796</a>
+<a href="#3797" id="3797">3797</a>
+<a href="#3798" id="3798">3798</a>
+<a href="#3799" id="3799">3799</a>
+<a href="#3800" id="3800">3800</a>
+<a href="#3801" id="3801">3801</a>
+<a href="#3802" id="3802">3802</a>
+<a href="#3803" id="3803">3803</a>
+<a href="#3804" id="3804">3804</a>
+<a href="#3805" id="3805">3805</a>
+<a href="#3806" id="3806">3806</a>
+<a href="#3807" id="3807">3807</a>
+<a href="#3808" id="3808">3808</a>
+<a href="#3809" id="3809">3809</a>
+<a href="#3810" id="3810">3810</a>
+<a href="#3811" id="3811">3811</a>
+<a href="#3812" id="3812">3812</a>
+<a href="#3813" id="3813">3813</a>
+<a href="#3814" id="3814">3814</a>
+<a href="#3815" id="3815">3815</a>
+<a href="#3816" id="3816">3816</a>
+<a href="#3817" id="3817">3817</a>
+<a href="#3818" id="3818">3818</a>
+<a href="#3819" id="3819">3819</a>
+<a href="#3820" id="3820">3820</a>
+<a href="#3821" id="3821">3821</a>
+<a href="#3822" id="3822">3822</a>
+<a href="#3823" id="3823">3823</a>
+<a href="#3824" id="3824">3824</a>
+<a href="#3825" id="3825">3825</a>
+<a href="#3826" id="3826">3826</a>
+<a href="#3827" id="3827">3827</a>
+<a href="#3828" id="3828">3828</a>
+<a href="#3829" id="3829">3829</a>
+<a href="#3830" id="3830">3830</a>
+<a href="#3831" id="3831">3831</a>
+<a href="#3832" id="3832">3832</a>
+<a href="#3833" id="3833">3833</a>
+<a href="#3834" id="3834">3834</a>
+<a href="#3835" id="3835">3835</a>
+<a href="#3836" id="3836">3836</a>
+<a href="#3837" id="3837">3837</a>
+<a href="#3838" id="3838">3838</a>
+<a href="#3839" id="3839">3839</a>
+<a href="#3840" id="3840">3840</a>
+<a href="#3841" id="3841">3841</a>
+<a href="#3842" id="3842">3842</a>
+<a href="#3843" id="3843">3843</a>
+<a href="#3844" id="3844">3844</a>
+<a href="#3845" id="3845">3845</a>
+<a href="#3846" id="3846">3846</a>
+<a href="#3847" id="3847">3847</a>
+<a href="#3848" id="3848">3848</a>
+<a href="#3849" id="3849">3849</a>
+<a href="#3850" id="3850">3850</a>
+<a href="#3851" id="3851">3851</a>
+<a href="#3852" id="3852">3852</a>
+<a href="#3853" id="3853">3853</a>
+<a href="#3854" id="3854">3854</a>
+<a href="#3855" id="3855">3855</a>
+<a href="#3856" id="3856">3856</a>
+<a href="#3857" id="3857">3857</a>
+<a href="#3858" id="3858">3858</a>
+<a href="#3859" id="3859">3859</a>
+<a href="#3860" id="3860">3860</a>
+<a href="#3861" id="3861">3861</a>
+<a href="#3862" id="3862">3862</a>
+<a href="#3863" id="3863">3863</a>
+<a href="#3864" id="3864">3864</a>
+<a href="#3865" id="3865">3865</a>
+<a href="#3866" id="3866">3866</a>
+<a href="#3867" id="3867">3867</a>
+<a href="#3868" id="3868">3868</a>
+<a href="#3869" id="3869">3869</a>
+<a href="#3870" id="3870">3870</a>
+<a href="#3871" id="3871">3871</a>
+<a href="#3872" id="3872">3872</a>
+<a href="#3873" id="3873">3873</a>
+<a href="#3874" id="3874">3874</a>
+<a href="#3875" id="3875">3875</a>
+<a href="#3876" id="3876">3876</a>
+<a href="#3877" id="3877">3877</a>
+<a href="#3878" id="3878">3878</a>
+<a href="#3879" id="3879">3879</a>
+<a href="#3880" id="3880">3880</a>
+<a href="#3881" id="3881">3881</a>
+<a href="#3882" id="3882">3882</a>
+<a href="#3883" id="3883">3883</a>
+<a href="#3884" id="3884">3884</a>
+<a href="#3885" id="3885">3885</a>
+<a href="#3886" id="3886">3886</a>
+<a href="#3887" id="3887">3887</a>
+<a href="#3888" id="3888">3888</a>
+<a href="#3889" id="3889">3889</a>
+<a href="#3890" id="3890">3890</a>
+<a href="#3891" id="3891">3891</a>
+<a href="#3892" id="3892">3892</a>
+<a href="#3893" id="3893">3893</a>
+<a href="#3894" id="3894">3894</a>
+<a href="#3895" id="3895">3895</a>
+<a href="#3896" id="3896">3896</a>
+<a href="#3897" id="3897">3897</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) 2021, Facebook, Inc. and its affiliates
 // Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
@@ -3819,12 +3921,9 @@
 };
 <span class="kw">use </span>serde::de::DeserializeOwned;
 <span class="kw">use </span>serde::Serialize;
-<span class="kw">use </span>sui_config::transaction_deny_config::TransactionDenyConfig;
-<span class="kw">use </span>sui_types::metrics::LimitsMetrics;
-<span class="kw">use </span>sui_types::TypeTag;
 <span class="kw">use </span>tap::{TapFallible, TapOptional};
 <span class="kw">use </span>tokio::sync::mpsc::unbounded_channel;
-<span class="kw">use </span>tokio::sync::{oneshot, Semaphore};
+<span class="kw">use </span>tokio::sync::oneshot;
 <span class="kw">use </span>tokio_retry::strategy::{jitter, ExponentialBackoff};
 <span class="kw">use </span>tracing::{debug, error, info, instrument, trace, warn, Instrument};
 
@@ -3835,17 +3934,21 @@
     Committee <span class="kw">as </span>ConsensusCommittee, WorkerCache <span class="kw">as </span>ConsensusWorkerCache,
     WorkerId <span class="kw">as </span>ConsensusWorkerId,
 };
+<span class="kw">use </span>once_cell::sync::OnceCell;
 <span class="kw">use </span>shared_crypto::intent::{Intent, IntentScope};
 <span class="kw">use </span>sui_adapter::execution_engine;
 <span class="kw">use </span>sui_adapter::{adapter, execution_mode};
+<span class="kw">use </span>sui_config::certificate_deny_config::CertificateDenyConfig;
 <span class="kw">use </span>sui_config::genesis::Genesis;
 <span class="kw">use </span>sui_config::node::{
     AuthorityStorePruningConfig, DBCheckpointConfig, ExpensiveSafetyCheckConfig,
 };
+<span class="kw">use </span>sui_config::transaction_deny_config::TransactionDenyConfig;
 <span class="kw">use </span>sui_framework::{BuiltInFramework, SystemPackage};
 <span class="kw">use </span>sui_json_rpc_types::{
     Checkpoint, DevInspectResults, DryRunTransactionBlockResponse, EventFilter, SuiEvent,
-    SuiMoveValue, SuiObjectDataFilter, SuiTransactionBlockData, SuiTransactionBlockEvents,
+    SuiMoveValue, SuiObjectDataFilter, SuiTransactionBlockData, SuiTransactionBlockEffects,
+    SuiTransactionBlockEvents, TransactionFilter,
 };
 <span class="kw">use </span>sui_macros::{fail_point, fail_point_async};
 <span class="kw">use </span>sui_protocol_config::{ProtocolConfig, SupportedProtocolVersions};
@@ -3858,6 +3961,10 @@
 };
 <span class="kw">use </span>sui_types::digests::TransactionEventsDigest;
 <span class="kw">use </span>sui_types::dynamic_field::{DynamicFieldInfo, DynamicFieldName, DynamicFieldType, Field};
+<span class="kw">use </span>sui_types::effects::{
+    SignedTransactionEffects, TransactionEffects, TransactionEffectsAPI, TransactionEvents,
+    VerifiedCertifiedTransactionEffects, VerifiedSignedTransactionEffects,
+};
 <span class="kw">use </span>sui_types::error::{ExecutionError, UserInputError};
 <span class="kw">use </span>sui_types::event::{Event, EventID};
 <span class="kw">use </span>sui_types::gas::{GasCostSummary, SuiGasStatus};
@@ -3867,8 +3974,8 @@
     CheckpointSequenceNumber, CheckpointSummary, CheckpointTimestamp, VerifiedCheckpoint,
 };
 <span class="kw">use </span>sui_types::messages_checkpoint::{CheckpointRequest, CheckpointResponse};
+<span class="kw">use </span>sui_types::metrics::LimitsMetrics;
 <span class="kw">use </span>sui_types::object::{MoveObject, Owner, PastObjectRead, OBJECT_START_VERSION};
-<span class="kw">use </span>sui_types::query::TransactionFilter;
 <span class="kw">use </span>sui_types::storage::{ObjectKey, ObjectStore, WriteKind};
 <span class="kw">use </span>sui_types::sui_system_state::epoch_start_sui_system_state::EpochStartSystemStateTrait;
 <span class="kw">use </span>sui_types::sui_system_state::SuiSystemState;
@@ -3887,6 +3994,7 @@
     object::{Object, ObjectFormatOptions, ObjectRead},
     SUI_SYSTEM_ADDRESS,
 };
+<span class="kw">use </span>sui_types::{is_system_package, TypeTag};
 <span class="kw">use </span>typed_store::Map;
 
 <span class="kw">use </span><span class="kw">crate</span>::authority::authority_per_epoch_store::{AuthorityPerEpochStore, CertTxGuard};
@@ -3898,8 +4006,8 @@
 <span class="kw">use </span><span class="kw">crate</span>::checkpoints::checkpoint_executor::CheckpointExecutor;
 <span class="kw">use </span><span class="kw">crate</span>::checkpoints::CheckpointStore;
 <span class="kw">use </span><span class="kw">crate</span>::epoch::committee_store::CommitteeStore;
-<span class="kw">use </span><span class="kw">crate</span>::event_handler::EventHandler;
-<span class="kw">use </span><span class="kw">crate</span>::execution_driver::{execution_process, ExecutionDispatcher};
+<span class="kw">use </span><span class="kw">crate</span>::event_handler::SubscriptionHandler;
+<span class="kw">use </span><span class="kw">crate</span>::execution_driver::execution_process;
 <span class="kw">use </span><span class="kw">crate</span>::module_cache_metrics::ResolverMetrics;
 <span class="kw">use </span><span class="kw">crate</span>::stake_aggregator::StakeAggregator;
 <span class="kw">use </span><span class="kw">crate</span>::state_accumulator::StateAccumulator;
@@ -3928,7 +4036,7 @@
 
 <span class="attr">#[cfg(feature = <span class="string">&quot;test-utils&quot;</span>)]
 </span><span class="kw">pub mod </span>authority_test_utils;
-<span class="kw">use </span>once_cell::sync::OnceCell;
+
 <span class="kw">pub mod </span>authority_per_epoch_store;
 <span class="kw">pub mod </span>authority_per_epoch_store_pruner;
 
@@ -4281,7 +4389,7 @@
 
     <span class="kw">pub </span>indexes: <span class="prelude-ty">Option</span>&lt;Arc&lt;IndexStore&gt;&gt;,
 
-    <span class="kw">pub </span>event_handler: Arc&lt;EventHandler&gt;,
+    <span class="kw">pub </span>subscription_handler: Arc&lt;SubscriptionHandler&gt;,
     <span class="kw">pub</span>(<span class="kw">crate</span>) checkpoint_store: Arc&lt;CheckpointStore&gt;,
 
     committee_store: Arc&lt;CommitteeStore&gt;,
@@ -4304,6 +4412,8 @@
     </span>expensive_safety_check_config: ExpensiveSafetyCheckConfig,
 
     transaction_deny_config: TransactionDenyConfig,
+
+    certificate_deny_config: CertificateDenyConfig,
 }
 
 <span class="doccomment">/// The authority state encapsulates all state, drives execution, and ensures safety.
@@ -4460,6 +4570,7 @@
         // this function, in order to prevent a byzantine validator from
         // giving us incorrect effects.
         </span>effects: <span class="kw-2">&amp;</span>VerifiedCertifiedTransactionEffects,
+        objects: <span class="kw-2">&amp;</span>Vec&lt;Object&gt;,
         epoch_store: <span class="kw-2">&amp;</span>Arc&lt;AuthorityPerEpochStore&gt;,
     ) -&gt; SuiResult {
         <span class="macro">assert!</span>(<span class="self">self</span>.is_fullnode(epoch_store));
@@ -4475,6 +4586,20 @@
                 err: <span class="string">&quot;effects/tx digest mismatch&quot;</span>.to_string()
             }
         );
+
+        <span class="kw">if </span>!objects.is_empty() {
+            <span class="macro">debug!</span>(
+                <span class="string">&quot;inserting objects to object store before executing a tx: {:?}&quot;</span>,
+                objects
+                    .iter()
+                    .map(|o| (o.id(), o.version()))
+                    .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;()
+            );
+            <span class="self">self</span>.database
+                .fullnode_fast_path_insert_objects_to_object_store_maybe(objects)<span class="question-mark">?</span>;
+            <span class="self">self</span>.transaction_manager()
+                .objects_available(objects.iter().map(InputKey::from).collect(), epoch_store);
+        }
 
         <span class="kw">if </span>transaction.contains_shared_object() {
             epoch_store
@@ -4838,6 +4963,7 @@
                 // cyclic dependency w/ sui-adapter
                 </span><span class="self">self</span>.expensive_safety_check_config
                     .enable_deep_per_tx_sui_conservation_check(),
+                <span class="self">self</span>.certificate_deny_config.certificate_deny_set(),
             );
 
         <span class="prelude-val">Ok</span>((inner_temp_store, effects, execution_error_opt.err()))
@@ -4943,7 +5069,8 @@
                 epoch_store.protocol_config(),
                 <span class="self">self</span>.metrics.limits_metrics.clone(),
                 <span class="bool-val">false</span>, <span class="comment">// enable_expensive_checks
-            </span>);
+                </span><span class="self">self</span>.certificate_deny_config.certificate_deny_set(),
+            );
         <span class="kw">let </span>tx_digest = <span class="kw-2">*</span>effects.transaction_digest();
 
         <span class="kw">let </span>module_cache =
@@ -5059,7 +5186,8 @@
                 protocol_config,
                 <span class="self">self</span>.metrics.limits_metrics.clone(),
                 <span class="bool-val">false</span>, <span class="comment">// enable_expensive_checks
-            </span>);
+                </span><span class="self">self</span>.certificate_deny_config.certificate_deny_set(),
+            );
 
         <span class="kw">let </span>module_cache =
             TemporaryModuleResolver::new(<span class="kw-2">&amp;</span>inner_temp_store, epoch_store.module_cache().clone());
@@ -5236,7 +5364,7 @@
         epoch_store: <span class="kw-2">&amp;</span>Arc&lt;AuthorityPerEpochStore&gt;,
     ) -&gt; SuiResult&lt;<span class="prelude-ty">Option</span>&lt;DynamicFieldInfo&gt;&gt; {
         <span class="comment">// Skip if not a move object
-        </span><span class="kw">let </span><span class="prelude-val">Some</span>(move_object) =  o.data.try_as_move().cloned() <span class="kw">else </span>{
+        </span><span class="kw">let </span><span class="prelude-val">Some</span>(move_object) = o.data.try_as_move().cloned() <span class="kw">else </span>{
             <span class="kw">return </span><span class="prelude-val">Ok</span>(<span class="prelude-val">None</span>);
         };
         <span class="comment">// We only index dynamic field objects
@@ -5332,12 +5460,13 @@
                 .<span class="kw">await
                 </span>.tap_ok(|<span class="kw">_</span>| <span class="self">self</span>.metrics.post_processing_total_tx_indexed.inc())
                 .tap_err(|e| <span class="macro">error!</span>(<span class="question-mark">?</span>tx_digest, <span class="string">&quot;Post processing - Couldn&#39;t index tx: {e}&quot;</span>));
-
+            <span class="kw">let </span>effects: SuiTransactionBlockEffects = effects.clone().try_into()<span class="question-mark">?</span>;
             <span class="comment">// Emit events
             </span><span class="kw">if </span>res.is_ok() {
-                <span class="self">self</span>.event_handler
-                    .process_events(
-                        <span class="kw-2">&amp;</span>effects.clone().try_into()<span class="question-mark">?</span>,
+                <span class="self">self</span>.subscription_handler
+                    .process_tx(
+                        certificate.data().transaction_data(),
+                        <span class="kw-2">&amp;</span>effects,
                         <span class="kw-2">&amp;</span>SuiTransactionBlockEvents::try_from(
                             events.clone(),
                             <span class="kw-2">*</span>tx_digest,
@@ -5463,6 +5592,34 @@
         })
     }
 
+    <span class="kw">pub fn </span>load_fastpath_input_objects(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        effects: <span class="kw-2">&amp;</span>TransactionEffects,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;Vec&lt;Object&gt;, SuiError&gt; {
+        <span class="comment">// Note: any future addition to the returned object list needs cautions
+        // to make sure not to mess up object pruning.
+
+        </span><span class="kw">let </span>clock_ref = effects
+            .shared_objects()
+            .iter()
+            .find(|(id, <span class="kw">_</span>, <span class="kw">_</span>)| id.is_clock());
+
+        <span class="kw">if let </span><span class="prelude-val">Some</span>((id, version, digest)) = clock_ref {
+            <span class="kw">let </span>clock_obj = <span class="self">self</span>.database.get_object_by_key(id, <span class="kw-2">*</span>version)<span class="question-mark">?</span>;
+            <span class="macro">debug_assert!</span>(clock_obj.is_some());
+            <span class="macro">debug_assert_eq!</span>(
+                clock_obj.as_ref().unwrap().compute_object_reference().<span class="number">2</span>,
+                <span class="kw-2">*</span>digest
+            );
+            <span class="prelude-val">Ok</span>(clock_obj
+                .tap_none(|| <span class="macro">error!</span>(<span class="string">&quot;Clock object not found: {:?}&quot;</span>, clock_ref))
+                .into_iter()
+                .collect())
+        } <span class="kw">else </span>{
+            <span class="prelude-val">Ok</span>(<span class="macro">vec!</span>[])
+        }
+    }
+
     <span class="kw">fn </span>check_protocol_version(
         supported_protocol_versions: SupportedProtocolVersions,
         current_version: ProtocolVersion,
@@ -5502,21 +5659,17 @@
         db_checkpoint_config: <span class="kw-2">&amp;</span>DBCheckpointConfig,
         expensive_safety_check_config: ExpensiveSafetyCheckConfig,
         transaction_deny_config: TransactionDenyConfig,
+        certificate_deny_config: CertificateDenyConfig,
+        indirect_objects_threshold: usize,
     ) -&gt; Arc&lt;<span class="self">Self</span>&gt; {
         <span class="self">Self</span>::check_protocol_version(supported_protocol_versions, epoch_store.protocol_version());
 
         <span class="kw">let </span>metrics = Arc::new(AuthorityMetrics::new(prometheus_registry));
         <span class="kw">let </span>(tx_ready_certificates, rx_ready_certificates) = unbounded_channel();
-        <span class="kw">let </span>execution_limit = Arc::new(Semaphore::new(num_cpus::get() * <span class="number">2</span>));
-        <span class="kw">let </span>execution_dispatcher = Arc::new(ExecutionDispatcher::new(
-            tx_ready_certificates,
-            execution_limit.clone(),
-            metrics.clone(),
-        ));
         <span class="kw">let </span>transaction_manager = Arc::new(TransactionManager::new(
             store.clone(),
             <span class="kw-2">&amp;</span>epoch_store,
-            execution_dispatcher.clone(),
+            tx_ready_certificates,
             metrics.clone(),
         ));
         <span class="kw">let </span>(tx_execution_shutdown, rx_execution_shutdown) = oneshot::channel();
@@ -5530,6 +5683,7 @@
             pruning_config,
             epoch_store.epoch_start_state().epoch_duration_ms(),
             prometheus_registry,
+            indirect_objects_threshold,
         );
         <span class="kw">let </span>state = Arc::new(AuthorityState {
             name,
@@ -5537,7 +5691,7 @@
             epoch_store: ArcSwap::new(epoch_store.clone()),
             database: store,
             indexes,
-            event_handler: Arc::new(EventHandler::default()),
+            subscription_handler: Arc::new(SubscriptionHandler::default()),
             checkpoint_store,
             committee_store,
             transaction_manager,
@@ -5548,16 +5702,15 @@
             db_checkpoint_config: db_checkpoint_config.clone(),
             expensive_safety_check_config,
             transaction_deny_config,
+            certificate_deny_config,
         });
 
         <span class="comment">// Start a task to execute ready certificates.
         </span><span class="kw">let </span>authority_state = Arc::downgrade(<span class="kw-2">&amp;</span>state);
-        execution_dispatcher.set_authority(authority_state.clone());
         <span class="macro">spawn_monitored_task!</span>(execution_process(
             authority_state,
             rx_ready_certificates,
-            rx_execution_shutdown,
-            execution_limit
+            rx_execution_shutdown
         ));
 
         <span class="comment">// TODO: This doesn&#39;t belong to the constructor of AuthorityState.
@@ -5762,13 +5915,16 @@
         fs::create_dir(<span class="kw-2">&amp;</span>store_checkpoint_path_tmp)
             .map_err(|e| SuiError::FileIOError(e.to_string()))<span class="question-mark">?</span>;
 
+        <span class="comment">// NOTE: Do not change the order of invoking these checkpoint calls
+        // We want to snapshot checkpoint db first to not race with state sync
+        </span><span class="self">self</span>.checkpoint_store
+            .checkpoint_db(<span class="kw-2">&amp;</span>checkpoint_path_tmp.join(<span class="string">&quot;checkpoints&quot;</span>))<span class="question-mark">?</span>;
+
         <span class="self">self</span>.database
             .perpetual_tables
             .checkpoint_db(<span class="kw-2">&amp;</span>store_checkpoint_path_tmp.join(<span class="string">&quot;perpetual&quot;</span>))<span class="question-mark">?</span>;
         <span class="self">self</span>.committee_store
             .checkpoint_db(<span class="kw-2">&amp;</span>checkpoint_path_tmp.join(<span class="string">&quot;epochs&quot;</span>))<span class="question-mark">?</span>;
-        <span class="self">self</span>.checkpoint_store
-            .checkpoint_db(<span class="kw-2">&amp;</span>checkpoint_path_tmp.join(<span class="string">&quot;checkpoints&quot;</span>))<span class="question-mark">?</span>;
 
         <span class="kw">if </span>checkpoint_indexes {
             <span class="kw">if let </span><span class="prelude-val">Some</span>(indexes) = <span class="self">self</span>.indexes.as_ref() {
@@ -6082,10 +6238,27 @@
                 ObjectType::Struct(s) =&gt; <span class="kw-2">&amp;</span>type_ == s,
                 ObjectType::Package =&gt; <span class="bool-val">false</span>,
             })
-            .map(|info| info.object_id);
+            .map(|info| ObjectKey(info.object_id, info.version))
+            .collect::&lt;Vec&lt;<span class="kw">_</span>&gt;&gt;();
         <span class="kw">let </span><span class="kw-2">mut </span>move_objects = <span class="macro">vec!</span>[];
-        <span class="kw">for </span>id <span class="kw">in </span>object_ids {
-            move_objects.push(<span class="self">self</span>.get_move_object(<span class="kw-2">&amp;</span>id)<span class="question-mark">?</span>)
+
+        <span class="kw">let </span>objects = <span class="self">self</span>.database.multi_get_object_by_key(<span class="kw-2">&amp;</span>object_ids)<span class="question-mark">?</span>;
+
+        <span class="kw">for </span>(o, id) <span class="kw">in </span>objects.into_iter().zip(object_ids) {
+            <span class="kw">let </span>object = o.ok_or_else(|| {
+                SuiError::from(UserInputError::ObjectNotFound {
+                    object_id: id.<span class="number">0</span>,
+                    version: <span class="prelude-val">Some</span>(id.<span class="number">1</span>),
+                })
+            })<span class="question-mark">?</span>;
+            <span class="kw">let </span>move_object = object.data.try_as_move().ok_or_else(|| {
+                SuiError::from(UserInputError::MovePackageAsObject { object_id: id.<span class="number">0 </span>})
+            })<span class="question-mark">?</span>;
+            move_objects.push(bcs::from_bytes(move_object.contents()).map_err(|e| {
+                SuiError::ObjectDeserializationError {
+                    error: <span class="macro">format!</span>(<span class="string">&quot;{e}&quot;</span>),
+                }
+            })<span class="question-mark">?</span>);
         }
         <span class="prelude-val">Ok</span>(move_objects)
     }
@@ -6295,6 +6468,31 @@
                 Base58::encode(digest)
             )),
         }
+    }
+
+    <span class="kw">pub fn </span>find_publish_txn_digest(
+        <span class="kw-2">&amp;</span><span class="self">self</span>,
+        package_id: ObjectID,
+    ) -&gt; <span class="prelude-ty">Result</span>&lt;TransactionDigest, anyhow::Error&gt; {
+        <span class="kw">if </span>is_system_package(package_id) {
+            <span class="kw">return </span><span class="self">self</span>.find_genesis_txn_digest();
+        }
+        <span class="prelude-val">Ok</span>(<span class="self">self
+            </span>.get_object_read(<span class="kw-2">&amp;</span>package_id)<span class="question-mark">?
+            </span>.into_object()<span class="question-mark">?
+            </span>.previous_transaction)
+    }
+
+    <span class="kw">pub fn </span>find_genesis_txn_digest(<span class="kw-2">&amp;</span><span class="self">self</span>) -&gt; <span class="prelude-ty">Result</span>&lt;TransactionDigest, anyhow::Error&gt; {
+        <span class="kw">let </span>summary = <span class="self">self
+            </span>.get_verified_checkpoint_by_sequence_number(<span class="number">0</span>)<span class="question-mark">?
+            </span>.into_message();
+        <span class="kw">let </span>content = <span class="self">self</span>.get_checkpoint_contents(summary.content_digest)<span class="question-mark">?</span>;
+        <span class="kw">let </span>genesis_transaction = content.enumerate_transactions(<span class="kw-2">&amp;</span>summary).next();
+        <span class="prelude-val">Ok</span>(genesis_transaction
+            .ok_or(<span class="macro">anyhow!</span>(<span class="string">&quot;No transactions found in checkpoint content&quot;</span>))<span class="question-mark">?
+            </span>.<span class="number">1
+            </span>.transaction)
     }
 
     <span class="kw">pub fn </span>get_verified_checkpoint_by_sequence_number(
@@ -6524,8 +6722,7 @@
     <span class="kw">pub async fn </span>insert_genesis_object(<span class="kw-2">&amp;</span><span class="self">self</span>, object: Object) {
         <span class="self">self</span>.database
             .insert_genesis_object(object)
-            .<span class="kw">await
-            </span>.expect(<span class="string">&quot;Cannot insert genesis object&quot;</span>)
+            .expect(<span class="string">&quot;Cannot insert genesis object&quot;</span>)
     }
 
     <span class="kw">pub async fn </span>insert_genesis_objects(<span class="kw-2">&amp;</span><span class="self">self</span>, objects: <span class="kw-2">&amp;</span>[Object]) {
@@ -6912,6 +7109,7 @@
     </span><span class="kw">pub async fn </span>get_available_system_packages(
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         max_binary_format_version: u32,
+        no_extraneous_module_bytes: bool,
     ) -&gt; Vec&lt;ObjectRef&gt; {
         <span class="kw">let </span><span class="kw-2">mut </span>results = <span class="macro">vec!</span>[];
 
@@ -6936,6 +7134,7 @@
                 <span class="kw-2">&amp;</span>modules,
                 system_package.dependencies().to_vec(),
                 max_binary_format_version,
+                no_extraneous_module_bytes,
             ).<span class="kw">await else </span>{
                 <span class="kw">return </span><span class="macro">vec!</span>[];
             };
@@ -6962,6 +7161,7 @@
         <span class="kw-2">&amp;</span><span class="self">self</span>,
         system_packages: Vec&lt;ObjectRef&gt;,
         move_binary_format_version: u32,
+        no_extraneous_module_bytes: bool,
     ) -&gt; <span class="prelude-ty">Option</span>&lt;Vec&lt;(SequenceNumber, Vec&lt;Vec&lt;u8&gt;&gt;, Vec&lt;ObjectID&gt;)&gt;&gt; {
         <span class="kw">let </span>ids: Vec&lt;<span class="kw">_</span>&gt; = system_packages.iter().map(|(id, <span class="kw">_</span>, <span class="kw">_</span>)| <span class="kw-2">*</span>id).collect();
         <span class="kw">let </span>objects = <span class="self">self</span>.get_objects(<span class="kw-2">&amp;</span>ids).<span class="kw">await</span>.expect(<span class="string">&quot;read cannot fail&quot;</span>);
@@ -6999,8 +7199,12 @@
             <span class="kw">let </span>modules: Vec&lt;<span class="kw">_</span>&gt; = bytes
                 .iter()
                 .map(|m| {
-                    CompiledModule::deserialize_with_max_version(m, move_binary_format_version)
-                        .unwrap()
+                    CompiledModule::deserialize_with_config(
+                        m,
+                        move_binary_format_version,
+                        no_extraneous_module_bytes,
+                    )
+                    .unwrap()
                 })
                 .collect();
 
@@ -7171,8 +7375,11 @@
 
         <span class="comment">// since system packages are created during the current epoch, they should abide by the
         // rules of the current epoch, including the current epoch&#39;s max Move binary format version
-        </span><span class="kw">let </span><span class="prelude-val">Some</span>(next_epoch_system_package_bytes) = <span class="self">self</span>.get_system_package_bytes(
-            next_epoch_system_packages.clone(), epoch_store.protocol_config().move_binary_format_version()
+        </span><span class="kw">let </span>config = epoch_store.protocol_config();
+        <span class="kw">let </span><span class="prelude-val">Some</span>(next_epoch_system_package_bytes) = <span class="self">self</span>.get_system_package_bytes(
+            next_epoch_system_packages.clone(),
+            config.move_binary_format_version(),
+            config.no_extraneous_module_bytes(),
         ).<span class="kw">await else </span>{
             <span class="macro">error!</span>(
                 <span class="string">&quot;upgraded system packages {:?} are not locally available, cannot create \
@@ -7345,9 +7552,6 @@
             .unwrap()
             .send(())
             .unwrap();
-        <span class="self">self</span>.transaction_manager
-            .execution_dispatcher
-            .shutdown_execution_for_test();
     }
 }
 

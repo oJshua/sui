@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"enum":["SuiClientCommandResult","SuiClientCommands"],"fn":["call_move","write_transaction_response"],"struct":["SwitchResponse","WalletContext"]};
+window.SIDEBAR_ITEMS = {"enum":["SuiClientCommandResult","SuiClientCommands"],"fn":["call_move","write_transaction_response"],"struct":["SwitchResponse"]};

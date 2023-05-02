@@ -1,1 +1,1 @@
-window.SIDEBAR_ITEMS = {"struct":["GovernanceReadApi"]};
+window.SIDEBAR_ITEMS = {"struct":["GovernanceReadApi","ValidatorExchangeRates"]};

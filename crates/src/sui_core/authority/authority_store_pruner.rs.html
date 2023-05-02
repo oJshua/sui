@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/authority/authority_store_pruner.rs`."><title>authority_store_pruner.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (1c42cb4ef 2023-04-26)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../sui_core/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `crates/sui-core/src/authority/authority_store_pruner.rs`."><title>authority_store_pruner.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceSerif4-Bold-a2c9cd1067f8b328.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../../static.files/rustdoc-ba5701c5741a7b69.css" id="mainThemeStyle"><div id="rustdoc-vars" data-root-path="../../../" data-static-root-path="../../../static.files/" data-current-crate="sui_core" data-themes="" data-resource-suffix="" data-rustdoc-version="1.71.0-nightly (9ecda8de8 2023-04-30)" data-search-js="search-618e954b235f6acc.js" data-settings-js="settings-de11bff964e9d4e5.js" data-settings-css="settings-6f6ffb5395b17c6e.css" data-theme-light-css="light-0f8c037637f9eb3e.css" data-theme-dark-css="dark-1097f8e92a01e3cf.css" data-theme-ayu-css="ayu-614652228113ac93.css" ></div><script src="../../../static.files/storage-62ce34ea385b278a.js"></script><script defer src="../../../static.files/source-script-11255107d0a65077.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../static.files/main-f0540c1d82cde29b.js"></script><noscript><link rel="stylesheet" media="(prefers-color-scheme:light)" href="../../../static.files/light-0f8c037637f9eb3e.css"><link rel="stylesheet" media="(prefers-color-scheme:dark)" href="../../../static.files/dark-1097f8e92a01e3cf.css"><link rel="stylesheet" href="../../../static.files/noscript-13285aec31fa243e.css"></noscript><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"></nav><main><nav class="sub"><a class="sub-logo-container" href="../../../sui_core/index.html"><img class="rust-logo" src="../../../static.files/rust-logo-151179464ae7ed46.svg" alt="logo"></a><form class="search-form"><span></span><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><a href="../../../help.html">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
 <a href="#2" id="2">2</a>
 <a href="#3" id="3">3</a>
 <a href="#4" id="4">4</a>
@@ -680,6 +680,27 @@
 <a href="#680" id="680">680</a>
 <a href="#681" id="681">681</a>
 <a href="#682" id="682">682</a>
+<a href="#683" id="683">683</a>
+<a href="#684" id="684">684</a>
+<a href="#685" id="685">685</a>
+<a href="#686" id="686">686</a>
+<a href="#687" id="687">687</a>
+<a href="#688" id="688">688</a>
+<a href="#689" id="689">689</a>
+<a href="#690" id="690">690</a>
+<a href="#691" id="691">691</a>
+<a href="#692" id="692">692</a>
+<a href="#693" id="693">693</a>
+<a href="#694" id="694">694</a>
+<a href="#695" id="695">695</a>
+<a href="#696" id="696">696</a>
+<a href="#697" id="697">697</a>
+<a href="#698" id="698">698</a>
+<a href="#699" id="699">699</a>
+<a href="#700" id="700">700</a>
+<a href="#701" id="701">701</a>
+<a href="#702" id="702">702</a>
+<a href="#703" id="703">703</a>
 </pre></div><pre class="rust"><code><span class="comment">// Copyright (c) Mysten Labs, Inc.
 // SPDX-License-Identifier: Apache-2.0
 
@@ -696,7 +717,8 @@
 <span class="kw">use </span>sui_config::node::AuthorityStorePruningConfig;
 <span class="kw">use </span>sui_storage::mutex_table::RwLockTable;
 <span class="kw">use </span>sui_types::base_types::SequenceNumber;
-<span class="kw">use </span>sui_types::messages::{TransactionEffects, TransactionEffectsAPI};
+<span class="kw">use </span>sui_types::effects::TransactionEffects;
+<span class="kw">use </span>sui_types::effects::TransactionEffectsAPI;
 <span class="kw">use </span>sui_types::messages_checkpoint::CheckpointSequenceNumber;
 <span class="kw">use </span>sui_types::{
     base_types::{ObjectID, VersionNumber},
@@ -753,6 +775,7 @@
         checkpoint_number: CheckpointSequenceNumber,
         deletion_method: DeletionMethod,
         metrics: Arc&lt;AuthorityStorePruningMetrics&gt;,
+        indirect_objects_threshold: usize,
     ) -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span>_scope = monitored_scope(<span class="string">&quot;ObjectsLivePruner&quot;</span>);
         <span class="kw">let </span><span class="kw-2">mut </span>wb = perpetual_db.objects.batch();
@@ -767,15 +790,18 @@
             .num_pruned_objects
             .inc_by(object_keys_to_prune.len() <span class="kw">as </span>u64);
         <span class="kw">let </span><span class="kw-2">mut </span>indirect_objects: HashMap&lt;<span class="kw">_</span>, i64&gt; = HashMap::new();
-        <span class="kw">for </span>object <span class="kw">in </span>perpetual_db
-            .objects
-            .multi_get(object_keys_to_prune.iter())<span class="question-mark">?
-            </span>.into_iter()
-            .flatten()
-        {
-            <span class="kw">if let </span>StoreObject::Value(obj) = object.into_inner() {
-                <span class="kw">if let </span>StoreData::IndirectObject(indirect_object) = obj.data {
-                    <span class="kw-2">*</span>indirect_objects.entry(indirect_object.digest).or_default() -= <span class="number">1</span>;
+
+        <span class="kw">if </span>indirect_objects_threshold &gt; <span class="number">0 </span>&amp;&amp; indirect_objects_threshold &lt; usize::MAX {
+            <span class="kw">for </span>object <span class="kw">in </span>perpetual_db
+                .objects
+                .multi_get(object_keys_to_prune.iter())<span class="question-mark">?
+                </span>.into_iter()
+                .flatten()
+            {
+                <span class="kw">if let </span>StoreObject::Value(obj) = object.into_inner() {
+                    <span class="kw">if let </span>StoreData::IndirectObject(indirect_object) = obj.data {
+                        <span class="kw-2">*</span>indirect_objects.entry(indirect_object.digest).or_default() -= <span class="number">1</span>;
+                    }
                 }
             }
         }
@@ -820,12 +846,13 @@
     }
 
     <span class="doccomment">/// Prunes old object versions based on effects from all checkpoints from epochs eligible for pruning
-    </span><span class="kw">async fn </span>prune_objects_for_eligible_epochs(
+    </span><span class="kw">pub async fn </span>prune_objects_for_eligible_epochs(
         perpetual_db: <span class="kw-2">&amp;</span>Arc&lt;AuthorityPerpetualTables&gt;,
         checkpoint_store: <span class="kw-2">&amp;</span>Arc&lt;CheckpointStore&gt;,
         objects_lock_table: <span class="kw-2">&amp;</span>Arc&lt;RwLockTable&lt;ObjectContentDigest&gt;&gt;,
         config: AuthorityStorePruningConfig,
         metrics: Arc&lt;AuthorityStorePruningMetrics&gt;,
+        indirect_objects_threshold: usize,
     ) -&gt; anyhow::Result&lt;()&gt; {
         <span class="kw">let </span>deletion_method = <span class="kw">if </span>config.use_range_deletion {
             DeletionMethod::RangeDelete
@@ -837,73 +864,79 @@
             .get_highest_executed_checkpoint()<span class="question-mark">?
             </span>.map(|c| (c.sequence_number, c.epoch()))
             .unwrap_or_default();
+        <span class="kw">let </span><span class="kw-2">mut </span>checkpoints_in_batch = <span class="number">0</span>;
+        <span class="kw">let </span><span class="kw-2">mut </span>batch_effects = <span class="macro">vec!</span>[];
+        <span class="kw">let </span><span class="kw-2">mut </span>network_total_transactions = <span class="number">0</span>;
 
         <span class="macro">debug!</span>(
             <span class="string">&quot;Starting object pruning. Current epoch: {}. Latest pruned checkpoint: {}&quot;</span>,
             current_epoch, checkpoint_number
         );
+        <span class="kw">let </span>iter = checkpoint_store
+            .certified_checkpoints
+            .iter()
+            .skip_to(<span class="kw-2">&amp;</span>(checkpoint_number + <span class="number">1</span>))<span class="question-mark">?
+            </span>.map(|(k, ckpt)| (k, ckpt.into_inner()));
 
-        <span class="kw">loop </span>{
-            <span class="kw">let </span>checkpoints: Vec&lt;<span class="kw">_</span>&gt; = checkpoint_store
-                .certified_checkpoints
-                .iter()
-                .skip_to(<span class="kw-2">&amp;</span>(checkpoint_number + <span class="number">1</span>))<span class="question-mark">?
-                </span>.take(config.max_checkpoints_in_batch)
-                .map(|(<span class="kw">_</span>, ckpt)| ckpt.into_inner())
-                <span class="comment">// Filtering out transactions whose epoch or checkpoint number is too new.
-                // We have to respect the highest executed checkpoint watermark because there might be
-                // parts of the system that still require access to old object versions (i.e. state accumulator)
-                </span>.filter(|checkpoint| {
-                    checkpoint.epoch() + config.num_epochs_to_retain &lt;= current_epoch
-                        &amp;&amp; <span class="kw-2">*</span>checkpoint.sequence_number() &lt;= highest_executed_checkpoint
-                })
-                .collect();
-
-            <span class="kw">let </span><span class="kw-2">mut </span>is_last_iteration = checkpoints.len() &lt; config.max_checkpoints_in_batch;
-
-            <span class="kw">let </span>digests: Vec&lt;<span class="kw">_</span>&gt; = checkpoints.iter().map(|c| c.content_digest).collect();
-            <span class="kw">let </span>execution_digests = checkpoint_store
-                .multi_get_checkpoint_content(<span class="kw-2">&amp;</span>digests)<span class="question-mark">?
-                </span>.into_iter()
-                .map(|contents| {
-                    contents
-                        .expect(<span class="string">&quot;checkpoint content is missing&quot;</span>)
-                        .into_inner()
-                        .into_iter()
-                        .map(|tx| tx.effects)
-                });
-
-            <span class="kw">let </span><span class="kw-2">mut </span>digests = <span class="macro">vec!</span>[];
-            <span class="kw">for </span>(idx, checkpoint_digests) <span class="kw">in </span>execution_digests.enumerate() {
-                checkpoint_number = <span class="kw-2">*</span>checkpoints[idx].sequence_number();
-                digests.extend(checkpoint_digests);
-                <span class="kw">if </span>digests.len() &gt;= config.max_transactions_in_batch {
-                    is_last_iteration = <span class="bool-val">false</span>;
-                    <span class="kw">break</span>;
-                }
+        <span class="attr">#[allow(clippy::explicit_counter_loop)]
+        </span><span class="kw">for </span>(<span class="kw">_</span>, checkpoint) <span class="kw">in </span>iter {
+            checkpoint_number = <span class="kw-2">*</span>checkpoint.sequence_number();
+            <span class="comment">// Skipping because  checkpoint&#39;s epoch or checkpoint number is too new.
+            // We have to respect the highest executed checkpoint watermark because there might be
+            // parts of the system that still require access to old object versions (i.e. state accumulator)
+            </span><span class="kw">if </span>(current_epoch &lt; checkpoint.epoch() + config.num_epochs_to_retain)
+                || (checkpoint_number &gt; highest_executed_checkpoint)
+            {
+                <span class="kw">break</span>;
             }
+            checkpoints_in_batch += <span class="number">1</span>;
+            <span class="kw">if </span>network_total_transactions == checkpoint.network_total_transactions {
+                <span class="kw">continue</span>;
+            }
+            network_total_transactions = checkpoint.network_total_transactions;
 
+            <span class="kw">let </span>content = checkpoint_store
+                .get_checkpoint_contents(<span class="kw-2">&amp;</span>checkpoint.content_digest)<span class="question-mark">?
+                </span>.ok_or_else(|| <span class="macro">anyhow::anyhow!</span>(<span class="string">&quot;checkpoint content data is missing&quot;</span>))<span class="question-mark">?</span>;
             <span class="kw">let </span>effects = perpetual_db
                 .effects
-                .multi_get(digests)<span class="question-mark">?
-                </span>.into_iter()
-                .map(|effects| effects.expect(<span class="string">&quot;missing effects in pruner&quot;</span>))
-                .collect();
+                .multi_get(content.iter().map(|tx| tx.effects))<span class="question-mark">?</span>;
 
+            <span class="kw">if </span>effects.iter().any(|effect| effect.is_none()) {
+                <span class="kw">return </span><span class="prelude-val">Err</span>(<span class="macro">anyhow::anyhow!</span>(<span class="string">&quot;transaction effects data is missing&quot;</span>));
+            }
+            batch_effects.extend(effects.into_iter().flatten());
+
+            <span class="kw">if </span>batch_effects.len() &gt;= config.max_transactions_in_batch
+                || checkpoints_in_batch &gt;= config.max_checkpoints_in_batch
+            {
+                <span class="self">Self</span>::prune_effects(
+                    batch_effects,
+                    perpetual_db,
+                    objects_lock_table,
+                    checkpoint_number,
+                    deletion_method,
+                    metrics.clone(),
+                    indirect_objects_threshold,
+                )
+                .<span class="kw">await</span><span class="question-mark">?</span>;
+                batch_effects = <span class="macro">vec!</span>[];
+                checkpoints_in_batch = <span class="number">0</span>;
+            }
+        }
+        <span class="kw">if </span>!batch_effects.is_empty() {
             <span class="self">Self</span>::prune_effects(
-                effects,
+                batch_effects,
                 perpetual_db,
                 objects_lock_table,
                 checkpoint_number,
                 deletion_method,
                 metrics.clone(),
+                indirect_objects_threshold,
             )
             .<span class="kw">await</span><span class="question-mark">?</span>;
-
-            <span class="kw">if </span>is_last_iteration {
-                <span class="kw">return </span><span class="prelude-val">Ok</span>(());
-            }
         }
+        <span class="prelude-val">Ok</span>(())
     }
 
     <span class="kw">fn </span>setup_objects_pruning(
@@ -913,6 +946,7 @@
         checkpoint_store: Arc&lt;CheckpointStore&gt;,
         objects_lock_table: Arc&lt;RwLockTable&lt;ObjectContentDigest&gt;&gt;,
         metrics: Arc&lt;AuthorityStorePruningMetrics&gt;,
+        indirect_objects_threshold: usize,
     ) -&gt; Sender&lt;()&gt; {
         <span class="kw">let </span>(sender, <span class="kw-2">mut </span>recv) = tokio::sync::oneshot::channel();
         <span class="macro">debug!</span>(
@@ -921,12 +955,13 @@
         );
         <span class="kw">let </span>tick_duration = Duration::from_secs(config.pruning_run_delay_seconds.unwrap_or(
             <span class="kw">if </span>config.num_epochs_to_retain &gt; <span class="number">0 </span>{
-                epoch_duration_ms / <span class="number">2
-            </span>} <span class="kw">else </span>{
+                min(<span class="number">1000 </span>* epoch_duration_ms / <span class="number">2</span>, <span class="number">60 </span>* <span class="number">60</span>)
+            } <span class="kw">else </span>{
                 <span class="number">60
             </span>},
         ));
-        <span class="kw">let </span>pruning_initial_delay = min(tick_duration, Duration::from_secs(<span class="number">300</span>));
+        <span class="kw">let </span>pruning_initial_delay =
+            Duration::from_secs(config.pruning_run_delay_seconds.unwrap_or(<span class="number">60 </span>* <span class="number">60</span>));
         <span class="kw">let </span><span class="kw-2">mut </span>prune_interval =
             tokio::time::interval_at(Instant::now() + pruning_initial_delay, tick_duration);
 
@@ -934,7 +969,7 @@
             <span class="kw">loop </span>{
                 <span class="macro">tokio::select! </span>{
                     <span class="kw">_ </span>= prune_interval.tick(), <span class="kw">if </span>config.num_epochs_to_retain != u64::MAX =&gt; {
-                        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">Self</span>::prune_objects_for_eligible_epochs(<span class="kw-2">&amp;</span>perpetual_db, <span class="kw-2">&amp;</span>checkpoint_store, <span class="kw-2">&amp;</span>objects_lock_table, config, metrics.clone()).<span class="kw">await </span>{
+                        <span class="kw">if let </span><span class="prelude-val">Err</span>(err) = <span class="self">Self</span>::prune_objects_for_eligible_epochs(<span class="kw-2">&amp;</span>perpetual_db, <span class="kw-2">&amp;</span>checkpoint_store, <span class="kw-2">&amp;</span>objects_lock_table, config, metrics.clone(), indirect_objects_threshold).<span class="kw">await </span>{
                             <span class="macro">error!</span>(<span class="string">&quot;Failed to prune objects: {:?}&quot;</span>, err);
                         }
                     },
@@ -951,6 +986,7 @@
         pruning_config: AuthorityStorePruningConfig,
         epoch_duration_ms: u64,
         registry: <span class="kw-2">&amp;</span>Registry,
+        indirect_objects_threshold: usize,
     ) -&gt; <span class="self">Self </span>{
         AuthorityStorePruner {
             _objects_pruner_cancel_handle: <span class="self">Self</span>::setup_objects_pruning(
@@ -960,6 +996,7 @@
                 checkpoint_store,
                 objects_lock_table,
                 AuthorityStorePruningMetrics::new(registry),
+                indirect_objects_threshold,
             ),
         }
     }
@@ -991,7 +1028,8 @@
     <span class="kw">use </span>prometheus::Registry;
     <span class="kw">use </span>sui_storage::mutex_table::RwLockTable;
     <span class="kw">use </span>sui_types::base_types::{ObjectDigest, VersionNumber};
-    <span class="kw">use </span>sui_types::messages::{TransactionEffects, TransactionEffectsAPI};
+    <span class="kw">use </span>sui_types::effects::TransactionEffects;
+    <span class="kw">use </span>sui_types::effects::TransactionEffectsAPI;
     <span class="kw">use </span>sui_types::{
         base_types::{ObjectID, SequenceNumber},
         object::Object,
@@ -1159,6 +1197,7 @@
                 <span class="number">0</span>,
                 deletion_method,
                 metrics,
+                <span class="number">1</span>,
             )
             .<span class="kw">await
             </span>.unwrap();
@@ -1270,6 +1309,7 @@
             <span class="number">0</span>,
             DeletionMethod::RangeDelete,
             metrics,
+            <span class="number">0</span>,
         )
         .<span class="kw">await</span>;
         <span class="macro">info!</span>(<span class="string">&quot;Total pruned keys = {:?}&quot;</span>, total_pruned);
@@ -1306,6 +1346,7 @@
             <span class="number">0</span>,
             DeletionMethod::RangeDelete,
             metrics,
+            <span class="number">1</span>,
         )
         .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">let </span>guard = pprof::ProfilerGuardBuilder::default()
@@ -1341,6 +1382,7 @@
             <span class="number">0</span>,
             DeletionMethod::RangeDelete,
             metrics,
+            <span class="number">1</span>,
         )
         .<span class="kw">await</span><span class="question-mark">?</span>;
         <span class="kw">if let </span><span class="prelude-val">Ok</span>(()) = perpetual_db.objects.flush() {
